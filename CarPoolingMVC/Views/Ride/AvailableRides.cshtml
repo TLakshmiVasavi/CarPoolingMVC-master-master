@@ -1,0 +1,59 @@
+﻿@model SearchRideVM
+<form asp-action="RequestRide" asp-controller="Ride">
+    
+    @Html.HiddenFor(x => x.Request.Date)
+    @Html.HiddenFor(x => x.Request.Destination)
+    @Html.HiddenFor(x => x.Request.Source)
+    @Html.HiddenFor(x => x.Request.NoOfSeats)
+    @if (Model.AvailableRides.Count==0)
+    {
+        <h3>Rides are Not Available</h3>
+    }
+    else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.AvailableRides[0].StartTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AvailableRides[0].Cost)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AvailableRides[0].ProviderName)
+                </th>
+                <th>
+                    <label>Path</label>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AvailableRides)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cost)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProviderName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Route.Source)
+                    @foreach (var ViaPoint in item.Route.ViaPoints)
+                    {
+                        <label>@ViaPoint.Location</label>
+                    }
+                        @Html.DisplayFor(modelItem => item.Route.Destination)
+                    </td>
+                    <td>
+                        <button type="submit" name="RideId" value='@item.Id'> Request</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    }
+</form>

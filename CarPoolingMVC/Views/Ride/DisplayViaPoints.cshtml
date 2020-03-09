@@ -1,0 +1,28 @@
+﻿@model CarPoolingMVC.Models.RideVM
+@if (Model.Route.ViaPoints.Count == 0)
+{
+    <h3>No ViaPoints</h3>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Route.ViaPoints[0].Location)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var ind = 0; ind < Model.Route.ViaPoints.Count ; ind++)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(model => model.Route.ViaPoints[ind].Location)
+                        @Html.DisplayFor(model => model.Route.ViaPoints[ind].Location)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

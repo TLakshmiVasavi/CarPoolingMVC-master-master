@@ -1,0 +1,76 @@
+﻿@model IEnumerable<CarPoolingMVC.Models.BookingDetailsVM>
+@if (!Model.Any())
+{
+    <h3>No Bookings</h3>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IsRideCompleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickUp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Drop)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Vehicle.Type)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>
+                @if (item.IsRideCompleted)
+                {
+                    <Label>Yes</Label>
+                }
+                else
+                {
+                    <label>No</label>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PickUp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Drop)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProviderName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem=>item.Vehicle.Type.ToString())
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}

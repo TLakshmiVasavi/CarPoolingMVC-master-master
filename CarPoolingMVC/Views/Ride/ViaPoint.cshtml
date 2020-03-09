@@ -1,0 +1,18 @@
+﻿@model CarPoolingMVC.Models.RideVM
+@{ 
+    int i = Model.Route.ViaPoints.Count-1;
+}
+<div class="row" id="NewViaPoint">
+    <div class="col-md-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="@Model.Route.ViaPoints[i].Location" class="control-label"></label>
+            <input asp-for="@Model.Route.ViaPoints[i].Location" class="form-control" />
+            <span asp-validation-for="@Model.Route.ViaPoints[i].Location" class="text-danger"></span>
+        </div>
+        <div>
+            <button type="button" id="Save" onclick="SaveDetails()">Save</button>
+            <button type="button" id="Cancel" onclick="cancelled()">Cancel</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@model CarPoolingMVC.Models.RideVM
+
+<h4>Ride</h4>
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="OfferRide">
+
+            @for (int i = 0; i < Model.AvailableVehicles.Count; i++)
+            {
+                @Html.HiddenFor(model => model.AvailableVehicles[i]);
+            }
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Route.Source" class="control-label"></label>
+                    <input asp-for="Route.Source" class="form-control" />
+                    <span asp-validation-for="Route.Source" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Route.Destination" class="control-label"></label>
+                    <input asp-for="Route.Destination" class="form-control" />
+                    <span asp-validation-for="Route.Destination" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="StartDateTime" class="control-label"></label>
+                    <input asp-for="StartDateTime" class="form-control" />
+                    <span asp-validation-for="StartDateTime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NoOfOfferedSeats" class="control-label"></label>
+                    <input asp-for="NoOfOfferedSeats" class="form-control" />
+                    <span asp-validation-for="NoOfOfferedSeats" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UnitDistanceCost" class="control-label"></label>
+                    <input asp-for="UnitDistanceCost" class="form-control" />
+                    <span asp-validation-for="UnitDistanceCost" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VehicleId" class="control-label">Please select the Vehicle </label><br/>
+                    @Html.DropDownListFor(m => m.VehicleId, new SelectList(Model.AvailableVehicles), "Select Vehicle")
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-default" />
+                </div>
+             </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <button type="button" id="AddViaPoint" onclick="ViaPoint()">AddViaPoint</button>
+                </div>
+                <div id="ViaPoints">
+                    @{ Html.RenderPartial("DisplayViaPoints"); }
+                </div>
+                <div id="Partial">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

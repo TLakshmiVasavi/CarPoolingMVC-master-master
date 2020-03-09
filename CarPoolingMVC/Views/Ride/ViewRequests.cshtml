@@ -1,0 +1,51 @@
+﻿@model IEnumerable<CarPoolingMVC.Models.RequestDetailsVM>
+
+@if ( !Model.Any())
+{
+    <h3>No Requests</h3>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Source)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Destination)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NoOfSeats)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Source)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NoOfSeats)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    @Html.ActionLink("Accept", "ApproveRequest", "Ride", new { RideId = @ViewBag.RideId, RequestId = @item.Id, Decision = "Accept" })
+                    @Html.ActionLink("Reject", "ApproveRequest", "Ride", new { RideId = @ViewBag.RideId, RequestId = @item.Id, Decision = "Reject" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
