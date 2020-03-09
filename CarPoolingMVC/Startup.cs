@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +30,11 @@ namespace CarPoolingMVC
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.HttpOnly = HttpOnlyPolicy.Always;
+                options.Secure = CookieSecurePolicy.Always;
+                // you can add more options here and they will be applied to all cookies (middleware and manually created cookies)
             });
             services.AddHttpClient();
-
             string domain = $"https://{Configuration["Auth0:Domain"]}/";
             services.AddAuthentication(options =>
             {
@@ -55,6 +61,22 @@ namespace CarPoolingMVC
                 options.Cookie.IsEssential = true;
             }
             );
+        }
+
+        private static bool IsAjaxRequest(HttpRequest request)
+        {
+            var query = request.Query;
+            if ((query != null) && (query["X-Requested-With"] == "XMLHttpRequest"))
+            {
+                return true;
+            }
+            IHeaderDictionary headers = request.Headers;
+            return ((headers != null) && (headers["X-Requested-With"] == "XMLHttpRequest"));
+        }
+
+        private static bool IsApiRequest(HttpRequest request)
+        {
+            return request.Path.StartsWithSegments(new PathString("/api"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

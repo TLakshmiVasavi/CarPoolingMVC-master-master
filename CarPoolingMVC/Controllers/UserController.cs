@@ -6,6 +6,7 @@ using Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -25,6 +26,9 @@ namespace CarPoolingMVC.Controllers
             string baseUri = "https://localhost:44302/api/";
             using (HttpClient client = _httpClientFactory.CreateClient())
             {
+                //client.DefaultRequestHeaders.Authorization = System.Net.Http.Headers.HttpHeaders(Request.Cookies["Bearer"]);
+                
+                client.DefaultRequestHeaders.Add("Authorization",Request.Cookies["Bearer"]??"NoValue");
                 if (method == "post")
                 {
                     return await client.PostAsync(baseUri + absoluteUri, new StringContent(JsonConvert.SerializeObject(_object), Encoding.UTF8, "application/json"));
@@ -57,7 +61,7 @@ namespace CarPoolingMVC.Controllers
         public async System.Threading.Tasks.Task<ActionResult> Login(UserVM user)
         {
             HttpResponseMessage response = await RequestApi("UserApi/Login?userId=" + user.Id, user.Password, "post");
-            var res= JsonConvert.DeserializeObject<Models.ResponseVM>(response.Content.ReadAsStringAsync().Result);
+            var res= JsonConvert.DeserializeObject<ResponseVM>(response.Content.ReadAsStringAsync().Result);
             if (res.Result)
             {
                 HttpContext.Session.SetString("UserId", user.Id);
