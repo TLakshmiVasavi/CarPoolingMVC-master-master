@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CarPoolingMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Enums;
@@ -16,6 +17,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RideApiController : Controller
     {
         private readonly IRideService _rideService;
@@ -92,7 +94,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 
         [HttpPost]
         [Route("SearchRide")]
-        public IEnumerable<AvailableRideVM> SearchRide([FromBody]RequestVM request, [FromQuery]string userId)
+        public IEnumerable<AvailableRideVM> SearchRide([FromBody]RequestVM request, [FromQuery]string userId)//s
         {
             List<Ride> rides = _rideService.FindRides(request.Source, request.Destination, request.Date, userId, request.NoOfSeats, Enum.Parse<VehicleType>(request.VehicleType.ToString()));
             List<AvailableRideVM> availableRides = new List<AvailableRideVM>();

@@ -10,35 +10,14 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace CarPoolingMVC.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserService _userService;
-        private readonly IHttpClientFactory _httpClientFactory;
 
-        public UserController(IUserService userService, IHttpClientFactory httpClientFactory)
+        public UserController(IUserService userService, IHttpClientFactory httpClientFactory) : base(httpClientFactory)
         {
-            this._userService = userService;
-            this._httpClientFactory = httpClientFactory;
-        }
-
-        public async System.Threading.Tasks.Task<HttpResponseMessage> RequestApi(string absoluteUri, object _object, string method)
-        {
-            string baseUri = "https://localhost:44302/api/";
-            using (HttpClient client = _httpClientFactory.CreateClient())
-            {
-                //client.DefaultRequestHeaders.Authorization = System.Net.Http.Headers.HttpHeaders(Request.Cookies["Bearer"]);
-                
-                client.DefaultRequestHeaders.Add("Authorization",Request.Cookies["Bearer"]??"NoValue");
-                if (method == "post")
-                {
-                    return await client.PostAsync(baseUri + absoluteUri, new StringContent(JsonConvert.SerializeObject(_object), Encoding.UTF8, "application/json"));
-                }
-                else
-                {
-                    return client.GetAsync(baseUri + absoluteUri).Result;
-                }
-            }
-        }
+            _userService = userService;
+        }        
 
         public IActionResult AddVehicle()
         {
@@ -88,9 +67,9 @@ namespace CarPoolingMVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async System.Threading.Tasks.Task<ActionResult> ViewBalance()
+        public ActionResult ViewBalance()//
         {
-            HttpResponseMessage response = await RequestApi("UserApi/GetBalance?userId=" + HttpContext.Session.GetString("UserId"), null, "get");
+            HttpResponseMessage response = GetApi("UserApi/GetBalance?userId=" + HttpContext.Session.GetString("UserId"));
             return View("ViewBalance",response.Content.ReadAsAsync<float>().Result);
         }
 
@@ -114,7 +93,7 @@ namespace CarPoolingMVC.Controllers
 
         public JsonResult IsSeatsAvailable(int noOfOfferedSeats, string vehicleId)
         {
-            return Json(!(_userService.FindVehicle(vehicleId, HttpContext.Session.GetString("UserId")).Capacity > noOfOfferedSeats));
+            return Json((_userService.FindVehicle(vehicleId, HttpContext.Session.GetString("UserId")).Capacity > noOfOfferedSeats));
         }
 
         public JsonResult IsUserExists(string mail)

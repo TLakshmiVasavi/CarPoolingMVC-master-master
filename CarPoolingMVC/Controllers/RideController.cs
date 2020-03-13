@@ -12,36 +12,19 @@ using Models;
 using Models.Enums;
 using System.Net.Http;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace CarPoolingMVC.Controllers
 {
-    public class RideController : Controller
+    public class RideController : BaseController
     {
         private readonly IUserService _userService;
         private readonly IRideService _rideService;
-        private readonly IHttpClientFactory _httpClientFactory;
 
-        public RideController(IUserService userService, IRideService rideService, IHttpClientFactory httpClientFactory)
+        public RideController(IUserService userService, IRideService rideService,IHttpClientFactory httpClientFactory):base(httpClientFactory)
         {
             this._userService = userService;
             this._rideService = rideService;
-            this._httpClientFactory = httpClientFactory;
-        }
-
-        public async System.Threading.Tasks.Task<HttpResponseMessage> RequestApi(string absoluteUri, object _object, string method)
-        {
-            string baseUri = "https://localhost:44302/api/";
-            using (HttpClient client = _httpClientFactory.CreateClient())
-            {
-                if (method == "post")
-                {
-                    return await client.PostAsync(baseUri + absoluteUri, new StringContent(JsonConvert.SerializeObject(_object), Encoding.UTF8, "application/json"));
-                }
-                else
-                {
-                    return client.GetAsync(baseUri + absoluteUri).Result;
-                }
-            }
         }
 
         public ActionResult OfferRide()
@@ -52,13 +35,7 @@ namespace CarPoolingMVC.Controllers
                 Route = new RouteVM()
             };
             ride.Route.ViaPoints = new List<ViaPointVM>();
-            //HttpResponseMessage response = RequestApi("UserApi/GetVehicles?userId=" + HttpContext.Session.GetString("UserId"), null, "get");
-            HttpResponseMessage response;
-            using (HttpClient client=_httpClientFactory.CreateClient())
-            {
-                response = client.GetAsync("https://localhost:44302/api/UserApi/GetVehicles?userId=" + HttpContext.Session.GetString("UserId")).Result;
-            }
-            
+            HttpResponseMessage response = GetApi("UserApi/GetVehicles?userId=" + HttpContext.Session.GetString("UserId"));
             ride.AvailableVehicles = response.Content.ReadAsAsync<List<string>>().Result;
             if (ride.AvailableVehicles.Count == 0)
             {
@@ -113,36 +90,36 @@ namespace CarPoolingMVC.Controllers
         [HttpPost]
         public async System.Threading.Tasks.Task<IActionResult> RequestRide(RequestVM request, string rideId)
         {
-            HttpResponseMessage response = await RequestApi("RideApi/RequestRide?userId=" + HttpContext.Session.GetString("UserId")+"+rideId="+rideId, request, "post");
+            HttpResponseMessage response = await RequestApi("RideApi/RequestRide?userId=" + HttpContext.Session.GetString("UserId")+"&rideId="+rideId, request, "post");
             return RedirectToAction("MyBookings");
         }        
 
-        public async System.Threading.Tasks.Task<IActionResult> MyBookings()
+        public IActionResult MyBookings()
         {
-            HttpResponseMessage response = await RequestApi("RideApi/GetBookings?userId=" + HttpContext.Session.GetString("UserId"), null, "get");
+            HttpResponseMessage response = GetApi("RideApi/GetBookings?userId=" + HttpContext.Session.GetString("UserId"));
             var Bookings = response.Content.ReadAsAsync<List<BookingDetailsVM>>().Result;
             return View(Bookings);
         }
 
-        public async System.Threading.Tasks.Task<IActionResult> ViewOfferedRides()
+        public IActionResult ViewOfferedRides()
         {
-            HttpResponseMessage response = await RequestApi("RideApi/GetOfferedRides?userId=" + HttpContext.Session.GetString("UserId"), null, "get");
+            HttpResponseMessage response = GetApi("RideApi/GetOfferedRides?userId=" + HttpContext.Session.GetString("UserId"));
             var OfferedRides = response.Content.ReadAsAsync<List<OfferedRideVM>>().Result;
             return View(OfferedRides);
         }
 
-        public async System.Threading.Tasks.Task<IActionResult> ViewRequests(string rideId)
+        public IActionResult ViewRequests(string rideId)
         {
-            HttpResponseMessage response = await RequestApi("RideApi/GetRequests?rideId=" + rideId, null, "get");
+            HttpResponseMessage response = GetApi("RideApi/GetRequests?rideId=" + rideId);
             var RideRequests = response.Content.ReadAsAsync<List<RequestDetailsVM>>().Result;
             ViewBag.RideId = rideId;
             return View(RideRequests);
         }
 
-        public async System.Threading.Tasks.Task<IActionResult> ApproveRequest(string rideId,string requestId,string decision)
+        public IActionResult ApproveRequest(string rideId,string requestId,string decision)
         {
-            HttpResponseMessage response = await RequestApi("RideApi/ApproveRequest?rideId=" + rideId+"&providerId=" +
-                HttpContext.Session.GetString("UserId")+"&requestId="+requestId+"&isApprove"+(decision=="Accept"), null, "get");
+            HttpResponseMessage response = GetApi("RideApi/ApproveRequest?rideId=" + rideId+"&providerId=" +
+                HttpContext.Session.GetString("UserId")+"&requestId="+requestId+"&isApprove"+(decision=="Accept"));
             
             return RedirectToAction("ViewRequests",rideId);
         }

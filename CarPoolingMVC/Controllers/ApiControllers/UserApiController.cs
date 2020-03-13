@@ -1,13 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using CarPoolingMVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Enums;
 using Models.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Net.Http;
+using System.Net;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
@@ -27,7 +37,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpPost]
         [Route("SignUp")]
         [AllowAnonymous]
-        public void Post([FromBody]UserVM user)
+        public async System.Threading.Tasks.Task SignUp([FromBody]UserVM user)
         {
             User User = new User
             {
@@ -60,20 +70,19 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 User.Vehicles.Add(Vehicle);
             }
             _userService.SignUp(User);
-            GenerateToken();
-            var res = GenerateToken();
-            //Response.Cookies.Append(res[0], res[1]);
-            //JsonConvert.
-        }
-
-        private static string GenerateToken()
-        {
-            var client = new RestClient("https://lakshmivasavi.auth0.com/oauth/token");
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("content-type", "application/json");
-            request.AddParameter("application/json", "{\"client_id\":\"xqngInHfNmrDL2wuMY2LTdRZjG8WOAKU\",\"client_secret\":\"nVWut_9QqOcaiBK9imKQIgkdsK75psbdZoY_Cy31n_Dwzhr_awgh6d67DIghG9bJ\",\"audience\":\"https://lakshmivasavi.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
-
-            return client.Execute(request).Content.Split(",")[0].Split(":")[1];
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Mail),
+                new Claim("FullName", user.Name),
+            };
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties();
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
+            
         }
 
         [HttpPost]

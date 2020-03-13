@@ -42,7 +42,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="VehicleId" class="control-label">Please select the Vehicle </label><br/>
-                    @Html.DropDownListFor(m => m.VehicleId, new SelectList(Model.AvailableVehicles), "Select Vehicle")
+                    @Html.DropDownListFor(m => m.VehicleId, new SelectList(Model.AvailableVehicles))
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Submit" class="btn btn-default" />
