@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using CarPoolingMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,16 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Enums;
 using Models.Interfaces;
-using Newtonsoft.Json;
 using RestSharp;
-using System.Net.Http;
-using System.Net;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
@@ -37,7 +27,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpPost]
         [Route("SignUp")]
         [AllowAnonymous]
-        public async System.Threading.Tasks.Task SignUp([FromBody]UserVM user)
+        public void SignUp([FromBody]UserVM user)
         {
             User User = new User
             {
@@ -70,19 +60,17 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 User.Vehicles.Add(Vehicle);
             }
             _userService.SignUp(User);
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Mail),
-                new Claim("FullName", user.Name),
-            };
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties();
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
-            
+            string res = GenerateToken();
+            Response.Cookies.Append("Bearer", res,);
+        }
+
+        private static string GenerateToken()
+        {
+            var client = new RestClient("https://lakshmivasavi.auth0.com/oauth/token");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("content-type", "application/json");
+            request.AddParameter("application/json", "{\"client_id\":\"xqngInHfNmrDL2wuMY2LTdRZjG8WOAKU\",\"client_secret\":\"nVWut_9QqOcaiBK9imKQIgkdsK75psbdZoY_Cy31n_Dwzhr_awgh6d67DIghG9bJ\",\"audience\":\"https://lakshmivasavi.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
+            return client.Execute(request).Content.Split(",")[0].Split(":")[1].Trim('"');
         }
 
         [HttpPost]
@@ -125,9 +113,9 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public ResponseVM IsValidDetails([FromQuery]string userId, [FromBody]string password)
+        public ResponseVM Login([FromQuery]string userId, [FromBody]string password)
         {
-            ResponseVM response = new Models.ResponseVM
+            ResponseVM response = new ResponseVM
             {
                 Result = false
             };
@@ -146,7 +134,19 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             {
                 response.ErrorMessage = "Invalid UserName";
             }
-            //await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties());
+            string res = GenerateToken();
+            CookieOptions options = new CookieOptions()
+            {
+                Path = "/",
+                //Domain = Request.Host.Value,
+                //  Domain= HttpUtility.ParseQueryString(Request.u .Url.Query),
+                //Expires = DateTime.Now.AddDays(1),
+                Secure = true,
+                HttpOnly = true,
+                IsEssential = true,
+                SameSite = SameSiteMode.None
+            };
+            Response.Cookies.Append("Bearer", res, options);
             return response;
         }
 
@@ -161,15 +161,6 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         public void Logout()
         {
             Response.Cookies.Delete("Bearer");
-            //Response.Cookies.Append()
-            //await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties
-            //{
-            //    // Indicate here where Auth0 should redirect the user after a logout.
-            //    // Note that the resulting absolute Uri must be whitelisted in the 
-            //    // **Allowed Logout URLs** settings for the client.
-            //    RedirectUri = Url.Action("Index", "Home")
-            //});
-            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }

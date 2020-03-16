@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Models;
 using System.Net.Http;
 using Newtonsoft.Json;
-using System.Text;
-using Microsoft.AspNetCore.Authentication;
+using System.Linq;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -44,6 +42,7 @@ namespace CarPoolingMVC.Controllers
             if (res.Result)
             {
                 HttpContext.Session.SetString("UserId", user.Id);
+                Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1]);
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Result = res.ErrorMessage;
@@ -64,10 +63,11 @@ namespace CarPoolingMVC.Controllers
         {
             HttpResponseMessage response = await RequestApi("UserApi/SignUp", user, "post");
             HttpContext.Session.SetString("UserId", user.Mail);
+            Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1]);
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult ViewBalance()//
+        public ActionResult ViewBalance()
         {
             HttpResponseMessage response = GetApi("UserApi/GetBalance?userId=" + HttpContext.Session.GetString("UserId"));
             return View("ViewBalance",response.Content.ReadAsAsync<float>().Result);
@@ -87,6 +87,7 @@ namespace CarPoolingMVC.Controllers
 
         public ActionResult Logout()
         {
+            Response.Cookies.Delete("Bearer");
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
