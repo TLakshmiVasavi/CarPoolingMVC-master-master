@@ -38,6 +38,7 @@ namespace Services
             Details.Add(details);
             Rides.Add(ride);
         }
+
         public List<Ride> FindOfferedRides(string providerId)
         {
             return Rides.FindAll(r => r.ProviderId == providerId);

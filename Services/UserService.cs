@@ -2,10 +2,11 @@
 using Models;
 using System.Collections.Generic;
 using System.Linq;
+using Models.DAL;
+using Models.DAL.AppConfig;
 
 namespace Services
 {
-    
     public class UserService : IUserService
     {
         List<User> Users = new List<User>();
@@ -39,6 +40,8 @@ namespace Services
                 Balance = 0
             };
             Users.Add(user);
+            UserDal userDal = new UserDal(new AppConfiguration());
+            userDal.Create(user);
         }
 
         public bool HasVehicle(string userId)

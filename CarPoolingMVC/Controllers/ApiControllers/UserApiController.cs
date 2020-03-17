@@ -60,8 +60,20 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 User.Vehicles.Add(Vehicle);
             }
             _userService.SignUp(User);
+            CookieOptions options = new CookieOptions()
+            {
+                Path = "/",
+                //Domain = Request.Host.Value,
+                //  Domain= HttpUtility.ParseQueryString(Request.u .Url.Query),
+                //Expires = DateTime.Now.AddDays(1),
+                Secure = true,
+                HttpOnly = true,
+                IsEssential = true,
+                SameSite = SameSiteMode.None,
+                Expires=DateTime.Now.AddDays(1)
+            };
             string res = GenerateToken();
-            Response.Cookies.Append("Bearer", res,);
+            Response.Cookies.Append("Bearer", res, options);
         }
 
         private static string GenerateToken()
@@ -124,6 +136,19 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 if (_userService.Login(password, userId))
                 {
                     response.Result = true;
+                    CookieOptions options = new CookieOptions()
+                    {
+                        Path = "/",
+                        //Domain = Request.Host.Value,
+                        //  Domain= HttpUtility.ParseQueryString(Request.u .Url.Query),
+                        //Expires = DateTime.Now.AddDays(1),
+                        Secure = true,
+                        HttpOnly = true,
+                        IsEssential = true,
+                        SameSite = SameSiteMode.None
+                    };
+                    string res = GenerateToken();
+                    Response.Cookies.Append("Bearer", res, options);
                 }
                 else
                 {                    
@@ -134,19 +159,6 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             {
                 response.ErrorMessage = "Invalid UserName";
             }
-            string res = GenerateToken();
-            CookieOptions options = new CookieOptions()
-            {
-                Path = "/",
-                //Domain = Request.Host.Value,
-                //  Domain= HttpUtility.ParseQueryString(Request.u .Url.Query),
-                //Expires = DateTime.Now.AddDays(1),
-                Secure = true,
-                HttpOnly = true,
-                IsEssential = true,
-                SameSite = SameSiteMode.None
-            };
-            Response.Cookies.Append("Bearer", res, options);
             return response;
         }
 

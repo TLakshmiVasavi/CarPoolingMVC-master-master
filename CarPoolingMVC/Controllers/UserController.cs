@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
+using System;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -63,7 +64,15 @@ namespace CarPoolingMVC.Controllers
         {
             HttpResponseMessage response = await RequestApi("UserApi/SignUp", user, "post");
             HttpContext.Session.SetString("UserId", user.Mail);
-            Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1]);
+            CookieOptions options = new CookieOptions()
+            {
+                Path = "/",
+                Secure = true,
+                HttpOnly = true,
+                IsEssential = true,
+                SameSite = SameSiteMode.None
+            };
+            Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1],options);
             return RedirectToAction("Index", "Home");
         }
 
@@ -87,7 +96,7 @@ namespace CarPoolingMVC.Controllers
 
         public ActionResult Logout()
         {
-            Response.Cookies.Delete("Bearer");
+           // Response.Cookies.Delete("Bearer");
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
