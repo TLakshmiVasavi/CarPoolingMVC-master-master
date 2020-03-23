@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Enums;
+using System;
 using System.Timers;
 
 namespace Models
@@ -20,5 +21,7 @@ namespace Models
         public DateTime EndDateTime;
 
         public Timer timer;
+
+        public VehicleType VehicleType;
     }
 }

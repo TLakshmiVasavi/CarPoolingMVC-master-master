@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
-using System;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -43,7 +42,15 @@ namespace CarPoolingMVC.Controllers
             if (res.Result)
             {
                 HttpContext.Session.SetString("UserId", user.Id);
-                Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1]);
+                CookieOptions options = new CookieOptions()
+                {
+                    Path = "/",
+                    Secure = true,
+                    HttpOnly = true,
+                    IsEssential = true,
+                    SameSite = SameSiteMode.None
+                };
+                Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1], options);
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Result = res.ErrorMessage;
@@ -103,7 +110,8 @@ namespace CarPoolingMVC.Controllers
 
         public JsonResult IsSeatsAvailable(int noOfOfferedSeats, string vehicleId)
         {
-            return Json((_userService.FindVehicle(vehicleId, HttpContext.Session.GetString("UserId")).Capacity > noOfOfferedSeats));
+           // return Json((_userService.FindVehicle(vehicleId, HttpContext.Session.GetString("UserId")).Capacity > noOfOfferedSeats));
+            return Json((_userService.FindVehicle(vehicleId).Capacity > noOfOfferedSeats));
         }
 
         public JsonResult IsUserExists(string mail)

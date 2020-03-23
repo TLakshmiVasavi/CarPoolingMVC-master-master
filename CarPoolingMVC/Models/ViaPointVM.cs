@@ -6,8 +6,5 @@ namespace CarPoolingMVC.Models
     {
         [Required]
         public string Location { get; set; }
-
-        [Required]
-        public float Distance { get; set; }
     }
 }

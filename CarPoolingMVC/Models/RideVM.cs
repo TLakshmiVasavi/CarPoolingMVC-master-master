@@ -8,7 +8,7 @@ namespace CarPoolingMVC.Models
 {
     public class RideVM
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public RouteVM Route { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using Models.DAL.AppConfig;
 using Models.Enums;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -20,7 +21,25 @@ namespace Models.DAL
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, Number) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Id}', '{user.Mail}', '{user.Password}', '{user.Number}')";
+                string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, MobileNumber, Balance) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Mail}', '{user.Mail}', '{user.Password}', '{user.Number}','{0}')";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        public void Update(User user)
+        {
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Update [User] set Name='{user.Name}', Age='{user.Age}', Gender='{user.Gender}', Mail='{user.Mail}', Password='{user.Password}', MobileNumber='{user.Number}' where id='{user.Id}'";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -40,23 +59,48 @@ namespace Models.DAL
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"Select * From User where Id='{id}'";
+                string sql = $"Select * From [User] where Id='{id}'";
+                SqlCommand command = new SqlCommand(sql, connection);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    user.Name = Convert.ToString(dataReader["Name"]);
+                    user.Mail = Convert.ToString(dataReader["Mail"]);
+                    user.Age = Convert.ToInt32(dataReader["Age"]);
+                    user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
+                    user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
+                    user.Number = Convert.ToString(dataReader["Number"]);
+                }
+                connection.Close();
+            }
+            return user;
+        }
+
+        public List<User> GetAllUsers()
+        {
+            List<User> users = new List<User>();
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = $"Select * From [User]";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
                     while (dataReader.Read())
                     {
+                        User user = new User();
                         user.Name = Convert.ToString(dataReader["Name"]);
                         user.Mail = Convert.ToString(dataReader["Mail"]);
                         user.Age = Convert.ToInt32(dataReader["Age"]);
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
                         user.Number = Convert.ToString(dataReader["Number"]);
+                        users.Add(user);
                     }
                 }
                 connection.Close();
             }
-            return user;
+            return users;
         }
 
         public bool Login(string id, string password)
@@ -66,18 +110,11 @@ namespace Models.DAL
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"Select * From User where Id='{id}' and Password='{password}'";
+                string sql = $"Select * From [User] where Id='{id}' and Password='{password}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    if (dataReader.HasRows)
-                    {
-                        result = true;
-                    }
-                    else
-                    {
-                        result = false;
-                    }
+                    result = dataReader.HasRows;
                 }
                 connection.Close();
             }
@@ -87,10 +124,9 @@ namespace Models.DAL
         public void AddBalance(float amount,string id)
         {
             string connectionString = Configuration.ConnectionString;
-            User user = new User();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Update User set Balance=Balance+'{amount}' Where Id='{id}'";
+                string sql = $"Update [User] set Balance=Balance+'{amount}' Where Id='{id}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -107,19 +143,61 @@ namespace Models.DAL
             float balance;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Select Balance from User Where Id='{id}'";
+                string sql = $"Select Balance from [User] Where Id='{id}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
-                    using (SqlDataReader dataReader = command.ExecuteReader())
-                    {
-                        balance = float.Parse(dataReader["Balance"].ToString());
-                    }
+                    //using (SqlDataReader dataReader = command.ExecuteReader())
+                    //{
+                    //    Object[] values = new Object[dataReader.FieldCount];
+                    //    int fieldCount = dataReader.GetValues(values);
+                    //    balance = float.Parse(dataReader["Balance"].ToString());
+                    //}
+
+
+                    balance = float.Parse(command.ExecuteScalar().ToString());
+
                     connection.Close();
                 }
                 connection.Close();
             }
             return balance;
+        }
+
+        public bool IsUserExist(string userId)
+        {
+            bool result;
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = $"Select * From [User] where Id='{userId}'";
+                SqlCommand command = new SqlCommand(sql, connection);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    result = dataReader.HasRows;
+                }
+                connection.Close();
+            }
+            return result;
+        }
+
+        public string GetUserName(string userId)
+        {
+            string connectionString = Configuration.ConnectionString;
+            string name;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Select Name from [User] Where Id='{userId}'";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    name = Convert.ToString(command.ExecuteScalar());
+                    connection.Close();
+                }
+                connection.Close();
+            }
+            return name;
         }
 
     }

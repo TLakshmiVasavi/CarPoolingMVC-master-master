@@ -6,7 +6,7 @@ namespace Models.Interfaces
     {
         void AddVehicle(string userId, Vehicle vehicle);
 
-        float ViewBalance(string userId);
+        float GetBalance(string userId);
 
         void SignUp(User user);
 
@@ -22,7 +22,8 @@ namespace Models.Interfaces
 
         bool Login(string password, string userId);
 
-        Vehicle FindVehicle(string Id, string ownerId);
+        //Vehicle FindVehicle(string Id, string ownerId);
+        Vehicle FindVehicle(string Id);
 
         bool IsUserExist(string mail);
 

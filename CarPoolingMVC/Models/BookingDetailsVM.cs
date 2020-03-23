@@ -19,10 +19,12 @@ namespace CarPoolingMVC.Models
 
         public float Cost { get; set; }
 
-        public RouteVM Route { get; set; }
+        public string VehicleNumber { get; set; }
 
-        public VehicleVM Vehicle { get; set; }
+        public VehicleTypeVM VehicleType { get; set; }
 
         public DateTime StartDateTime { get; set; }
+
+        public int NoOfSeats { get; set; }
     }
 }

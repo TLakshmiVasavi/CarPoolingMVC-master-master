@@ -234,7 +234,8 @@ namespace CarPooling
                             foreach (var item in AvailableRides.Select((value, index) => new { value, index }))
                             {
                                 Console.Write(item.index+1+". ");
-                                Vehicle car = userService.FindVehicle(item.value.VehicleId, item.value.ProviderId);
+                                //Vehicle car = userService.FindVehicle(item.value.VehicleId, item.value.ProviderId);
+                                Vehicle car = userService.FindVehicle(item.value.VehicleId);
                                 DisplayAvailableRide(item.value);
                                 DisplayCarDetails(car);
                                 Console.WriteLine("Start Time:"+item.value.StartDateTime+rideService.CalculateTime(item.value,pickUp,drop));
@@ -341,7 +342,7 @@ namespace CarPooling
                         userService.AddAmount(amount, user.Id);
                         break;
                     case Choice.ViewBalance:
-                        float balance = userService.ViewBalance(user.Id);
+                        float balance = userService.GetBalance(user.Id);
                         Console.WriteLine("The Available Balance is " + balance);
                         break;
                     case Choice.AddACar:

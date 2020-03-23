@@ -3,16 +3,8 @@ using CarPoolingMVC.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Interfaces;
-using System.Net;
-using System.IO;
-using Newtonsoft.Json;
-using System.Linq;
-using System;
-using Models;
-using Models.Enums;
 using System.Net.Http;
-using System.Text;
-using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -46,7 +38,7 @@ namespace CarPoolingMVC.Controllers
         }       
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<ActionResult> OfferRide(RideVM ride)
+        public async Task<ActionResult> OfferRide(RideVM ride)
         {
             HttpResponseMessage response = await RequestApi("RideApi/CreateRide?userId=" + HttpContext.Session.GetString("UserId"), ride, "post");
             return View(ride);
@@ -59,7 +51,7 @@ namespace CarPoolingMVC.Controllers
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> SearchRide(RequestVM request)
+        public async Task<IActionResult> SearchRide(RequestVM request)
         {
             HttpResponseMessage response = await RequestApi("RideApi/SearchRide?userId=" + HttpContext.Session.GetString("UserId"), request, "post");
             SearchRideVM SearchRide = new SearchRideVM()
@@ -88,7 +80,7 @@ namespace CarPoolingMVC.Controllers
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> RequestRide(RequestVM request, string rideId)
+        public async Task<IActionResult> RequestRide(RequestVM request, string rideId)
         {
             HttpResponseMessage response = await RequestApi("RideApi/RequestRide?userId=" + HttpContext.Session.GetString("UserId")+"&rideId="+rideId, request, "post");
             return RedirectToAction("MyBookings");

@@ -73,7 +73,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 Expires=DateTime.Now.AddDays(1)
             };
             string res = GenerateToken();
-            Response.Cookies.Append("Bearer", res, options);
+            Response.Cookies.Append("Bearer", res,options);
         }
 
         private static string GenerateToken()
@@ -119,7 +119,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [Route("GetBalance")]
         public float GetBalance([FromQuery]string userId)
         {
-            return _userService.ViewBalance(userId);
+            return _userService.GetBalance(userId);
         }
 
         [HttpPost]

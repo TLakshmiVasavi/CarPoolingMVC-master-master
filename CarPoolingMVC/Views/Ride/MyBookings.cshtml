@@ -30,7 +30,7 @@ else
                 @Html.DisplayNameFor(model => model.Cost)
             </th>
             <th>
-                @Html.DisplayNameFor(model=>model.Vehicle.Type)
+                @Html.DisplayNameFor(model=>model.VehicleType)
             </th>
         </tr>
     </thead>
@@ -67,7 +67,7 @@ else
                 @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
-                @Html.DisplayFor(modelItem=>item.Vehicle.Type.ToString())
+                @Html.DisplayFor(modelItem=>item.VehicleType.ToString())
             </td>
         </tr>
 }

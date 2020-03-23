@@ -5,7 +5,7 @@
     @Html.HiddenFor(x => x.Request.Destination)
     @Html.HiddenFor(x => x.Request.Source)
     @Html.HiddenFor(x => x.Request.NoOfSeats)
-    @if (Model.AvailableRides.Count==0)
+    @if (Model.AvailableRides==null)
     {
         <h3>Rides are Not Available</h3>
     }

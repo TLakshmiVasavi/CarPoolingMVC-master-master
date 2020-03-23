@@ -4,7 +4,7 @@ namespace Models
 {
     public class RideDetails
     {
-        public string RideId;
+        public int RideId;
 
         public string ProviderId;
 

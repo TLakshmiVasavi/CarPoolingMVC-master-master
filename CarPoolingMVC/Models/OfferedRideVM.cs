@@ -4,7 +4,7 @@ namespace CarPoolingMVC.Models
 {
     public class OfferedRideVM
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string VehicleId { get; set; }
 

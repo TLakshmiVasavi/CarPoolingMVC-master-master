@@ -6,7 +6,7 @@ namespace Models
 {
     public class Ride
     {
-        public string Id;
+        public int Id;
 
         public string VehicleId;
 

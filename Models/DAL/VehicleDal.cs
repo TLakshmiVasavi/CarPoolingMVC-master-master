@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace Models.DAL
 {
-    class VehicleDal
+    public class VehicleDal
     {
         private readonly AppConfiguration Configuration;
 
@@ -17,12 +16,28 @@ namespace Models.DAL
             Configuration = configuration;
         }
 
-        public void Create(Vehicle vehicle,string id)
+        public void Create(Vehicle vehicle,string userId)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Insert Into Vehicle (Number, Model, Capacity, Type , OwnerId) Values ('{vehicle.Number}','{vehicle.Model}','{vehicle.Capacity}','{vehicle.Type}','{id}')";
+                string sql = $"Insert Into Vehicle (Number, Model, Capacity, Type , OwnerId) Values ('{vehicle.Number}','{vehicle.Model}','{vehicle.Capacity}','{vehicle.Type}','{userId}')";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        public void Update(Vehicle vehicle,string userId)
+        {
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Update Vehicle set Model='{vehicle.Model}', Capacity='{vehicle.Capacity}', Type='{vehicle.Type}' , OwnerId='{userId}' where Number='{vehicle.Number}' ";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -54,6 +69,34 @@ namespace Models.DAL
             return vehicle;
         }
 
+        public List<Vehicle> GetAllVehicles()
+        {
+            List<Vehicle> vehicles = new List<Vehicle>();
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = $"Select * From Vehicle";
+                SqlCommand command = new SqlCommand(sql, connection);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Vehicle vehicle = new Vehicle
+                        {
+                            Capacity = Convert.ToInt32(dataReader["Capacity"]),
+                            Model = Convert.ToString(dataReader["Model"]),
+                            Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"])),
+                            Number = Convert.ToString(dataReader["Number"])
+                        };
+                        vehicles.Add(vehicle);
+                    }
+                }
+                connection.Close();
+            }
+            return vehicles;
+        }
+
         public List<Vehicle> GetVehiclesByUserId(string id)
         {
             List<Vehicle> vehicles = new List<Vehicle>();
@@ -61,17 +104,19 @@ namespace Models.DAL
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "Select * From Teacher";
+                string sql = $"Select * From Vehicle where OwnerId='{id}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
                     while (dataReader.Read())
                     {
-                        Vehicle vehicle = new Vehicle();
-                        vehicle.Capacity = Convert.ToInt32(dataReader["Capacity"]);
-                        vehicle.Model = Convert.ToString(dataReader["Model"]);
-                        vehicle.Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"]));
-                        vehicle.Number = id;
+                        Vehicle vehicle = new Vehicle
+                        {
+                            Capacity = Convert.ToInt32(dataReader["Capacity"]),
+                            Model = Convert.ToString(dataReader["Model"]),
+                            Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"])),
+                            Number = id
+                        };
                         vehicles.Add(vehicle);
                     }
                 }
@@ -91,14 +136,7 @@ namespace Models.DAL
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    if (dataReader.HasRows)
-                    {
-                        result = true;
-                    }
-                    else
-                    {
-                        result = false;
-                    }
+                    result = dataReader.HasRows;
                 }
                 connection.Close();
             }
@@ -112,15 +150,35 @@ namespace Models.DAL
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"Select Id From Vehicle where OwnerId='{userId}'";
+                string sql = $"Select Number From Vehicle where OwnerId='{userId}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    vehiclesId.Add(Convert.ToString(dataReader["Id"]));
+                    while (dataReader.Read())
+                    {
+                        vehiclesId.Add(Convert.ToString(dataReader["Number"]));
+                    }
                 }
                 connection.Close();
             }
             return vehiclesId;
+        }
+
+        public VehicleType GetVehicleType(string vehicleId)
+        {
+            string connectionString = Configuration.ConnectionString;
+            string type;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"select Type from Vehicle where Number='{vehicleId}'";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    type = command.ExecuteScalar().ToString();
+                    connection.Close();
+                }
+            }
+            return Enum.Parse<VehicleType>(type);
         }
 
     }
