@@ -8,6 +8,7 @@ using Models;
 using Models.Enums;
 using Models.Interfaces;
 using RestSharp;
+using AutoMapper;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
@@ -17,10 +18,12 @@ namespace CarPoolingMVC.Controllers.ApiControllers
     public class UserApiController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public UserApiController(IUserService userService)
+        public UserApiController(IUserService userService, IMapper mapper)
         {
             this._userService = userService;
+            this._mapper = mapper;
         }
 
 
@@ -29,15 +32,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [AllowAnonymous]
         public void SignUp([FromBody]UserVM user)
         {
-            User User = new User
-            {
-                Age = user.Age,
-                Name = user.Name,
-                Mail = user.Mail,
-                Number = user.Number,
-                Password = user.Password,
-                Gender = Enum.Parse<Gender>(user.Gender),
-            };
+            User User = _mapper.Map<User>(user);
             User.Vehicles = new List<Vehicle>();
             if (user.HasVehicle)
             {
@@ -49,23 +44,19 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                         break;
                     case VehicleTypeVM.Bike:
                         Vehicle = new Bike();
+                        user.Vehicle.Capacity = 2;
                         break;
                     default:
                         Vehicle = new Vehicle();
                         break;
                 }
-                Vehicle.Model = user.Vehicle.Model;
-                Vehicle.Number = user.Vehicle.Number;
-                Vehicle.Capacity = user.Vehicle.Capacity ?? 2;
+                Vehicle = _mapper.Map<Vehicle>(user.Vehicle);
                 User.Vehicles.Add(Vehicle);
             }
             _userService.SignUp(User);
             CookieOptions options = new CookieOptions()
             {
                 Path = "/",
-                //Domain = Request.Host.Value,
-                //  Domain= HttpUtility.ParseQueryString(Request.u .Url.Query),
-                //Expires = DateTime.Now.AddDays(1),
                 Secure = true,
                 HttpOnly = true,
                 IsEssential = true,
@@ -97,14 +88,13 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                     break;
                 case VehicleTypeVM.Bike:
                     NewVehicle = new Bike();
+                    vehicle.Capacity = 2;
                     break;
                 default:
                     NewVehicle = new Vehicle();
                     break;
             }
-            NewVehicle.Model = vehicle.Model;
-            NewVehicle.Number = vehicle.Number;
-            NewVehicle.Capacity = vehicle.Capacity ?? 2;
+            NewVehicle =_mapper.Map<Vehicle>( vehicle);
             _userService.AddVehicle(userId, NewVehicle);
         }
 
@@ -139,9 +129,6 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                     CookieOptions options = new CookieOptions()
                     {
                         Path = "/",
-                        //Domain = Request.Host.Value,
-                        //  Domain= HttpUtility.ParseQueryString(Request.u .Url.Query),
-                        //Expires = DateTime.Now.AddDays(1),
                         Secure = true,
                         HttpOnly = true,
                         IsEssential = true,

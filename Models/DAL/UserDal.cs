@@ -63,12 +63,15 @@ namespace Models.DAL
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    user.Name = Convert.ToString(dataReader["Name"]);
-                    user.Mail = Convert.ToString(dataReader["Mail"]);
-                    user.Age = Convert.ToInt32(dataReader["Age"]);
-                    user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
-                    user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
-                    user.Number = Convert.ToString(dataReader["Number"]);
+                    while (dataReader.Read())
+                    {
+                        user.Name = Convert.ToString(dataReader["Name"]);
+                        user.Mail = Convert.ToString(dataReader["Mail"]);
+                        user.Age = Convert.ToInt32(dataReader["Age"]);
+                        user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
+                        user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
+                        user.Number = Convert.ToString(dataReader["Number"]);
+                    }
                 }
                 connection.Close();
             }
@@ -147,16 +150,7 @@ namespace Models.DAL
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
-                    //using (SqlDataReader dataReader = command.ExecuteReader())
-                    //{
-                    //    Object[] values = new Object[dataReader.FieldCount];
-                    //    int fieldCount = dataReader.GetValues(values);
-                    //    balance = float.Parse(dataReader["Balance"].ToString());
-                    //}
-
-
                     balance = float.Parse(command.ExecuteScalar().ToString());
-
                     connection.Close();
                 }
                 connection.Close();

@@ -55,14 +55,18 @@ namespace Models.DAL
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
+                //DataTable dataTable = new DataTable();
                 string sql = $"Select * From Vehicle where Number='{id}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    vehicle.Capacity = Convert.ToInt32(dataReader["Capacity"]);
-                    vehicle.Model = Convert.ToString(dataReader["Model"]);
-                    vehicle.Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"]));
-                    vehicle.Number = id;
+                    while (dataReader.Read())
+                    {
+                        vehicle.Capacity = Convert.ToInt32(dataReader["Capacity"]);
+                        vehicle.Model = Convert.ToString(dataReader["Model"]);
+                        vehicle.Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"]));
+                        vehicle.Number = id;
+                    }
                 }
                 connection.Close();
             }

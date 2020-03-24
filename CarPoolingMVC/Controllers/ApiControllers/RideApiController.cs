@@ -10,6 +10,7 @@ using Models;
 using Models.Enums;
 using Models.Interfaces;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
@@ -21,11 +22,13 @@ namespace CarPoolingMVC.Controllers.ApiControllers
     {
         private readonly IRideService _rideService;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public RideApiController(IRideService rideService, IUserService userService)
+        public RideApiController(IRideService rideService, IUserService userService,IMapper mapper)
         {
             _rideService = rideService;
             _userService = userService;
+            _mapper = mapper;
         }        
 
         [HttpPost]
@@ -37,15 +40,16 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             {
                 Route = new Route()
             };
+            newRide = _mapper.Map<Ride>(ride);
            // User user = _userService.FindUser(userId);
-            newRide.ProviderId = userId;
+            //newRide.ProviderId = userId;
             //newRide.ProviderName = user.Name;
             newRide.Route.Source = ride.Route.Source;
             newRide.Route.Destination = ride.Route.Destination;
-            newRide.StartDateTime = ride.StartDateTime;
-            newRide.NoOfOfferedSeats = ride.NoOfOfferedSeats;
-            newRide.UnitDistanceCost = ride.UnitDistanceCost;
-            newRide.VehicleId = ride.VehicleId;
+            //newRide.StartDateTime = ride.StartDateTime;
+            //newRide.NoOfOfferedSeats = ride.NoOfOfferedSeats;
+            //newRide.UnitDistanceCost = ride.UnitDistanceCost;
+            //newRide.VehicleId = ride.VehicleId;
             newRide.EndDateTime = newRide.StartDateTime;
             //newRide.VehicleType = _userService.FindVehicle(ride.VehicleId, user.Id).Type;
             //newRide.VehicleType = _userService.FindVehicle(ride.VehicleId).Type;

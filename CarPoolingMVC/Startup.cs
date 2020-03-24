@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 namespace CarPoolingMVC
 {
@@ -24,7 +25,7 @@ namespace CarPoolingMVC
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddAutoMapper(typeof(Startup));
             services.AddDependencies();
             services.AddResponseCaching();
             services.Configure<CookiePolicyOptions>(options =>
