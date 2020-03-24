@@ -6,7 +6,9 @@ namespace Models
 {
     public class Request
     {
-        public string RequestId;
+        public string Id;
+
+        public int RideId;
 
         public string RiderId;
 

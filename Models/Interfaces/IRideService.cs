@@ -18,7 +18,7 @@ namespace Models.Interfaces
 
         void CreateRide(Ride ride);
 
-        void RequestRide(string userId, int rideId,string pickUp,string drop,int noOfSeats);
+        void RequestRide(Request request);
 
         List<Request> GetRequests(int rideId);
 

@@ -1,7 +1,7 @@
 ﻿@model SearchRideVM
 <form asp-action="RequestRide" asp-controller="Ride">
     
-    @Html.HiddenFor(x => x.Request.Date)
+    @Html.HiddenFor(x => x.Request.StartDateTime)
     @Html.HiddenFor(x => x.Request.Destination)
     @Html.HiddenFor(x => x.Request.Source)
     @Html.HiddenFor(x => x.Request.NoOfSeats)

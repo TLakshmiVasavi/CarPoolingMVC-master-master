@@ -5,7 +5,7 @@ namespace CarPoolingMVC.Models
 {
     public class RequestVM
     {
-        public DateTime Date { get; set; }
+        public DateTime StartDateTime { get; set; }
 
         public string Source { get; set; }
 

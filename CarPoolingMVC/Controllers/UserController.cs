@@ -110,8 +110,7 @@ namespace CarPoolingMVC.Controllers
 
         public JsonResult IsSeatsAvailable(int noOfOfferedSeats, string vehicleId)
         {
-           // return Json((_userService.FindVehicle(vehicleId, HttpContext.Session.GetString("UserId")).Capacity > noOfOfferedSeats));
-            return Json((_userService.FindVehicle(vehicleId).Capacity > noOfOfferedSeats));
+           return Json((_userService.FindVehicle(vehicleId).Capacity > noOfOfferedSeats));
         }
 
         public JsonResult IsUserExists(string mail)

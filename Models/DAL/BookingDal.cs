@@ -11,18 +11,20 @@ namespace Models.DAL
     public class BookingDal
     {
         private readonly AppConfiguration Configuration;
+        RideDal RideDal = new RideDal(new AppConfiguration());
 
         public BookingDal(AppConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public void Create(Request request, int rideId, float cost)
+        public void Create(Request request)
         {
+            float cost = RideDal.GetCost(request.RideId, request.PickUp, request.Drop);
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Insert Into Booking (RideId,RiderId,Source,Destination,NoOfSeats,StartDate,Cost) Values('{rideId}','{request.RiderId}','{request.PickUp}','{request.Drop}','{request.NoOfSeats}','{request.StartDateTime}','{cost}')";
+                string sql = $"Insert Into Booking (RideId,RiderId,Source,Destination,NoOfSeats,StartDate,Cost) Values('{request.RideId}','{request.RiderId}','{request.PickUp}','{request.Drop}','{request.NoOfSeats}','{request.StartDateTime}','{cost}')";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -55,7 +57,7 @@ namespace Models.DAL
                             booking.Request.PickUp = Convert.ToString(dataReader["Source"]);
                             booking.Request.Drop = Convert.ToString(dataReader["Destination"]);
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
-                            booking.Request.RequestId = Convert.ToString(dataReader["Id"]);
+                            booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
                             booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
@@ -90,7 +92,7 @@ namespace Models.DAL
                             booking.Request.PickUp = Convert.ToString(dataReader["Source"]);
                             booking.Request.Drop = Convert.ToString(dataReader["Destination"]);
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
-                            booking.Request.RequestId = Convert.ToString(dataReader["Id"]);
+                            booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
                             booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
@@ -103,12 +105,12 @@ namespace Models.DAL
             return booking;
         }
 
-        public void Update(Request request, int rideId, float cost)
+        public void Update(Request request, float cost)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Update Booking RideId='{rideId}',RiderId='{request.RiderId}',Source='{request.PickUp}',Destination='{request.Drop}',NoOfSeats='{request.NoOfSeats}',StartDate='{request.StartDateTime}',Cost='{cost}'";
+                string sql = $"Update Booking RideId='{request.RideId}',RiderId='{request.RiderId}',Source='{request.PickUp}',Destination='{request.Drop}',NoOfSeats='{request.NoOfSeats}',StartDate='{request.StartDateTime}',Cost='{cost}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -157,7 +159,7 @@ namespace Models.DAL
                             booking.Request.PickUp = Convert.ToString(dataReader["Source"]);
                             booking.Request.Drop = Convert.ToString(dataReader["Destination"]);
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
-                            booking.Request.RequestId = Convert.ToString(dataReader["Id"]);
+                            booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
                             booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
@@ -193,7 +195,7 @@ namespace Models.DAL
                             booking.Request.PickUp = Convert.ToString(dataReader["Source"]);
                             booking.Request.Drop = Convert.ToString(dataReader["Destination"]);
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
-                            booking.Request.RequestId = Convert.ToString(dataReader["Id"]);
+                            booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
                             booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
@@ -243,7 +245,7 @@ namespace Models.DAL
                                 PickUp = Convert.ToString(dataReader["Source"]),
                                 Drop = Convert.ToString(dataReader["Destination"]),
                                 NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]),
-                                RequestId = Convert.ToString(dataReader["Id"]),
+                                Id = Convert.ToString(dataReader["Id"]),
                                 RiderId = Convert.ToString(dataReader["RiderId"]),
                                 StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"])
                             };

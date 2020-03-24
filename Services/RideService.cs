@@ -42,18 +42,9 @@ namespace Services
             return RideDal.GetCost(rideId, pickUp, drop);
         }
 
-        public void RequestRide(string userId, int rideId, string pickUp, string drop, int noOfSeats)
+        public void RequestRide(Request request)
         {
-            Request request = new Request
-            {
-                PickUp = pickUp,
-                Drop = drop,
-                RiderId = userId,
-                NoOfSeats = noOfSeats,
-                RequestId = userId + DateTime.Now
-            };
-            float cost = 0;
-            BookingDal.Create(request, rideId,cost);
+            BookingDal.Create(request);
         }
 
         public List<Booking> FindBookings(string userId)
