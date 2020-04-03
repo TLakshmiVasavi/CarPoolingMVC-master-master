@@ -1,0 +1,143 @@
+﻿.next {
+    float:right;
+}
+
+.image {
+    background: url(../images/img4.png) no-repeat bottom;
+    background-size: cover;
+    background-size: contain;
+    background-size: 100% 50%;
+    height: 100vh;
+}
+
+.container {
+    margin-top:8%;
+}
+
+.rounded {
+    border-radius: 5px 5px 5px 5px;
+}
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: grey;
+    margin: 3px;
+}
+
+.shadow {
+    padding-left:20px;
+    width:inherit;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.heading {
+    margin: 10px;
+    left: 20px;
+    color: darkviolet;
+    font: bold;
+}
+
+p {
+    font-size: larger;
+}
+
+.rectangle {
+    display: inline-block;
+    margin: 22px;
+    border-radius: 5px 5px 5px 5px;
+    clear: both;
+    padding: 10px 15px 15px 10px;
+    background-color: rgb(255, 172, 25);
+    color: white;
+}
+
+button {
+    all: unset;
+}
+
+input.form-control {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    border-radius: unset;
+    padding: 2px 5px;
+    box-shadow: none;
+}
+
+.switch {
+    float: right;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.slider {
+    height: 22px;
+    width: 50px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 15px;
+        width: 15px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 1.5em;
+    }
+
+.active {
+    background-color: darkviolet;
+}
+
+.dots {
+    overflow: hidden;
+}
+
+    .dots > .dot {
+        display:block;
+    }
+
+i {
+    color: black;
+}
+
+.input-group-addon {
+    background-color: white;
+    border: unset;
+    border-bottom: 1px solid;
+    border-radius: unset;
+}

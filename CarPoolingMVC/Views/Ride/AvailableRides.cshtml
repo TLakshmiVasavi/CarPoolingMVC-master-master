@@ -1,59 +1,95 @@
 ﻿@model SearchRideVM
+<style>
+    .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: grey;
+        margin: 3px;
+    }
+    .shadow {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .heading {
+        margin:10px;
+        left:20px;
+        color:darkviolet;
+        font:bold;
+        
+    }
+    p {
+        font-size:larger;
+    }
+</style>
+
 <form asp-action="RequestRide" asp-controller="Ride">
-    
+
     @Html.HiddenFor(x => x.Request.StartDateTime)
     @Html.HiddenFor(x => x.Request.Destination)
     @Html.HiddenFor(x => x.Request.Source)
     @Html.HiddenFor(x => x.Request.NoOfSeats)
-    @if (Model.AvailableRides==null)
+    @if (Model.AvailableRides == null)
     {
         <h3>Rides are Not Available</h3>
     }
-    else {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.AvailableRides[0].StartTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AvailableRides[0].Cost)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AvailableRides[0].ProviderName)
-                </th>
-                <th>
-                    <label>Path</label>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.AvailableRides)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Cost)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProviderName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Route.Source)
-                    @foreach (var ViaPoint in item.Route.ViaPoints)
-                    {
-                        <label>@ViaPoint.Location</label>
-                    }
-                        @Html.DisplayFor(modelItem => item.Route.Destination)
-                    </td>
-                    <td>
-                        <button type="submit" name="RideId" value='@item.Id'> Request</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    else
+    {
+        <h1 class="heading">Your Matches</h1>
+
+        @foreach (var item in Model.AvailableRides)
+        {
+            <div class="col-md-4 p-3 mb-5 bg-white rounded shadow" style="left:4%">
+                <div class="row" style="margin-bottom:20px">
+                    <div class="col-md-8">
+                        <h2>@Html.DisplayFor(modelItem => item.ProviderName)</h2>
+                    </div>
+                    <div class="col-md-4" style="top:12px">
+                        <img src="#" />
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small>From</small>
+                            <p>@Html.DisplayFor(modelItem => item.Route.Source)</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="dot" style="background-color:blue"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <span class="glyphicon glyphicon-map-marker" style="color:blue"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <small>To</small>
+                            <p>@Html.DisplayFor(modelItem => item.Route.Destination)</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small>Date</small>
+                            <p>@Convert.ToString(string.Format("{0:dd/MM/yyyy}", item.StartTime));</p>
+                        </div>
+                        <div class="col-md-4 col-md-offset-4">
+                            <small>Time</small>
+                            <p>5-9</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small>Price</small>
+                            <p>@Html.DisplayFor(modelItem => item.Cost)</p>
+                        </div>
+                        <div class="col-md-4 col-md-offset-4">
+                            <small>Seat Availablity</small>
+                            <p>1</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     }
 </form>

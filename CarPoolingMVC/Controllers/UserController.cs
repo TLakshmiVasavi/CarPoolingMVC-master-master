@@ -101,6 +101,13 @@ namespace CarPoolingMVC.Controllers
             return RedirectToAction("ViewBalance");
         }
 
+        public IActionResult GetProfile()
+        {
+            HttpResponseMessage response = GetApi("UserApi/GetUser?userId=" + HttpContext.Session.GetString("UserId"));
+            var user = response.Content.ReadAsAsync<UserVM>().Result;
+            return View(user);
+        }
+
         public ActionResult Logout()
         {
            // Response.Cookies.Delete("Bearer");

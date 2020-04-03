@@ -1,0 +1,58 @@
+﻿@model CarPoolingMVC.Models.UserVM
+<link rel="stylesheet" href="~/css/Profile.css">
+<script src="~/js/toogleEdit.js"></script>
+    
+<div class="container profile">
+    <div class="row">
+        <div class="col-md-6 detail">
+            @Html.DisplayNameFor(model => model.Name)
+        </div>
+        <div class="col-md-6">
+            <label>@Html.DisplayFor(model => model.Name)</label>
+            @Html.EditorFor(model => model.Name)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 detail">
+            @Html.DisplayNameFor(model => model.Age)
+        </div>
+        <div class="col-md-6">
+            <label>@Html.DisplayFor(model => model.Age)</label>
+            @Html.EditorFor(model => model.Age)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 detail">
+            @Html.DisplayNameFor(model => model.Mail)
+        </div>
+        <div class="col-md-6">
+            <label>@Html.DisplayFor(model => model.Mail)</label>
+            @Html.EditorFor(model => model.Mail)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 detail">
+            @Html.DisplayNameFor(model => model.Number)
+        </div>
+        <div class="col-md-6">
+            <label>@Html.DisplayFor(model => model.Number)</label>
+            @Html.EditorFor(model => model.Number)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 detail">
+            @Html.DisplayNameFor(model => model.Gender)
+        </div>
+        <div class="col-md-6">
+            <label>
+                @Html.DisplayFor(model=>model.Gender)
+            </label>
+            @Html.DropDownListFor(m => m.Gender,
+                    new SelectList(Enum.GetValues(typeof(GenderVM))),
+                    "Select Gender")
+        </div>
+    </div>
+    <button id="edit" value="edit">edit</button>
+    <button id="save" value="save">save</button>
+    <button id="cancel" value="cancel">cancel</button>
+</div>

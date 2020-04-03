@@ -1,51 +1,59 @@
 ﻿@model IEnumerable<CarPoolingMVC.Models.RequestDetailsVM>
 
-@if ( !Model.Any())
+@if (!Model.Any())
 {
     <h3>No Requests</h3>
 }
 else
 {
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Source)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Destination)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NoOfSeats)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cost)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Source)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Destination)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NoOfSeats)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cost)
-                </td>
-                <td>
-                    @Html.ActionLink("Accept", "ApproveRequest", "Ride", new { RideId = @ViewBag.RideId, RequestId = @item.Id, Decision = "Accept" })
-                    @Html.ActionLink("Reject", "ApproveRequest", "Ride", new { RideId = @ViewBag.RideId, RequestId = @item.Id, Decision = "Reject" })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @foreach (var item in Model)
+    {
+<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" style="left:4%">
+    <div class="row" style="margin-bottom:20px">
+        <div class="col-md-8">
+            <h2>@Html.DisplayFor(modelItem => item.Id)</h2>
+        </div>
+        <div class="col-md-4" style="top:12px">
+            <img src="#" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-md-4">
+                <small>From</small>
+                <p>@Html.DisplayFor(modelItem => item.Source)</p>
+            </div>
+            <div class="col-md-4">
+                <div class="dot darkviolet"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <span class="glyphicon glyphicon-map-marker darkviolet"></span>
+            </div>
+            <div class="col-md-4">
+                <small>To</small>
+                <p>@Html.DisplayFor(modelItem => item.Destination)</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <small>Cost</small>
+                <p>@Html.DisplayFor(modelItem => item.Cost)</p>
+            </div>
+            <div class="col-md-4 col-md-offset-4">
+                <small>Seats </small>
+                <p>@Html.DisplayFor(modelItem => item.NoOfSeats)</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.ActionLink("Accept", "ApproveRequest", "Ride", new { RideId = @ViewBag.RideId, RequestId = @item.Id, Decision = "Accept" })
+            </div>
+            <div class="col-md-4 col-md-offset-4">
+                @Html.ActionLink("Reject", "ApproveRequest", "Ride", new { RideId = @ViewBag.RideId, RequestId = @item.Id, Decision = "Reject" })
+            </div>
+        </div>
+    </div>
+</div>
+    }
 }

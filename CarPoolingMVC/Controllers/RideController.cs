@@ -59,7 +59,7 @@ namespace CarPoolingMVC.Controllers
                 Request = request,
                 AvailableRides = response.Content.ReadAsAsync<List<AvailableRideVM>>().Result
             };
-            return View("AvailableRides", SearchRide);
+            return PartialView("AvailableRides", SearchRide);
         }
 
         [HttpPost]
@@ -90,14 +90,15 @@ namespace CarPoolingMVC.Controllers
         {
             HttpResponseMessage response = GetApi("RideApi/GetBookings?userId=" + HttpContext.Session.GetString("UserId"));
             var Bookings = response.Content.ReadAsAsync<List<BookingDetailsVM>>().Result;
-            return View(Bookings);
+            //return View(Bookings);
+            return PartialView(Bookings);
         }
 
         public IActionResult ViewOfferedRides()
         {
             HttpResponseMessage response = GetApi("RideApi/GetOfferedRides?userId=" + HttpContext.Session.GetString("UserId"));
             var OfferedRides = response.Content.ReadAsAsync<List<OfferedRideVM>>().Result;
-            return View(OfferedRides);
+            return PartialView(OfferedRides);
         }
 
         public IActionResult ViewRequests(string rideId)
@@ -116,6 +117,9 @@ namespace CarPoolingMVC.Controllers
             return RedirectToAction("ViewRequests",rideId);
         }
 
-
+        public IActionResult MyRides()
+        {
+            return View();
+        }
     }
 }

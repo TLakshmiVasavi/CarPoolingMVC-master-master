@@ -1,0 +1,14 @@
+﻿.profile {
+    padding: 20px;
+    background-color: rgb(226, 226, 226);
+    margin-top: 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.detail {
+    text-align: right;
+    font-weight: bold;
+}

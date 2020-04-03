@@ -55,6 +55,7 @@ namespace Models.DAL
         public User GetById(string id)
         {
             User user = new User(); 
+            user.Wallet=new Wallet();
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -70,7 +71,7 @@ namespace Models.DAL
                         user.Age = Convert.ToInt32(dataReader["Age"]);
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
-                        user.Number = Convert.ToString(dataReader["Number"]);
+                        user.Number = Convert.ToString(dataReader["MobileNumber"]);
                     }
                 }
                 connection.Close();

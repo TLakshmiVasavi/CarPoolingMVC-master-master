@@ -1,62 +1,103 @@
 ﻿@model CarPoolingMVC.Models.RideVM
+<link rel="stylesheet" href="~/css/MyRides.css">
 
-<h4>Ride</h4>
-<hr />
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-10 ">
         <form asp-action="OfferRide">
-
+            <br />
             @for (int i = 0; i < Model.AvailableVehicles.Count; i++)
             {
                 @Html.HiddenFor(model => model.AvailableVehicles[i]);
             }
-
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label asp-for="Route.Source" class="control-label"></label>
-                    <input asp-for="Route.Source" class="form-control" />
-                    <span asp-validation-for="Route.Source" class="text-danger"></span>
+            <div class="col-md-4 rounded shadow" style="left: 4%">
+                <div class="row" style="margin-bottom:20px">
+                    <div class="col-md-8">
+                        <h3>Offer a Ride</h3>
+                        <p>We get you Rides asap!</p>
+                    </div>
+                    <div class="col-md-4" style="top:12px">
+                        <label class="switch">
+                            <input type="checkbox" class="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Route.Destination" class="control-label"></label>
-                    <input asp-for="Route.Destination" class="form-control" />
-                    <span asp-validation-for="Route.Destination" class="text-danger"></span>
+                <div id="first">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <input asp-for="Route.Source" class="form-control" />
+                                <label asp-for="Route.Source" class="control-label"></label>
+                                <span asp-validation-for="Route.Source" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Route.Destination" class="form-control" />
+                                <label asp-for="Route.Destination" class="control-label"></label>
+                                <span asp-validation-for="Route.Destination" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="dot darkviolet"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <span class="glyphicon glyphicon-map-marker darkviolet"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="StartDateTime" class="form-control" />
+                        <label asp-for="StartDateTime" class="control-label"></label>
+                        <span asp-validation-for="StartDateTime" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <small>Time</small>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn round-button ">5am-9am</button>
+                            <button type="button" class="btn round-button ">9am-12pm</button>
+                            <button type="button" class="btn round-button ">12pm-3pm</button>
+                            <button type="button" class="btn round-button ">3pm-6pm</button>
+                            <button type="button" class="btn round-button ">6pm-9pm</button>
+                        </div>
+                    </div>
+                    <a href="#" class="next">Next&raquo;</a>
                 </div>
-
-
-                <div class="form-group">
-                    <label asp-for="StartDateTime" class="control-label"></label>
-                    <input asp-for="StartDateTime" class="form-control" />
-                    <span asp-validation-for="StartDateTime" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="NoOfOfferedSeats" class="control-label"></label>
-                    <input asp-for="NoOfOfferedSeats" class="form-control" />
-                    <span asp-validation-for="NoOfOfferedSeats" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="UnitDistanceCost" class="control-label"></label>
-                    <input asp-for="UnitDistanceCost" class="form-control" />
-                    <span asp-validation-for="UnitDistanceCost" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="VehicleId" class="control-label">Please select the Vehicle </label><br/>
-                    @Html.DropDownListFor(m => m.VehicleId, new SelectList(Model.AvailableVehicles))
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Submit" class="btn btn-default" />
-                </div>
-             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <button type="button" id="AddViaPoint" onclick="ViaPoint()">AddViaPoint</button>
-                </div>
-                <div id="ViaPoints">
-                    @{ Html.RenderPartial("DisplayViaPoints"); }
-                </div>
-                <div id="Partial">
-
+                <div id="second">
+                    <div class="form-group">
+                        <p class="btn add_stop">Add Stop</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8" id="stops">
+                        </div>
+                        <div class="col-md-4 dots">
+                            <div class="dot darkviolet"></div>
+                            <div><i class="glyphicon glyphicon-map-marker darkviolet"></i></div>
+                        </div>                        
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small>Available Vehicles</small>
+                            @Html.DropDownListFor(m => m.VehicleId, new SelectList(Model.AvailableVehicles))
+                        </div>
+                        <div class="col-md-6">
+                            <small>Price (/km)</small>
+                            <input asp-for="UnitDistanceCost" class="form-control" />
+                            <span asp-validation-for="UnitDistanceCost" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <small>Available Seats</small>
+                        <div class="btn-group" role="group">
+                            @for (int i = 0; i < 6; i++)
+                            {
+                                <button type="button" class="btn round-button">i</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-default" />
+                    </div>
                 </div>
             </div>
         </form>

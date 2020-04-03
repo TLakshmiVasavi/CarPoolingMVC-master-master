@@ -1,0 +1,62 @@
+﻿form {
+    margin-top: 30px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-control {
+    height: 40px;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+label {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    transition: all 0.1s linear;
+    padding: 0 5px;
+    background: white;
+    z-index: 3;
+}
+
+label.active {
+    left: 5px;
+    top: -10px;
+}
+
+.form-control:focus ~ label {
+    left: 5px;
+    top: -10px;
+}
+
+* {
+    margin: unset;
+    padding: unset;
+}
+
+.* {
+    margin: unset;
+    padding: unset;
+}
+
+
+
+
+
+    
+
+body {
+    padding: unset;
+}
+
+
+
+
+
+
+

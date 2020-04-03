@@ -1,0 +1,134 @@
+﻿
+.Image {
+    background: url(../images/img1.png) no-repeat bottom;
+    background-size: cover;
+    background-size: contain;
+    background-size: 100% 50%;
+    min-height:100vh;
+}
+
+.heading {
+    display: inline-block;
+    position: absolute;
+    top: 15%;
+    left: 4%;
+    color: rgb(51, 64, 83);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 500%;
+}
+
+.miles {
+    display:inline;
+    color: rgb(255, 172, 25);
+}
+
+.money {
+    display:inline;
+    color: rgb(147, 25, 255);
+}
+
+.form-background {
+    background: url(../images/imgg2.png) no-repeat bottom;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+a {
+    color: white;
+    font-weight: bold;
+}
+
+a:hover {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.form-heading {
+    text-align:center;
+    text-decoration:underline;
+    font-weight: bold;
+    color: white;
+}
+
+.white {
+    color:white;
+}
+
+.login-form {
+    background-color:darkviolet;
+}
+
+.signup-form {
+    background-color: rgb(255, 172, 25);
+}
+
+.btn {
+    color: white;
+    font-weight: bold;
+    border-radius: 1.5em;
+}
+
+.login {
+    border-color: rgb(255, 172, 25);
+    background-color: rgb(255, 172, 25);
+}
+
+.signup {
+    border-color:darkviolet;
+    background-color:darkviolet;
+}
+
+.form-group {
+    display: flex;
+    justify-content: center;
+}
+
+.round-button {
+    margin: 15px;
+    border-radius: 1.5em !important;
+}
+
+.normal {
+    letter-spacing: 3px;
+    font-style: normal;
+    font-size: medium;
+}
+
+.bottom-line {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+form {
+    margin-top: 30px;
+}
+
+.form-group {
+    position: relative;
+}
+
+label {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    transition: all 0.1s linear;
+    padding: 0 5px;
+    background: white;
+    z-index: 3;
+}
+
+label.active {
+        left: 5px;
+        top: -10px;
+    }
+
+.form-control:focus ~ label {
+    left: 5px;
+    top: -10px;
+}
+

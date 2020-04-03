@@ -1,0 +1,15 @@
+﻿.user {
+    float:right;
+}
+
+.logo {
+    background: url(../images/logo.png) no-repeat 50px 20px;
+}
+
+small {
+    font-weight:bold;
+}
+
+.darkviolet {
+    color:darkviolet;
+}

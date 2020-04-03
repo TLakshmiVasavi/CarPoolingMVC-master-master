@@ -1,39 +1,79 @@
-﻿@model CarPoolingMVC.Models.RequestVM
-
-<h4>SearchRide</h4>
-<hr />
+﻿@model CarPoolingMVC.Models.RequestVM////
+<link rel="stylesheet" href="~/css/MyRides.css">
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-10 ">
         <form asp-action="SearchRide">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StartDateTime" class="control-label"></label>
-                <input type="date" asp-for="StartDateTime" class="form-control" />
-                <span asp-validation-for="StartDateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Source" class="control-label"></label>
-                <input asp-for="Source" class="form-control" />
-                <span asp-validation-for="Source" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Destination" class="control-label"></label>
-                <input asp-for="Destination" class="form-control" />
-                <span asp-validation-for="Destination" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VehicleType" class="control-label">Please Select the Vehicle</label><br/>
-                <select asp-for="VehicleType" asp-items="Html.GetEnumSelectList<VehicleTypeVM>()" onchange="setNoOfSeats()"></select>
-            </div>
-            <div id="noOfSeats">
-            <div class="form-group">
-                <label asp-for="NoOfSeats" class="control-label"></label>
-                <input asp-for="NoOfSeats" class="form-control" />
-                <span asp-validation-for="NoOfSeats" class="text-danger"></span>
-            </div>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Search" class="btn btn-default" />
+            <div class="col-md-4 rounded shadow" style="left: 4%">
+                <div class="row" style="margin-bottom:20px">
+                    <div class="col-md-8">
+                        <h3>Book a Ride</h3>
+                        <p>We get you Rides asap!</p>
+                    </div>
+                    <div class="col-md-4" style="top:12px">
+                        <label class="switch">
+                            <input type="checkbox" class="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div id="first">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <input asp-for="Source" class="form-control" />
+                                <label asp-for="Source" class="control-label"></label>
+                                <span asp-validation-for="Source" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Destination" class="form-control" />
+                                <label asp-for="Destination" class="control-label"></label>
+                                <span asp-validation-for="Destination" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="dot darkviolet"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <span class="glyphicon glyphicon-map-marker darkviolet"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input asp-for="StartDateTime" class="form-control" />
+                        <label asp-for="StartDateTime" class="control-label"></label>
+                        <span asp-validation-for="StartDateTime" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <small>Time</small>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn round-button ">5am-9am</button>
+                            <button type="button" class="btn round-button ">9am-12pm</button>
+                            <button type="button" class="btn round-button ">12pm-3pm</button>
+                            <button type="button" class="btn round-button ">3pm-6pm</button>
+                            <button type="button" class="btn round-button ">6pm-9pm</button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="VehicleType" class="control-label">Please Select the Vehicle</label><br />
+                    <select asp-for="VehicleType" asp-items="Html.GetEnumSelectList<VehicleTypeVM>()" onchange="setNoOfSeats()"></select>
+                </div>
+                <div id="noOfSeats">
+                    <div class="form-group">
+                        <label asp-for="NoOfSeats" class="control-label"></label>
+                        <input asp-for="NoOfSeats" class="form-control" />
+                        <span asp-validation-for="NoOfSeats" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Search" class="btn btn-default" />
+                </div>
             </div>
         </form>
     </div>

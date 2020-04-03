@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CarPoolingMVC.CustomValidation;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarPoolingMVC.Models
@@ -36,10 +37,12 @@ namespace CarPoolingMVC.Models
         [DefaultValue(true)]
         public bool HasVehicle { get; set; }
 
-        public string Gender { get; set; }
+        public GenderVM Gender { get; set; }
 
         public VehicleTypeVM VehicleType { get; set; }
 
         public VehicleVM Vehicle { get; set; }
+
+        //public IFormFile Photo { get; set; }
     }
 }

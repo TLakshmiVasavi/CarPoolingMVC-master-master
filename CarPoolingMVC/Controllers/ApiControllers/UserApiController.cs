@@ -14,7 +14,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+   // [Authorize]
     public class UserApiController : Controller
     {
         private readonly IUserService _userService;
@@ -54,17 +54,17 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 User.Vehicles.Add(Vehicle);
             }
             _userService.SignUp(User);
-            CookieOptions options = new CookieOptions()
-            {
-                Path = "/",
-                Secure = true,
-                HttpOnly = true,
-                IsEssential = true,
-                SameSite = SameSiteMode.None,
-                Expires=DateTime.Now.AddDays(1)
-            };
-            string res = GenerateToken();
-            Response.Cookies.Append("Bearer", res,options);
+            //CookieOptions options = new CookieOptions()
+            //{
+            //    Path = "/",
+            //    Secure = true,
+            //    HttpOnly = true,
+            //    IsEssential = true,
+            //    SameSite = SameSiteMode.None,
+            //    Expires=DateTime.Now.AddDays(1)
+            //};
+            //string res = GenerateToken();
+            //Response.Cookies.Append("Bearer", res,options);
         }
 
         private static string GenerateToken()
@@ -157,9 +157,16 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [Authorize]
+        [Route("Logout")]
         public void Logout()
         {
             Response.Cookies.Delete("Bearer");
+        }
+
+        [Route("GetUser")]
+        public User GetUser([FromQuery]string userId)
+        {
+            return _userService.FindUser(userId);
         }
     }
 }

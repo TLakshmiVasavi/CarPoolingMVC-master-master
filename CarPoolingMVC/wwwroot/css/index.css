@@ -1,0 +1,29 @@
+﻿.image {
+    background: url(../images/img3.png) no-repeat bottom;
+    background-size: cover;
+    background-size: contain;
+    background-size: 100% 50%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction:column;
+}
+
+.align-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box {
+    color: white;
+    width: 300px;
+    height: 200px;
+    margin: 10px;
+    padding: 10px;
+    background-color: red;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

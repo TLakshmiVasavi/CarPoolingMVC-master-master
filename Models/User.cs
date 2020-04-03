@@ -1,4 +1,5 @@
-﻿using Models.Enums;
+﻿//using Microsoft.AspNetCore.Http;
+using Models.Enums;
 using System.Collections.Generic;
 
 namespace Models
@@ -22,5 +23,7 @@ namespace Models
         public Gender Gender;
 
         public List<Vehicle> Vehicles;
+
+       // public IFormFile Photo;
     }
 }

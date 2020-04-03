@@ -1,25 +1,30 @@
 ﻿@model CarPoolingMVC.Models.UserVM
-<h4>User</h4>
-<hr />
-<h5>@ViewBag.result</h5>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
+	<link rel="stylesheet" href="~/css/LoginSignup.css">
+	<div class="row">
+		<div class="col-md-8 Image">
+			<div class="heading">TURN<div class="miles"> MILES</div><br />INTO <div class="money">MONEY</div><div class="normal">RIDES ON TAP</div></div>
+		</div>
+		<div class="col-md-4  form-background login-form">
+		<div>
+			<h5>@ViewBag.result</h5>
+			<h1 class="form-heading">Log In</h1>
+			<form asp-action="Login">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<input asp-for="Id" class="form-control" />
+					<label asp-for="Id" class="control-label"></label>
+					<span asp-validation-for="Id" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input asp-for="Password" class="form-control form-group" data-toggle="password" />
+					<label asp-for="Password" class="control-label"></label>
+					<span asp-validation-for="Password" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Submit" class="btn btn-default login"/>
+				</div>
+				<div class="form-group white">Not a member yet? <a asp-action="SignUp" class="bottom-line"> SIGN UP </a></div>
+			</form>
+		</div>
+	</div>
 </div>
-<label>Doesn't Have a Account?</label><a asp-action="SignUp">SignUp</a>

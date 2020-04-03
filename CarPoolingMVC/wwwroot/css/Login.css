@@ -1,0 +1,21 @@
+﻿.heading {
+    display:inline-block;
+    position: absolute;
+    top: 15%;
+    left: 4%;
+}
+
+
+.Circle {
+    top:100px;
+    left:100px;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    padding: 8px;
+    background: rgb(255, 172, 25);
+    border: 8px solid rgb(147, 25, 255);
+    text-align: center;
+    font: 32px Arial, sans-serif;
+}
+

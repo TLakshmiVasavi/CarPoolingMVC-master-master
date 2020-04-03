@@ -17,7 +17,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class RideApiController : Controller
     {
         private readonly IRideService _rideService;
@@ -119,8 +119,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpGet]
         [Route("GetBookings")]
         public List<BookingDetailsVM> GetBooking([FromQuery]string userId)
-        {
-            
+        {   
             List<Booking> bookings = _rideService.FindBookings(userId);
             List<BookingDetailsVM> Bookings = _mapper.Map<List<BookingDetailsVM>>(bookings);
             return Bookings;

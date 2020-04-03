@@ -6,69 +6,57 @@
 else
 {
 <form asp-action="ViewRequests" asp-controller="Ride">
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NoOfOfferedSeats)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsRideCompleted)
-            </th>
-            <th>
-               <label>Path</label>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
-{
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem=>item.StartDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem=>item.VehicleType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NoOfOfferedSeats)
-            </td>
-            <td>
-                @if (item.IsRideCompleted)
-                {
-                    <label>Yes</label>
-                }
-                else
-                {
-                    <label>No</label>
-                }  
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Route.Source)
-                @foreach (var ViaPoint in item.Route.ViaPoints)
-                {
-                    <label>@ViaPoint.Location</label>
-                }
-                @Html.DisplayFor(modelItem => item.Route.Destination)
-            </td>
-            <td>
-                <button type="submit" name="RideId" value='@item.Id'>View Requests</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @foreach (var item in Model)
+    {
+    <button type="submit" name="RideId" value='@item.Id'>
+        <div class="col-md-4 p-3 mb-5 bg-white rounded shadow">
+            <div class="row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>From</small>
+                        <p>@Html.DisplayFor(modelItem => item.Route.Source)</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dot darkviolet"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <span class="glyphicon glyphicon-map-marker darkviolet"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <small>To</small>
+                        <p>@Html.DisplayFor(modelItem => item.Route.Destination)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>Date</small>
+                        <p>@Convert.ToString(string.Format("{0:dd/MM/yyyy}", item.StartDateTime));</p>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <small>Ride Status</small>
+                        @if (item.IsRideCompleted)
+                        {
+                            <p>Completed</p>
+                        }
+                        else
+                        {
+                            <p>Not Completed</p>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>Vehicle</small>
+                        <p>@Html.DisplayFor(modelItem => item.VehicleId)</p>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <small>Seats Offered</small>
+                        <p>@Html.DisplayFor(modelItem => item.NoOfOfferedSeats)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </button>
+    }
 </form>
 }

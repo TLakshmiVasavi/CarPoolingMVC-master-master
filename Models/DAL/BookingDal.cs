@@ -59,7 +59,7 @@ namespace Models.DAL
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
                             booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
-                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
+                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDate"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
                             booking.Response.Cost = float.Parse(Convert.ToString(dataReader["Cost"]));
                             bookings.Add(booking);
@@ -94,7 +94,7 @@ namespace Models.DAL
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
                             booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
-                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
+                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDate"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
                             booking.Response.Cost = float.Parse(Convert.ToString(dataReader["Cost"]));
                         }
@@ -161,7 +161,7 @@ namespace Models.DAL
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
                             booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
-                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
+                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDate"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
                             booking.Response.Cost = float.Parse(Convert.ToString(dataReader["Cost"]));
                         }
@@ -179,7 +179,7 @@ namespace Models.DAL
             List<Booking> bookings = new List<Booking>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Select * from Booking Where Id IN (Select Id from Ride where RiderId='{userId}')";
+                string sql = $"Select * from Booking where RiderId='{userId}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -197,7 +197,7 @@ namespace Models.DAL
                             booking.Request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
                             booking.Request.Id = Convert.ToString(dataReader["Id"]);
                             booking.Request.RiderId = Convert.ToString(dataReader["RiderId"]);
-                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
+                            booking.Request.StartDateTime = Convert.ToDateTime(dataReader["StartDate"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
                             booking.Response.Cost = float.Parse(Convert.ToString(dataReader["Cost"]));
                             bookings.Add(booking);
@@ -247,7 +247,7 @@ namespace Models.DAL
                                 NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]),
                                 Id = Convert.ToString(dataReader["Id"]),
                                 RiderId = Convert.ToString(dataReader["RiderId"]),
-                                StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"])
+                                StartDateTime = Convert.ToDateTime(dataReader["StartDate"])
                             };
                             requests.Add(Request);
                         }

@@ -5,72 +5,85 @@
 }
 else
 {
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IsRideCompleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PickUp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Drop)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProviderName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model=>model.VehicleType)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
-{
-        <tr>
-            <td>
-                @if (item.IsRideCompleted)
-                {
-                    <Label>Yes</Label>
-                }
-                else
-                {
-                    <label>No</label>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PickUp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Drop)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProviderName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem=>item.VehicleType.ToString())
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 rounded shadow">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>@Html.DisplayFor(modelItem => item.ProviderName)</h2>
+                </div>
+                <div class="col-md-4">
+                    <img src="#" />
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>From</small>
+                        <p>@Html.DisplayFor(modelItem => item.PickUp)</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dot blue"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <span class="glyphicon glyphicon-map-marker blue"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <small>To</small>
+                        <p>@Html.DisplayFor(modelItem => item.Drop)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>Date</small>
+                        <p>@Convert.ToString(string.Format("{0:dd/MM/yyyy}", item.StartDateTime));</p>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <small>Time</small>
+                        <p>5-9</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>Price</small>
+                        <p>@Html.DisplayFor(modelItem => item.Cost)</p>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <small>Seat Availablity</small>
+                        <p>@Html.DisplayFor(modelItem => item.NoOfSeats)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>Ride Status</small>
+                        @if (item.IsRideCompleted)
+                        {
+                            <p>Yes</p>
+                        }
+                        else
+                        {
+                            <p>No</p>
+                        }
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <small>Request Status</small>
+                        <p>@Html.DisplayFor(modelItem => item.Status)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small>Vehicle</small>
+                        <p>@Html.DisplayFor(modelItem => item.VehicleType)</p>
+                    </div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <small>Vehicle Number</small>
+                        <p>@Html.DisplayFor(modelItem => item.VehicleNumber)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 }
