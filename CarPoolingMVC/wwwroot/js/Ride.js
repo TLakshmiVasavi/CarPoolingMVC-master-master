@@ -18,6 +18,19 @@ $(document).on('click', ".btn-group>.btn", function () {
     $(this).addClass("active");
 });
 
+$(document).ready(function () {
+
+    $(".form-group .form-control").blur(function () {
+        if ($(this).val() != "") {
+            $(this).addClass('active');
+            $(this).sibilings().find("label").addClass('active');
+
+        } else {
+            $(this).sibilings("label").removeClass('active');
+        }
+    });
+});
+
 $(document).on('click', ".next", function () {
     alert("hii");
     $("#first").hide();

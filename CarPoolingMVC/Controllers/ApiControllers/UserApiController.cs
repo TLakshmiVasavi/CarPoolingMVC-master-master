@@ -126,16 +126,16 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 if (_userService.Login(password, userId))
                 {
                     response.Result = true;
-                    CookieOptions options = new CookieOptions()
-                    {
-                        Path = "/",
-                        Secure = true,
-                        HttpOnly = true,
-                        IsEssential = true,
-                        SameSite = SameSiteMode.None
-                    };
-                    string res = GenerateToken();
-                    Response.Cookies.Append("Bearer", res, options);
+                    //CookieOptions options = new CookieOptions()
+                    //{
+                    //    Path = "/",
+                    //    Secure = true,
+                    //    HttpOnly = true,
+                    //    IsEssential = true,
+                    //    SameSite = SameSiteMode.None
+                    //};
+                    //string res = GenerateToken();
+                    //Response.Cookies.Append("Bearer", res, options);
                 }
                 else
                 {                    

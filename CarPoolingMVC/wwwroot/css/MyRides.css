@@ -19,7 +19,7 @@
 }
 
 .dot {
-    display: inline-block;
+    display: block;
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -128,7 +128,7 @@ input:checked + .slider {
 }
 
     .dots > .dot {
-        display:block;
+        display:inline-block;
     }
 
 i {

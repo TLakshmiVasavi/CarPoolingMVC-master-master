@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
+using System.IO;
+using System;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -42,15 +44,15 @@ namespace CarPoolingMVC.Controllers
             if (res.Result)
             {
                 HttpContext.Session.SetString("UserId", user.Id);
-                CookieOptions options = new CookieOptions()
-                {
-                    Path = "/",
-                    Secure = true,
-                    HttpOnly = true,
-                    IsEssential = true,
-                    SameSite = SameSiteMode.None
-                };
-                Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1], options);
+                //CookieOptions options = new CookieOptions()
+                //{
+                //    Path = "/",
+                //    Secure = true,
+                //    HttpOnly = true,
+                //    IsEssential = true,
+                //    SameSite = SameSiteMode.None
+                //};
+                //Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1], options);
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Result = res.ErrorMessage;
@@ -67,19 +69,24 @@ namespace CarPoolingMVC.Controllers
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> SignUp(UserVM user)
+        public async System.Threading.Tasks.Task<IActionResult> SignUp(UserVM user,IFormFile photo)
         {
+            using (var stream=new MemoryStream()) 
+            {
+                await photo.CopyToAsync(stream);
+                user.Photo = stream.ToArray();
+            }
             HttpResponseMessage response = await RequestApi("UserApi/SignUp", user, "post");
             HttpContext.Session.SetString("UserId", user.Mail);
-            CookieOptions options = new CookieOptions()
-            {
-                Path = "/",
-                Secure = true,
-                HttpOnly = true,
-                IsEssential = true,
-                SameSite = SameSiteMode.None
-            };
-            Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1],options);
+            //CookieOptions options = new CookieOptions()
+            //{
+            //    Path = "/",
+            //    Secure = true,
+            //    HttpOnly = true,
+            //    IsEssential = true,
+            //    SameSite = SameSiteMode.None
+            //};
+            //Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1],options);
             return RedirectToAction("Index", "Home");
         }
 
@@ -105,6 +112,8 @@ namespace CarPoolingMVC.Controllers
         {
             HttpResponseMessage response = GetApi("UserApi/GetUser?userId=" + HttpContext.Session.GetString("UserId"));
             var user = response.Content.ReadAsAsync<UserVM>().Result;
+            
+            ViewBag.Base64String = string.Format("data:image/png;base64,{0}",Convert.ToBase64String(user.Photo));
             return View(user);
         }
 

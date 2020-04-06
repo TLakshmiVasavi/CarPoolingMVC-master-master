@@ -24,6 +24,8 @@ namespace Models
 
         public List<Vehicle> Vehicles;
 
+        public byte[] Photo;
+
        // public IFormFile Photo;
     }
 }

@@ -43,6 +43,8 @@ namespace CarPoolingMVC.Models
 
         public VehicleVM Vehicle { get; set; }
 
+        public byte[] Photo { get; set; }
+
         //public IFormFile Photo { get; set; }
     }
 }

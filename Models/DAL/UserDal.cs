@@ -20,14 +20,17 @@ namespace Models.DAL
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, MobileNumber, Balance) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Mail}', '{user.Mail}', '{user.Password}', '{user.Number}','{0}')";
+            {                
+                string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, MobileNumber,Photo) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Mail}', '{user.Mail}', '{user.Password}', '{user.Number}',@Photo)";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
+                    
                     command.CommandType = CommandType.Text;
-
+                    command.Parameters.AddWithValue("@Photo", user.Photo);
                     connection.Open();
+                    //command.Parameters.AddWithValue("Photo",user.Photo);
+                    //command.Parameters.Add("Photo",user.Photo);
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -72,6 +75,8 @@ namespace Models.DAL
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
                         user.Number = Convert.ToString(dataReader["MobileNumber"]);
+                        user.Photo = (byte[])dataReader["Photo"];
+                        
                     }
                 }
                 connection.Close();
