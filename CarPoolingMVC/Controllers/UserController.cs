@@ -40,10 +40,12 @@ namespace CarPoolingMVC.Controllers
         public async System.Threading.Tasks.Task<ActionResult> Login(UserVM user)
         {
             HttpResponseMessage response = await RequestApi("UserApi/Login?userId=" + user.Id, user.Password, "post");
-            var res= JsonConvert.DeserializeObject<ResponseVM>(response.Content.ReadAsStringAsync().Result);
-            if (res.Result)
+            var res= JsonConvert.DeserializeObject<LoginResponse>(response.Content.ReadAsStringAsync().Result);
+            if (res.User!=null)
             {
-                HttpContext.Session.SetString("UserId", user.Id);
+                HttpContext.Session.SetString("UserId", res.User.Mail);
+                HttpContext.Session.SetString("UserName", res.User.Name);
+                HttpContext.Session.SetString("UserImage", string.Format("data:image/png;base64,{0}", Convert.ToBase64String(res.User.Photo)));
                 //CookieOptions options = new CookieOptions()
                 //{
                 //    Path = "/",
@@ -53,9 +55,14 @@ namespace CarPoolingMVC.Controllers
                 //    SameSite = SameSiteMode.None
                 //};
                 //Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1], options);
+                ViewBag.image = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(res.User.Photo));
+                ViewBag.name = res.User.Name;
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.Result = res.ErrorMessage;
+            else
+            {
+                ViewBag.Result = res.ErrorMessage;
+            }
             return View();
         }
 

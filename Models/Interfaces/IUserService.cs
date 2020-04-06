@@ -8,7 +8,7 @@ namespace Models.Interfaces
 
         float GetBalance(string userId);
 
-        void SignUp(User user);
+        User SignUp(User user);
 
         void AddAmount(float amount, string userId);
 
@@ -20,7 +20,7 @@ namespace Models.Interfaces
 
         void PayBill(string providerId, string riderId, float cost);
 
-        bool Login(string password, string userId);
+        User Login(string password, string userId);
 
         Vehicle FindVehicle(string Id);
 

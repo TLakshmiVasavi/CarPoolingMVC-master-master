@@ -27,5 +27,9 @@ namespace Models
         public byte[] Photo;
 
        // public IFormFile Photo;
+       public User()
+        {
+            Wallet = new Wallet();
+        }
     }
 }

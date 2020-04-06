@@ -1,4 +1,7 @@
-﻿<link rel="stylesheet" href="~/css/index.css">
+﻿<script>
+    $("#userPic").setAttribute("src",@ViewBag.image);
+</script>
+<link rel="stylesheet" href="~/css/index.css">
 <div class="image">
     <div class="row text-center align-items-center align-center">
         <a asp-action="SearchRide" asp-controller="Ride">

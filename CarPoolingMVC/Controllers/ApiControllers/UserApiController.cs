@@ -115,17 +115,15 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public ResponseVM Login([FromQuery]string userId, [FromBody]string password)
+        public LoginResponse Login([FromQuery]string userId, [FromBody]string password)
         {
-            ResponseVM response = new ResponseVM
-            {
-                Result = false
-            };
+            LoginResponse response = new LoginResponse();
             if (_userService.IsUserExist(userId))
             {
-                if (_userService.Login(password, userId))
+                User user = _userService.Login(password, userId);
+                if (user!=null)
                 {
-                    response.Result = true;
+                    response.User = _mapper.Map<UserVM>(user);
                     //CookieOptions options = new CookieOptions()
                     //{
                     //    Path = "/",

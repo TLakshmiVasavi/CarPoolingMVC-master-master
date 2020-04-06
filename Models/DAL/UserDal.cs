@@ -16,7 +16,7 @@ namespace Models.DAL
             Configuration = configuration;
         }
 
-        public void Create(User user)
+        public User Create(User user)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -35,6 +35,8 @@ namespace Models.DAL
                     connection.Close();
                 }
             }
+            user.Wallet.Balance = 0;
+            return user;
         }
 
         public void Update(User user)
@@ -57,8 +59,7 @@ namespace Models.DAL
 
         public User GetById(string id)
         {
-            User user = new User(); 
-            user.Wallet=new Wallet();
+            User user = new User();
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -97,13 +98,15 @@ namespace Models.DAL
                 {
                     while (dataReader.Read())
                     {
-                        User user = new User();
-                        user.Name = Convert.ToString(dataReader["Name"]);
-                        user.Mail = Convert.ToString(dataReader["Mail"]);
-                        user.Age = Convert.ToInt32(dataReader["Age"]);
+                        User user = new User
+                        {
+                            Name = Convert.ToString(dataReader["Name"]),
+                            Mail = Convert.ToString(dataReader["Mail"]),
+                            Age = Convert.ToInt32(dataReader["Age"]),
+                            Number = Convert.ToString(dataReader["Number"]),
+                            Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]))
+                    };
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
-                        user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
-                        user.Number = Convert.ToString(dataReader["Number"]);
                         users.Add(user);
                     }
                 }
@@ -112,9 +115,9 @@ namespace Models.DAL
             return users;
         }
 
-        public bool Login(string id, string password)
+        public User Login(string id, string password)
         {
-            bool result;
+            User user=new User();
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -123,11 +126,20 @@ namespace Models.DAL
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    result = dataReader.HasRows;
+                    while (dataReader.Read())
+                    {
+                        user.Name = Convert.ToString(dataReader["Name"]);
+                        user.Mail = Convert.ToString(dataReader["Mail"]);
+                        user.Age = Convert.ToInt32(dataReader["Age"]);
+                        user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
+                        user.Number = Convert.ToString(dataReader["MobileNumber"]);
+                        user.Photo = (byte[])dataReader["Photo"];
+                        user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
+                    }
                 }
                 connection.Close();
             }
-            return result;
+            return user;
         }
 
         public void AddBalance(float amount,string id)

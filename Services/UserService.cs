@@ -33,9 +33,9 @@ namespace Services
             return userDal.IsUserExist(mail);
         }
 
-        public void SignUp(User user)
+        public User SignUp(User user)
         {
-           userDal.Create(user);
+           return userDal.Create(user);
         }
 
         public bool HasVehicle(string userId)
@@ -59,7 +59,7 @@ namespace Services
             userDal.AddBalance(-cost, riderId);
         }
 
-        public bool Login(string password, string userId)
+        public User Login(string password, string userId)
         {
             return userDal.Login(userId, password);
         }
