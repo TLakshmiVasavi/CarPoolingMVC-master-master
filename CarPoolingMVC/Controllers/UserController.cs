@@ -55,8 +55,6 @@ namespace CarPoolingMVC.Controllers
                 //    SameSite = SameSiteMode.None
                 //};
                 //Response.Cookies.Append("Bearer", response.Headers.GetValues("Set-Cookie").FirstOrDefault().Split("=")[1], options);
-                ViewBag.image = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(res.User.Photo));
-                ViewBag.name = res.User.Name;
                 return RedirectToAction("Index", "Home");
             }
             else

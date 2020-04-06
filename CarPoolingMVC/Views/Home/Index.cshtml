@@ -1,5 +1,6 @@
-﻿<script>
-    $("#userPic").setAttribute("src",@ViewBag.image);
+﻿@model  string
+<script>
+    document.getElementById("userPic").setAttribute("src",@ViewBag.image);
 </script>
 <link rel="stylesheet" href="~/css/index.css">
 <div class="image">
