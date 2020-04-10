@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CarPooling.Models.ViewModels.CustomValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using CarPoolingMVC.CustomValidation;
-using Microsoft.AspNetCore.Mvc;
+using System.Web.Mvc;
 
-namespace CarPoolingMVC.Models
+namespace Models.ViewModels
 {
     public class RideVM
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace CarPoolingMVC.Models
+namespace Models.ViewModels
 {
     public class VehicleVM
     {

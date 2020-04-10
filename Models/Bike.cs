@@ -2,11 +2,11 @@
 
 namespace Models
 {
-    public class Bike:Vehicle
+    public class Bike : Vehicle
     {
         public Bike()
         {
-            Type = VehicleType.Bike;
+            Type = VehicleType.Car;
         }
     }
 }

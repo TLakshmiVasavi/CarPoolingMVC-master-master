@@ -1,8 +1,8 @@
-﻿namespace CarPoolingMVC.Models
+﻿namespace Models.ViewModels
 {
     public enum GenderVM
     {
-        Male=1,
+        Male = 1,
         Female
     }
 }

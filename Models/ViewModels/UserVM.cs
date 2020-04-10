@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CarPoolingMVC.CustomValidation;
-//using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System.Web.Mvc;
 
-namespace CarPoolingMVC.Models
+namespace Models.ViewModels
 {
     public class UserVM
     {
@@ -31,7 +29,7 @@ namespace CarPoolingMVC.Models
         public string Number { get; set; }
 
         [Required(ErrorMessage = "Please enter Age")]
-        [Range(1, 100,ErrorMessage ="Please enter a valid Value")]
+        [Range(1, 100, ErrorMessage = "Please enter a valid Value")]
         public int Age { get; set; }
 
         [DefaultValue(true)]

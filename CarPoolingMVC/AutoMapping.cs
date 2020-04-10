@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CarPoolingMVC.Models;
+using Models.ViewModels;
 using Models;
 using Models.Enums;
 

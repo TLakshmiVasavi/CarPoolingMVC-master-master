@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CarPoolingMVC.Models
+namespace Models.ViewModels
 {
     public class JourneyDetailsVM
     {
@@ -50,5 +50,4 @@ namespace CarPoolingMVC.Models
         public string Text { get => text; set => text = value; }
         public int Value { get => value; set => this.value = value; }
     }
-
 }

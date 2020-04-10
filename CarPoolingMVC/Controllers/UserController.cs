@@ -1,5 +1,4 @@
-﻿using CarPoolingMVC.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
@@ -7,6 +6,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.IO;
 using System;
+using Models.ViewModels;
 
 namespace CarPoolingMVC.Controllers
 {

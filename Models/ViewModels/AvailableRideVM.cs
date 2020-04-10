@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace CarPoolingMVC.Models
+namespace Models.ViewModels
 {
     public class AvailableRideVM
     {

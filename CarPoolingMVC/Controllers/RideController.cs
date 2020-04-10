@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using CarPoolingMVC.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Interfaces;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Models.ViewModels;
 
 namespace CarPoolingMVC.Controllers
 {

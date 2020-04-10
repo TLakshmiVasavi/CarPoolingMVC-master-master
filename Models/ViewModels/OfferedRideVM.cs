@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CarPoolingMVC.Models
+namespace Models.ViewModels
 {
     public class OfferedRideVM
     {

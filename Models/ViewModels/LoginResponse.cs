@@ -1,4 +1,4 @@
-﻿namespace CarPoolingMVC.Models
+﻿namespace Models.ViewModels
 {
     public class LoginResponse
     {

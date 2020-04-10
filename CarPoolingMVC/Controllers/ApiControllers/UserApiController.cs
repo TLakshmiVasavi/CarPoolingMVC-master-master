@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using CarPoolingMVC.Models;
+﻿using System.Collections.Generic;
+using Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using Models.Enums;
 using Models.Interfaces;
 using RestSharp;
 using AutoMapper;
