@@ -27,6 +27,8 @@ namespace Models.Interfaces
         bool IsUserExist(string mail);
 
         List<string> GetVehiclesId(string id);
-        
+
+        User UpdateUserDetails(User user);
+
     }
 }

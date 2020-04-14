@@ -1,4 +1,4 @@
-﻿@model Models.ViewModels.SearchRideVM
+﻿@model CarPoolingMVC.Models.SearchRideVM
 <style>
     .dot {
         display: inline-block;
@@ -8,20 +8,90 @@
         background-color: grey;
         margin: 3px;
     }
+
     .shadow {
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
+
     .heading {
-        margin:10px;
-        left:20px;
-        color:darkviolet;
-        font:bold;
-        
+        margin: 10px;
+        left: 20px;
+        color: darkviolet;
+        font: bold;
     }
+
     p {
-        font-size:larger;
+        font-size: larger;
     }
 </style>
+<script>
+    $(document).ready(function () {
+        var data = "model";
+        $.ajax({
+            type: "POST",
+            data: data,
+            url: "https://localhost:5001/api/RideApi/SearchRide?userId=" + document.cookie,
+            contentType: "application/json",
+            success: function (data) {
+                alert("success");
+                var form = $("form")
+                console.log(data);
+                alert("print");
+                $.each(data, function (index, item) {
+                    alert(index);
+                    console.log(item);
+                    form.append(
+                        '<button type="submit" name="RideId" value=' + item.id + '>' +
+                        '<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" >' +
+                        '<div class="row">' +
+                        '<div class="row">' +
+                        '<div class="col-md-4">' +
+                        '<small>From</small>' +
+                        '<p>' + item.route.source + '</p>' +
+                        '</div>' +
+                        '<div class="col-md-4">' +
+                        '<div class="dot darkviolet"></div>' +
+                        '<div class="dot"></div>' +
+                        '<div class="dot"></div>' +
+                        '<span class="glyphicon glyphicon-map-marker darkviolet"></span>' +
+                        '</div>' +
+                        '<div class="col-md-4">' +
+                        '<small>To</small>' +
+                        '<p>' + item.route.destination + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="row">' +
+                        '<div class="col-md-4">' +
+                        '<small>Date</small>' +
+                        '<p>' + getDate(item.startDateTime) + '</p>' +
+                        '</div>' +
+                        '<div class="col-md-4 col-md-offset-4">' +
+                        '<small>Ride Status</small>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="row">' +
+                        '<div class="col-md-4">' +
+                        '<small>Vehicle</small>' +
+                        '<p>' + item.vehicleId + '</p>' +
+                        '</div>' +
+                        '<div class="col-md-4 col-md-offset-4">' +
+                        '<small>Seats Offered</small>' +
+                        '<p>' + item.noOfOfferedSeats + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</button>');
+                });
+            },
+            error: function (e) {
+                alert("error");
+            }
+        });
+
+
+    });
+</script>
 
 <form asp-action="RequestRide" asp-controller="Ride">
 

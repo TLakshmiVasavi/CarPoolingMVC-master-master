@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.Interfaces;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Models.ViewModels;
+using CarPoolingMVC.Models;
 
 namespace CarPoolingMVC.Controllers
 {

@@ -32,7 +32,7 @@ namespace CarPoolingMVC
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:3000", "http://localhost:5001").AllowAnyHeader().AllowAnyMethod();
                 });
             });
             services.AddAutoMapper(typeof(Startup));

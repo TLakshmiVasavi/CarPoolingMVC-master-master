@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Models.ViewModels
+namespace CarPoolingMVC.Models
 {
     public class SearchRideVM
     {

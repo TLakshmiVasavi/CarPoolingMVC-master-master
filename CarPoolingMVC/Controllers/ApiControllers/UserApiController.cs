@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using Models.ViewModels;
+using CarPoolingMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Interfaces;
 using RestSharp;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
@@ -112,15 +113,25 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public LoginResponse Login([FromQuery]string userId, [FromBody]string password)
+        //public LoginResponse Login([FromQuery]string userId, [FromBody]string password)
+        public LoginResponse Login([FromBody]UserLoginVM userDto)
         {
             LoginResponse response = new LoginResponse();
-            if (_userService.IsUserExist(userId))
+            if (_userService.IsUserExist(userDto.Id))
             {
-                User user = _userService.Login(password, userId);
+                User user = _userService.Login(userDto.Password, userDto.Id);
                 if (user!=null)
                 {
                     response.User = _mapper.Map<UserVM>(user);
+                    CookieOptions options = new CookieOptions()
+                    {
+                        Path = "/",
+                        Secure = true,
+                        HttpOnly = true,
+                        IsEssential = true,
+                        SameSite = SameSiteMode.None
+                    };
+                    Response.Cookies.Append("UserId",user.Id, options);
                     //CookieOptions options = new CookieOptions()
                     //{
                     //    Path = "/",
@@ -162,6 +173,14 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         public User GetUser([FromQuery]string userId)
         {
             return _userService.FindUser(userId);
+        }
+
+        [HttpPost]
+        [Route("UpdateUser")]
+        public UserVM UpdateUser([FromBody] UserVM userDto)
+        {
+            User user = _mapper.Map<User>(userDto);
+            return _mapper.Map<UserVM>(_userService.UpdateUserDetails(user));
         }
     }
 }

@@ -1,2 +1,23 @@
-﻿@model float
-<label>The Available Balance is @Model</label>
+﻿<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: "https://localhost:5001/api/UserApi/GetBalance?userId=tlakshmivasavi005@gmail.com",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (e) {
+                $.each(e, function (ele) {
+                    if (document.getElementById(ele) != null) {
+                        $('label[for="' + ele + '"]')[0].textContent = e[ele];
+                    }
+                });
+                alert("success");
+            },
+            error: function (e) {
+                console.log(e);
+                alert("error");
+            }
+        });
+    });
+</script>
+<label>The Available Balance is <label for="balance" /></label>

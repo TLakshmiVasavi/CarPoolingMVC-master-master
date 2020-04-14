@@ -1,14 +1,58 @@
-﻿@model Models.ViewModels.UserVM
+﻿@model CarPoolingMVC.Models.UserVM
 <link rel="stylesheet" href="~/css/Profile.css">
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: "https://localhost:5001/api/UserApi/GetUser?userId=tlakshmivasavi005@gmail.com",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (e) {
+                $.each(e, function (ele) {
+                    if (document.getElementById(ele) != null) {
+                        $('label[for="' + ele + '"]')[0].textContent = e[ele];
+                    }
+                });
+                alert("success");
+            },
+            error: function (e) {
+                console.log(e);
+                alert("error");
+            }
+        });
+        $("form").submit(function () {
+            $.ajax({
+                type: 'POST',
+                url: "https://localhost:5001/api/UserApi/GetUser?userId=tlakshmivasavi005@gmail.com",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (e) {
+                    $.each(e, function (ele) {
+                        if (document.getElementById(ele) != null) {
+                            $('label[for="' + ele + '"]')[0].textContent = e[ele];
+                        }
+                    });
+                    alert("success");
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert("error");
+                }
+            });
+        });
+    });
+</script>
 <script src="~/js/toogleEdit.js"></script>
 <img alt="user image" src='@ViewBag.Base64String' />
+
+<form>
 <div class="container profile">
     <div class="row">
         <div class="col-md-6 detail">
             @Html.DisplayNameFor(model => model.Name)
         </div>
         <div class="col-md-6">
-            <label>@Html.DisplayFor(model => model.Name)</label>
+            <label for="name"/>
             @Html.EditorFor(model => model.Name)
         </div>
     </div>
@@ -17,7 +61,7 @@
             @Html.DisplayNameFor(model => model.Age)
         </div>
         <div class="col-md-6">
-            <label>@Html.DisplayFor(model => model.Age)</label>
+            <label for="age"/>
             @Html.EditorFor(model => model.Age)
         </div>
     </div>
@@ -26,7 +70,7 @@
             @Html.DisplayNameFor(model => model.Mail)
         </div>
         <div class="col-md-6">
-            <label>@Html.DisplayFor(model => model.Mail)</label>
+            <label for="mail"/>
             @Html.EditorFor(model => model.Mail)
         </div>
     </div>
@@ -35,7 +79,7 @@
             @Html.DisplayNameFor(model => model.Number)
         </div>
         <div class="col-md-6">
-            <label>@Html.DisplayFor(model => model.Number)</label>
+            <label for="number"/>
             @Html.EditorFor(model => model.Number)
         </div>
     </div>
@@ -44,15 +88,14 @@
             @Html.DisplayNameFor(model => model.Gender)
         </div>
         <div class="col-md-6">
-            <label>
-                @Html.DisplayFor(model=>model.Gender)
-            </label>
+            <label for="gender"/>
             @Html.DropDownListFor(m => m.Gender,
                     new SelectList(Enum.GetValues(typeof(GenderVM))),
                     "Select Gender")
         </div>
     </div>
     <button id="edit" value="edit">edit</button>
-    <button id="save" value="save">save</button>
+    <button type="submit" id="save" value="save">save</button>
     <button id="cancel" value="cancel">cancel</button>
 </div>
+</form>

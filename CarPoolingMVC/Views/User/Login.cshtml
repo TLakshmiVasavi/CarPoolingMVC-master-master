@@ -1,30 +1,61 @@
-﻿@model Models.ViewModels.UserVM
-	<link rel="stylesheet" href="~/css/LoginSignup.css">
-	<div class="row">
-		<div class="col-md-8 Image">
-			<div class="heading">TURN<div class="miles"> MILES</div><br />INTO <div class="money">MONEY</div><div class="normal">RIDES ON TAP</div></div>
-		</div>
-		<div class="col-md-4  form-background login-form">
-		<div>
-			<h5>@ViewBag.result</h5>
-			<h1 class="form-heading">Log In</h1>
-			<form asp-action="Login">
-				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-				<div class="form-group">
-					<input asp-for="Id" class="form-control" />
-					<label asp-for="Id" class="control-label"></label>
-					<span asp-validation-for="Id" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<input asp-for="Password" class="form-control form-group" data-toggle="password" />
-					<label asp-for="Password" class="control-label"></label>
-					<span asp-validation-for="Password" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<input type="submit" value="Submit" class="btn btn-default login"/>
-				</div>
-				<div class="form-group white">Not a member yet? <a asp-action="SignUp" class="bottom-line"> SIGN UP </a></div>
-			</form>
-		</div>
-	</div>
+﻿@model CarPoolingMVC.Models.UserVM
+    <script>
+        $(document).ready(function () {
+            $("form").submit(function () {
+                var formData = new FormData(document.querySelector("form"));
+                var user = {};
+                for (var [key, value] of formData.entries()) {
+                    user[key] = value;
+                }
+                $.ajax({
+                    type: "POST",
+                    data: JSON.stringify(user),
+                    processData: false,
+                    url: "https://localhost:5001/api/UserApi/Login",
+                    contentType: "application/json",
+                    success: function (s) {
+                        console.log(s)
+                        alert("success");
+                        window.location.href = "/Home/Index";
+                    },
+                    error: function (e) {
+                        $.each(e, function (x) {
+                            console.log(x+" "+e[x])
+                        });
+                        console.log(e)
+                        alert("error");
+                    }
+                });
+            });
+        });
+    </script>
+<link rel="stylesheet" href="~/css/LoginSignup.css">
+<input type="submit" id="submit" />
+<div class="row">
+    <div class="col-md-8 Image">
+        <div class="heading">TURN<div class="miles"> MILES</div><br />INTO <div class="money">MONEY</div><div class="normal">RIDES ON TAP</div></div>
+    </div>
+    <div class="col-md-4  form-background login-form">
+        <div>
+            <h5>@ViewBag.result</h5>
+            <h1 class="form-heading">Log In</h1>
+            <form asp-action="Login">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="Id" class="form-control" />
+                    <label asp-for="Id" class="control-label"></label>
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Password" class="form-control form-group" data-toggle="password" />
+                    <label asp-for="Password" class="control-label"></label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-default login" />
+                </div>
+                <div class="form-group white">Not a member yet? <a asp-action="SignUp" class="bottom-line"> SIGN UP </a></div>
+            </form>
+        </div>
+    </div>
 </div>

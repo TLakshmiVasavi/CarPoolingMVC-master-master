@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models;
 using Models.Enums;
 using Models.Interfaces;
 using Newtonsoft.Json;
 using AutoMapper;
+using CarPoolingMVC.Models;
+using Models;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {

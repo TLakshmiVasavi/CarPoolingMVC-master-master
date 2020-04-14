@@ -1,6 +1,5 @@
 ﻿using System;
-
-namespace Models.ViewModels
+namespace CarPoolingMVC.Models
 {
     public class BookingDetailsVM
     {

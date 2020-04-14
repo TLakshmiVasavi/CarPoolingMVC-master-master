@@ -74,5 +74,10 @@ namespace Services
             return vehicleDal.GetVehiclesId(userId);
         }
 
+        public User UpdateUserDetails(User user)
+        {
+            return userDal.Update(user);
+        }
+
     }
 }

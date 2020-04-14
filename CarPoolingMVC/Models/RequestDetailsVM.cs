@@ -1,4 +1,4 @@
-﻿namespace Models.ViewModels
+﻿namespace CarPoolingMVC.Models
 {
     public class RequestDetailsVM
     {

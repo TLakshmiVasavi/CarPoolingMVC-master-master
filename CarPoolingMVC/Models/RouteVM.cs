@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Models.ViewModels
+namespace CarPoolingMVC.Models
 {
     public class RouteVM
     {

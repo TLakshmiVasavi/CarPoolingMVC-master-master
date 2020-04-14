@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.IO;
 using System;
-using Models.ViewModels;
+using CarPoolingMVC.Models;
 
 namespace CarPoolingMVC.Controllers
 {
@@ -45,7 +45,7 @@ namespace CarPoolingMVC.Controllers
             {
                 HttpContext.Session.SetString("UserId", res.User.Mail);
                 HttpContext.Session.SetString("UserName", res.User.Name);
-                HttpContext.Session.SetString("UserImage", string.Format("data:image/png;base64,{0}", Convert.ToBase64String(res.User.Photo)));
+               // HttpContext.Session.SetString("UserImage", string.Format("data:image/png;base64,{0}", Convert.ToBase64String(res.User.Photo)));
                 //CookieOptions options = new CookieOptions()
                 //{
                 //    Path = "/",
@@ -79,7 +79,7 @@ namespace CarPoolingMVC.Controllers
             using (var stream=new MemoryStream()) 
             {
                 await photo.CopyToAsync(stream);
-                user.Photo = stream.ToArray();
+             //   user.Photo = stream.ToArray();
             }
             HttpResponseMessage response = await RequestApi("UserApi/SignUp", user, "post");
             HttpContext.Session.SetString("UserId", user.Mail);
@@ -118,7 +118,7 @@ namespace CarPoolingMVC.Controllers
             HttpResponseMessage response = GetApi("UserApi/GetUser?userId=" + HttpContext.Session.GetString("UserId"));
             var user = response.Content.ReadAsAsync<UserVM>().Result;
             
-            ViewBag.Base64String = string.Format("data:image/png;base64,{0}",Convert.ToBase64String(user.Photo));
+           // ViewBag.Base64String = string.Format("data:image/png;base64,{0}",Convert.ToBase64String(user.Photo));
             return View(user);
         }
 

@@ -39,7 +39,7 @@ namespace Models.DAL
             return user;
         }
 
-        public void Update(User user)
+        public User Update(User user)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -49,12 +49,12 @@ namespace Models.DAL
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
-
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
             }
+            return GetById(user.Id);
         }
 
         public User GetById(string id)

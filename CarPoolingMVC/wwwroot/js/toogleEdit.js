@@ -4,6 +4,7 @@
     $(this).hide();
     $("#save").show();
     $("#cancel").show();
+    $('select').show();
 });
 
 $(document).on('click', "#cancel", function () {
@@ -12,9 +13,11 @@ $(document).on('click', "#cancel", function () {
     $("#edit").show();
     $("#save").hide();
     $("#cancel").hide();
+    $('select').hide();
 });
 
 $(document).ready(function () {
+    $('select').hide();
     $("#save").hide();
     $("#cancel").hide();
     $('input').hide();

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
-namespace Models.ViewModels
+namespace CarPoolingMVC.Models
 {
     public class UserVM
     {
@@ -41,7 +42,7 @@ namespace Models.ViewModels
 
         public VehicleVM Vehicle { get; set; }
 
-        public byte[] Photo { get; set; }
+        public IFormFile Photo { get; set; }
 
         //public IFormFile Photo { get; set; }
     }

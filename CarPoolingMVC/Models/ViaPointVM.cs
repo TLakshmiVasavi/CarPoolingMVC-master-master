@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Models.ViewModels
+namespace CarPoolingMVC.Models
 {
     public class ViaPointVM
     {

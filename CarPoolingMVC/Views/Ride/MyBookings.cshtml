@@ -1,5 +1,86 @@
-﻿@model IEnumerable<Models.ViewModels.BookingDetailsVM>
-@if (!Model.Any())
+﻿@model IEnumerable<CarPoolingMVC.Models.BookingDetailsVM>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                    type: "GET",
+                    url: "https://localhost:5001/api/RideApi/GetBookings?userId=" + document.cookie,
+                    contentType: "application/json",
+                success: function (data) {
+                    var form = $("form");
+                    $.each(data, function (index, item) {
+
+                        '<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" >' +
+                            '<div class="row">' +
+                            '<div class="col-md-8">' +
+                            '<h2>' + item.providerName + '</h2>' +
+                            '</div>' +
+                            '<div class="col-md-4">' +
+                            '<img src="#">'+
+                            '</div>' +
+                            '</div>' +
+'<div class="row">' +
+                            '<div class="row">' +
+                            '<div class="col-md-4">' +
+                            '<small>From</small>' +
+                            '<p>' + item.pickUp + '</p>' +
+                            '</div>' +
+                            '<div class="col-md-4">' +
+                            '<div class="dot darkviolet"></div>' +
+                            '<div class="dot"></div>' +
+                            '<div class="dot"></div>' +
+                            '<span class="glyphicon glyphicon-map-marker darkviolet"></span>' +
+                            '</div>' +
+                            '<div class="col-md-4">' +
+                            '<small>To</small>' +
+                            '<p>' + item.drop + '</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="row">' +
+                            '<div class="col-md-4">' +
+                            '<small>Date</small>' +
+                            '<p>' + getDate(item.startDateTime) + '</p>' +
+                            '</div>' +
+                            '<div class="col-md-4 col-md-offset-4">' +
+                            '<small>Ride Status</small>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="row">' +
+                            '<div class="col-md-4">' +
+                            '<small>Price</small>' +
+                            '<p>' + item.cost + '</p>' +
+                            '</div>' +
+                            '<div class="col-md-4 col-md-offset-4">' +
+                            '<small>Seats Available</small>' +
+                            '<p>' + item.noOfSeats + '</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="row">' +
+                            '<div class="col-md-4">' +
+                            '<small>Vehicle</small>' +
+                            '<p>' + item.vehicleType + '</p>' +
+                            '</div>' +
+                            '<div class="col-md-4 col-md-offset-4">' +
+                            '<small>Vehicle Number</small>' +
+                            '<p>' + item.vehicleNumber + '</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+
+                    });
+                        alert("success,mybooking");
+                    },
+                    error: function (e) {
+                        alert("error");
+                    }
+                });
+            });
+
+    </script>
+<form>
+
+</form>
+@*@if (!Model.Any())
 {
     <h3>No Bookings</h3>
 }
@@ -86,4 +167,4 @@ else
             </div>
         </div>
     }
-}
+}*@
