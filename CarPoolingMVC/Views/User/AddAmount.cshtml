@@ -1,35 +1,4 @@
-﻿<script>
-        $(document).ready(function () {
-
-            $("#submit").click(function () {
-
-                var formData = new FormData(document.querySelector("form"));
-                var user = {};
-
-                for (var [key, value] of formData.entries()) {
-                    user[key] = value;
-                }
-                $.ajax({
-                    type: "POST",
-                    data: JSON.stringify(user),
-                    processData: false,
-                    url: "https://localhost:5001/api/UserApi/AddAmount",
-                    contentType: "application/json",
-                    success: function (s) {
-                        console.log(s)
-                        alert("Added Successfully");
-                        window.location.href = "/User/GetProfile";
-                    },
-                    error: function (e) {
-                        console.log(e)
-                    }
-
-                });
-            });
-                });
-
-</script>
-<form>
+﻿<form id="UpdateBalance">
     <label>Please enter the Amount</label>
     <input id="amount" name="amount" type="text" />
     <input type="submit" value="Add" />

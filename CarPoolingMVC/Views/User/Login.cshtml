@@ -1,34 +1,4 @@
 ﻿@model CarPoolingMVC.Models.UserVM
-    <script>
-        $(document).ready(function () {
-            $("form").submit(function () {
-                var formData = new FormData(document.querySelector("form"));
-                var user = {};
-                for (var [key, value] of formData.entries()) {
-                    user[key] = value;
-                }
-                $.ajax({
-                    type: "POST",
-                    data: JSON.stringify(user),
-                    processData: false,
-                    url: "https://localhost:5001/api/UserApi/Login",
-                    contentType: "application/json",
-                    success: function (s) {
-                        console.log(s)
-                        alert("success");
-                        window.location.href = "/Home/Index";
-                    },
-                    error: function (e) {
-                        $.each(e, function (x) {
-                            console.log(x+" "+e[x])
-                        });
-                        console.log(e)
-                        alert("error");
-                    }
-                });
-            });
-        });
-    </script>
 <link rel="stylesheet" href="~/css/LoginSignup.css">
 <input type="submit" id="submit" />
 <div class="row">

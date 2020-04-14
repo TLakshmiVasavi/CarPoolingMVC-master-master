@@ -128,3 +128,12 @@ function setNoOfSeats()
         $("#NoOfSeats").val(1);
     }  
 }
+
+function getDate(date) {
+    var d = new Date(date);
+    var date = d.getDate();
+    var month = d.getMonth() + 1;
+    var year = d.getFullYear();
+    var dateStr = date + "/" + month + "/" + year;
+    return dateStr;
+}

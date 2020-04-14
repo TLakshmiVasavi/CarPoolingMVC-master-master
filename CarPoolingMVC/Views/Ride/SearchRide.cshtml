@@ -1,36 +1,8 @@
 ﻿@model CarPoolingMVC.Models.RequestVM
-    <script>
-        $(document).ready(function () {
-            $("form").submit(function () {
-                var formData = new FormData(document.querySelector("form"));
-                var user = {};
-                for (var [key, value] of formData.entries()) {
-                    user[key] = value;
-                }
-                $.ajax({
-                    type: "POST",
-                    data: JSON.stringify(user),
-                    processData: false,
-                    url: "https://localhost:5001/api/RideApi/SearchRide?userId="+document.cookie,
-                    contentType: "application/json",
-                    success: function (data) {
-                        console.log(data);
-
-                        alert("success");
-                    },
-                    error: function (e) {
-                        console.log(e)
-                        alert("error");
-                    }
-                });
-            });
-        });
-
-    </script>
 <link rel="stylesheet" href="~/css/MyRides.css">
 <div class="row">
     <div class="col-md-10 ">
-        <form>
+        <form id="SearchRide">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="col-md-4 rounded shadow" style="left: 4%">
                 <div class="row" style="margin-bottom:20px">

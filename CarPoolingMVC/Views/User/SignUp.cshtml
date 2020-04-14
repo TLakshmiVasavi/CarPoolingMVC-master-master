@@ -1,37 +1,4 @@
 ﻿@model CarPoolingMVC.Models.UserVM;
-<script>
-    $(document).ready(function () {
-        $("#submit").click(function () {
-            var formData = new FormData(document.querySelector("form"));
-            var user = {};
-            for (var [key, value] of formData.entries()) {
-                user[key] = value;
-            }
-            var fileUpload = $("#photo").get(0);
-            var files = fileUpload.files;
-            user["Gender"] = true;
-            user["HasVehicle"] = false;
-            //user["photo"] = $('#photo')[0].files[0];
-            $.ajax({
-                type: "POST",
-                data: JSON.stringify(user),
-                processData: false,
-                url: "https://localhost:5001/api/UserApi/SignUp",
-                contentType: "application/json",
-                success: function (s) {
-                    console.log(s)
-                    alert("success");
-                    window.location.href = "/Home/Index";
-                },
-                error: function (e) {
-                    console.log(e)
-                    alert("error");
-                }
-            });
-        });
-    });
-
-</script>
 <link rel="stylesheet" href="~/css/LoginSignup.css">
 <input id="submit" type="button" />
 <div class="row">
@@ -41,7 +8,7 @@
     <div class="col-xs-4 form-background signup-form">
         <div>
             <h1 class="form-heading">SIGN UP</h1>
-            <form enctype="multipart/form-data">
+            <form enctype="multipart/form-data" id="SignUpForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <input asp-for="Name" class="form-control" />
