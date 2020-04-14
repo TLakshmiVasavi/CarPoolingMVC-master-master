@@ -1,32 +1,29 @@
 ﻿@model IEnumerable<CarPoolingMVC.Models.OfferedRideVM>
     <script>
         function getDate(date) {
-
             var d = new Date(date);
-
             var date = d.getDate();
             var month = d.getMonth() + 1; 
             var year = d.getFullYear();
-
             var dateStr = date + "/" + month + "/" + year;
             return dateStr;
         }
         $(document).ready(function () {
             $.ajax({
                     type: "GET",
-                url: "https://localhost:5001/api/RideApi/GetOfferedRides?userId=" + document.cookie,
+                    url: "https://localhost:5001/api/RideApi/GetOfferedRides?userId=" + document.cookie,
                     contentType: "application/json",
-                success: function (data) {
-                    alert("success");
-                    var form = $("form")
-                    console.log(data);
-                    alert("print");
-                    $.each(data, function (index, item) {
-                        alert(index);
-                        console.log(item);
-                        form.append(
+                    success: function (data) {
+                        if (data == null)
+                        {
+                            $("#Offered").append(
+                                '<h3>No Rides</h3>'
+                            );
+                        }
+                        $.each(data, function (index, item) {
+                            $("#Offered").append(
                             '<button type="submit" name="RideId" value=' +item.id+'>'+
-                            '<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" >'+
+                                '<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" >'+
                                     '<div class="row">'+
                                         '<div class="row">'+
                                             '<div class="col-md-4">'+
@@ -66,79 +63,12 @@
                                     '</div>' +
                                 '</div>'+
                             '</button>');
-                    });
+                        });
                     },
-                error: function (e) {
+                    error: function (e) {
                         alert("error");
                     }
             });
-
-            
-            });
-
+        });
     </script>
-<div id="data"></div>
-<form asp-action="ViewRequests">
-    
-</form>
-@*@if (!Model.Any())
-{
-    <h3>No Rides</h3>
-}
-else
-{
-<form>
-    @foreach (var item in Model)
-    {
-    <button type="submit" name="RideId" value='@item.Id'>
-        <div class="col-md-4 p-3 mb-5 bg-white rounded shadow">
-            <div class="row">
-                <div class="row">
-                    <div class="col-md-4">
-                        <small>From</small>
-                        <p>@Html.DisplayFor(modelItem => item.Route.Source)</p>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="dot darkviolet"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <span class="glyphicon glyphicon-map-marker darkviolet"></span>
-                    </div>
-                    <div class="col-md-4">
-                        <small>To</small>
-                        <p>@Html.DisplayFor(modelItem => item.Route.Destination)</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <small>Date</small>
-                        <p>@Convert.ToString(string.Format("{0:dd/MM/yyyy}", item.StartDateTime));</p>
-                    </div>
-                    <div class="col-md-4 col-md-offset-4">
-                        <small>Ride Status</small>
-                        @if (item.IsRideCompleted)
-                        {
-                            <p>Completed</p>
-                        }
-                        else
-                        {
-                            <p>Not Completed</p>
-                        }
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <small>Vehicle</small>
-                        <p>@Html.DisplayFor(modelItem => item.VehicleId)</p>
-                    </div>
-                    <div class="col-md-4 col-md-offset-4">
-                        <small>Seats Offered</small>
-                        <p>@Html.DisplayFor(modelItem => item.NoOfOfferedSeats)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </button>
-    }
-</form>
-}*@
+<form id="Offered" asp-action="ViewRequests"/>

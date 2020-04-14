@@ -51,15 +51,15 @@ namespace CarPoolingMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SearchRide(RequestVM request)
+        public  IActionResult SearchRide(RequestVM request)
         {
-            HttpResponseMessage response = await RequestApi("RideApi/SearchRide?userId=" + HttpContext.Session.GetString("UserId"), request, "post");
-            SearchRideVM SearchRide = new SearchRideVM()
-            {
-                Request = request,
-                AvailableRides = response.Content.ReadAsAsync<List<AvailableRideVM>>().Result
-            };
-            return PartialView("AvailableRides", SearchRide);
+            //HttpResponseMessage response = await RequestApi("RideApi/SearchRide?userId=" + HttpContext.Session.GetString("UserId"), request, "post");
+            //SearchRideVM SearchRide = new SearchRideVM()
+            //{
+            //    Request = request,
+            //    AvailableRides = response.Content.ReadAsAsync<List<AvailableRideVM>>().Result
+            //};
+            return PartialView("AvailableRides", request);
         }
 
         [HttpPost]
@@ -103,10 +103,10 @@ namespace CarPoolingMVC.Controllers
 
         public IActionResult ViewRequests(string rideId)
         {
-            HttpResponseMessage response = GetApi("RideApi/GetRequests?rideId=" + rideId);
-            var RideRequests = response.Content.ReadAsAsync<List<RequestDetailsVM>>().Result;
+            //HttpResponseMessage response = GetApi("RideApi/GetRequests?rideId=" + rideId);
+            //var RideRequests = response.Content.ReadAsAsync<List<RequestDetailsVM>>().Result;
             ViewBag.RideId = rideId;
-            return View(RideRequests);
+            return View();
         }
 
         public IActionResult ApproveRequest(string rideId,string requestId,string decision)

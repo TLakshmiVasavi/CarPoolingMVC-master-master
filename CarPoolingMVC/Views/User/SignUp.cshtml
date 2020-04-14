@@ -1,39 +1,39 @@
 ﻿@model CarPoolingMVC.Models.UserVM;
 <script>
-        $(document).ready(function () {
-            $("#submit").click(function () {
-                var formData = new FormData(document.querySelector("form"));
-                var user = {};
-                for (var [key, value] of formData.entries()) {
-                    user[key] = value;
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            var formData = new FormData(document.querySelector("form"));
+            var user = {};
+            for (var [key, value] of formData.entries()) {
+                user[key] = value;
+            }
+            var fileUpload = $("#photo").get(0);
+            var files = fileUpload.files;
+            user["Gender"] = true;
+            user["HasVehicle"] = false;
+            //user["photo"] = $('#photo')[0].files[0];
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(user),
+                processData: false,
+                url: "https://localhost:5001/api/UserApi/SignUp",
+                contentType: "application/json",
+                success: function (s) {
+                    console.log(s)
+                    alert("success");
+                    window.location.href = "/Home/Index";
+                },
+                error: function (e) {
+                    console.log(e)
+                    alert("error");
                 }
-                var fileUpload = $("#photo").get(0);
-                var files = fileUpload.files;
-                user["Gender"] = true;
-                user["HasVehicle"] = false;
-                user["photo"]=null;
-                //user["photo"] = $('#photo')[0].files[0];
-                $.ajax({
-                    type: "POST",
-                    data: JSON.stringify(user),
-                    processData: false,
-                    url: "https://localhost:5001/api/UserApi/SignUp",
-                    contentType: "application/json",
-                    success: function (s) {
-                        console.log(s)
-                        alert("success");
-                        window.location.href = "/Home/Index";
-                    },
-                    error: function (e) {
-                        console.log(e)
-                        alert("error");
-                    }
-                });
             });
         });
-    </script>
+    });
+
+</script>
 <link rel="stylesheet" href="~/css/LoginSignup.css">
-<input id="submit" type="button"/>
+<input id="submit" type="button" />
 <div class="row">
     <div class="col-md-8 Image">
         <div class="heading">TURN<div class="miles"> MILES</div><br />INTO <div class="money">MONEY</div><div class="normal">RIDES ON TAP</div></div>
@@ -41,7 +41,7 @@
     <div class="col-xs-4 form-background signup-form">
         <div>
             <h1 class="form-heading">SIGN UP</h1>
-            <form enctype="multipart/form-data" onsubmit="AJAXSubmit(this)">
+            <form enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <input asp-for="Name" class="form-control" />
@@ -69,7 +69,7 @@
                     <span asp-validation-for="Age" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="Photo" type="file" id="photo" name="photo" />
+                    <input asp-for="Photo" class="form-control" type="file" id="photo" name="photo" />
                 </div>
                 <div class="form-group">
                     @Html.DropDownListFor(m => m.Gender,
@@ -109,6 +109,7 @@
                     <input type="submit" value="submit" id="submit" class="btn btn-default signup" onclick="Validate()" />
                 </div>
                 <div class="form-group white">Already a member? <a asp-action="Login" class="bottom-line"> LOG IN </a></div>
+                <output name="result"></output>
             </form>
         </div>
     </div>

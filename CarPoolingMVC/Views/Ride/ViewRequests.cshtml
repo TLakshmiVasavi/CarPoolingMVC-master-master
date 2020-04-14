@@ -1,5 +1,4 @@
-﻿@model IEnumerable<CarPoolingMVC.Models.RequestDetailsVM>
-
+﻿
     <script>
         $(document).ready(function () {
                 $.ajax({
@@ -10,6 +9,7 @@
                     success: function (data) {
                         alert("success");
                         $.each(data, function (index, item) {
+                            $("#Requests").append(
                             '<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" style="left:4%">'+
     '<div class="row" style="margin-bottom:20px">'+
                                 '<div class="col-md-8">'+
@@ -30,7 +30,7 @@
                                 '< div class="dot" ></div > '+
                                 '< div class="dot" ></div > '+
                                 '< div class="dot" ></div > '+
-                                '< span class="glyphicon glyphicon-map-marker darkviolet" ></span > '+'+
+                                '< span class="glyphicon glyphicon-map-marker darkviolet" ></span > '+
             '</div > '+
                                 '< div class="col-md-4" > '+
                                 '< small > To</small > '+
@@ -56,7 +56,7 @@
             '</div > '+
         '</div > '+
     '</div > '+
-'</div > '
+'</div > ')
 
                         });
                     },
@@ -68,7 +68,12 @@
             });
     </script>
 
-@if (!Model.Any())
+<div id="Requests">
+
+</div>
+
+
+@*@if (!Model.Any())
 {
     <h3>No Requests</h3>
 }
@@ -124,4 +129,4 @@ else
     </div>
 </div>
     }
-}
+}*@

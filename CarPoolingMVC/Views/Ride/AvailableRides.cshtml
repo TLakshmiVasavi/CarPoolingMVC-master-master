@@ -1,4 +1,4 @@
-﻿@model CarPoolingMVC.Models.SearchRideVM
+﻿@model CarPoolingMVC.Models.RequestVM
 <style>
     .dot {
         display: inline-block;
@@ -33,14 +33,8 @@
             url: "https://localhost:5001/api/RideApi/SearchRide?userId=" + document.cookie,
             contentType: "application/json",
             success: function (data) {
-                alert("success");
-                var form = $("form")
-                console.log(data);
-                alert("print");
                 $.each(data, function (index, item) {
-                    alert(index);
-                    console.log(item);
-                    form.append(
+                    $("form").append(
                         '<button type="submit" name="RideId" value=' + item.id + '>' +
                         '<div class="col-md-4 p-3 mb-5 bg-white rounded shadow" >' +
                         '<div class="row">' +
@@ -89,17 +83,38 @@
             }
         });
 
-
+        $("button").click(function () {
+            var formData = new FormData($(this));
+            var user = {};
+            for (var [key, value] of formData.entries()) {
+                user[key] = value;
+            }
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(user),
+                processData: false,
+                url: "https://localhost:5001/api/RideApi/RequestRide?userId=" + document.cookie + "/rideId=" + $(this).val(),
+                contentType: "application/json",
+                success: function (data) {
+                    console.log(data);
+                    alert("success");
+                },
+                error: function (e) {
+                    console.log(e)
+                    alert("error");
+                }
+            });
+        });
     });
 </script>
 
-<form asp-action="RequestRide" asp-controller="Ride">
+<form>
 
-    @Html.HiddenFor(x => x.Request.StartDateTime)
-    @Html.HiddenFor(x => x.Request.Destination)
-    @Html.HiddenFor(x => x.Request.Source)
-    @Html.HiddenFor(x => x.Request.NoOfSeats)
-    @if (Model.AvailableRides == null)
+    @Html.HiddenFor(x => x.StartDateTime)
+    @Html.HiddenFor(x => x.Destination)
+    @Html.HiddenFor(x => x.Source)
+    @Html.HiddenFor(x => x.NoOfSeats)
+    @*@if (Model.AvailableRides == null)
     {
         <h3>Rides are Not Available</h3>
     }
@@ -161,5 +176,5 @@
                 </div>
             </div>
         }
-    }
+    }*@
 </form>
