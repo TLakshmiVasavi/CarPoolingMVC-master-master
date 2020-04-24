@@ -2,7 +2,7 @@
 
 namespace CarPoolingMVC.Models
 {
-    public class SearchRideVM
+    public class BookRideVM
     {
         public RequestVM Request { get; set; }
 

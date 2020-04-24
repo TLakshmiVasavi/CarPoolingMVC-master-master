@@ -5,7 +5,7 @@
 $(document).on('change', ".checkbox", function () {
     var url;
         if (this.checked) {
-        url = "/Ride/SearchRide/";
+        url = "/Ride/BookRide/";
     }
         else {
         url = "/Ride/OfferRide/";

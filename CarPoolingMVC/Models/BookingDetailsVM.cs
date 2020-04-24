@@ -19,7 +19,7 @@ namespace CarPoolingMVC.Models
 
         public VehicleTypeVM VehicleType { get; set; }
 
-        public DateTime StartDateTime { get; set; }
+        public DateTime StartDate { get; set; }
 
         public int NoOfSeats { get; set; }
     }

@@ -7,8 +7,8 @@ namespace Models
 {
     public class Booking
     {
-        public Request Request;
+        public RideRequest Request;
 
-        public Response Response;
+        public BookRideResponse Response;
     }
 }

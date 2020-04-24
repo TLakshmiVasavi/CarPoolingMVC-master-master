@@ -7,8 +7,6 @@ namespace CarPoolingMVC.Controllers
     {
         public IActionResult Index()
         {
-            ViewBag.image = HttpContext.Session.GetString("UserImage");
-            ViewBag.name = HttpContext.Session.GetString("UserName");
             return View();
         }
     }

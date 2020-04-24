@@ -2,7 +2,7 @@
 
 namespace Models
 {
-    public class Response
+    public class BookRideResponse
     {
         public string RequestId;
 

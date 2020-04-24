@@ -4,7 +4,7 @@ using System.Timers;
 
 namespace Models
 {
-    public class Request
+    public class RideRequest
     {
         public string Id;
 
@@ -18,9 +18,9 @@ namespace Models
 
         public int NoOfSeats;
 
-        public DateTime StartDateTime;
+        public DateTime StartDate;
 
-        public DateTime EndDateTime;
+        public string Time;
 
         public Timer timer;
 

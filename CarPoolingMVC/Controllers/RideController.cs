@@ -1,43 +1,15 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Models.Interfaces;
-using System.Net.Http;
-using System.Threading.Tasks;
-using CarPoolingMVC.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace CarPoolingMVC.Controllers
 {
-    public class RideController : BaseController
+    public class RideController:Controller
     {
-        private readonly IUserService _userService;
-        private readonly IRideService _rideService;
-
-        public RideController(IUserService userService, IRideService rideService,IHttpClientFactory httpClientFactory):base(httpClientFactory)
+        public IActionResult OfferRide()
         {
-            this._userService = userService;
-            this._rideService = rideService;
-        }
-
-        public ActionResult OfferRide()
-        {
-            RideVM ride = new RideVM
-            {
-                AvailableVehicles = new List<string>(),
-                Route = new RouteVM()
-            };
-            ride.Route.ViaPoints = new List<ViaPointVM>();
-            HttpResponseMessage response = GetApi("UserApi/GetVehicles?userId=" + HttpContext.Session.GetString("UserId"));
-            ride.AvailableVehicles = response.Content.ReadAsAsync<List<string>>().Result;
-            if (ride.AvailableVehicles.Count == 0)
-            {
-                ViewBag.Message = "Please add vehicle to offer ride";
-                return View("../User/AddVehicle");
-            }
-            return View(ride);
+            return View();
         }       
 
-        public ActionResult SearchRide()
+        public IActionResult BookRide()
         {
             return View();
         }

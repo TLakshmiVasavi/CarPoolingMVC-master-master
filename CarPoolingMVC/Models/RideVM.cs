@@ -14,7 +14,7 @@ namespace CarPoolingMVC.Models
 
         [DisplayName("Start Time ")]
         [CustomDate]
-        public DateTime StartDateTime { get; set; }
+        public DateTime StartDate { get; set; }
 
         [DisplayName("Number of Seats to Offer")]
         [Remote(action: "IsSeatsAvailable", controller: "User", AdditionalFields = nameof(VehicleId), ErrorMessage = "Please enter a Valid Number")]

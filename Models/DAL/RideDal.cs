@@ -25,10 +25,18 @@ namespace Models.DAL
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string locations= ride.Route.Source+","+string.Join(",",ride.Route.ViaPoints.Select(_ => _.Location).ToList())+","+ride.Route.Destination;
-                string distances = "0," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + "," + ride.Distance;
-                string durations = "0," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + "," + (ride.EndDateTime - ride.StartDateTime);
-                string sql = $"Insert Into Ride (VehicleId, ProviderId, NoOfOfferedSeats, UnitDistanceCost, StartDateTime, Locations, Distances, Durations,Duration,Distance) Values ('{ride.VehicleId}','{ride.ProviderId}','{ride.NoOfOfferedSeats}','{ride.UnitDistanceCost}','{ride.StartDateTime.ToString()}','{locations}','{distances}','{durations}','{ride.EndDateTime-ride.StartDateTime}','{ride.Distance}')";                
+                string locations= ride.Route.Source+","+string.Join(",",ride.Route.ViaPoints.Select(_ => _.Location).ToList())+ ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Route.Destination;
+                string distances = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + ((ride.Route.ViaPoints.Count>0)?",":"") + ride.Distance;
+//                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.EndDateTime - ride.StartDate);
+                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.StartDate);
+                string sql = $"Insert Into Ride (VehicleId, ProviderId, NoOfOfferedSeats, UnitDistanceCost, StartDate,Time, Locations," +
+                    $" Distances, Durations,Duration,Distance) Values ('{ride.VehicleId}','{ride.ProviderId}'," +
+                    $"'{ride.NoOfOfferedSeats}','{ride.UnitDistanceCost}','{ride.StartDate}','{locations}'," +
+                    $"'{distances}','{durations}','{ride.StartDate}','{ride.Distance}')";
+                    //string sql = $"Insert Into Ride (VehicleId, ProviderId, NoOfOfferedSeats, UnitDistanceCost, StartDate,Time, Locations," +
+                    //$" Distances, Durations,Duration,Distance) Values ('{ride.VehicleId}','{ride.ProviderId}'," +
+                    //$"'{ride.NoOfOfferedSeats}','{ride.UnitDistanceCost}','{ride.StartDate}','{locations}'," +
+                    //$"'{distances}','{durations}','{ride.EndDateTime - ride.StartDate}','{ride.Distance}')";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -39,15 +47,16 @@ namespace Models.DAL
             }
         }
 
-        public void Update(Ride ride)
+        public void Update(Ride ride)//need to change
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string locations = ride.Route.Source + "," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Location).ToList()) + "," + ride.Route.Destination;
-                string distances = "0," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + "," + ride.Distance;
-                string durations = "0," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + "," + (ride.EndDateTime - ride.StartDateTime);
-                string sql = $"Update Ride set VehicleId='{ride.VehicleId}', ProviderId='{ride.ProviderId}', NoOfOfferedSeats='{ride.NoOfOfferedSeats}', UnitDistanceCost='{ride.UnitDistanceCost}', StartDateTime='{ride.StartDateTime}', Locations='{locations}', Distances='{distances}' where id='{ride.Id}'";
+                string locations = ride.Route.Source + "," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Location).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Route.Destination;
+                string distances = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Distance;
+//                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.EndDateTime - ride.StartDate);
+                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.StartDate);
+                string sql = $"Update Ride set VehicleId='{ride.VehicleId}', ProviderId='{ride.ProviderId}', NoOfOfferedSeats='{ride.NoOfOfferedSeats}', UnitDistanceCost='{ride.UnitDistanceCost}', StartDate='{ride.StartDate}', Locations='{locations}', Distances='{distances}' where id='{ride.Id}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -76,7 +85,7 @@ namespace Models.DAL
                         {
                             Id = Convert.ToInt32(dataReader["Id"]),
                             NoOfOfferedSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]),
-                            StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]),
+                            StartDate = Convert.ToDateTime(dataReader["StartDate"]),
                             UnitDistanceCost = float.Parse(Convert.ToString(dataReader["UnitDistanceCost"])),
                             VehicleId = Convert.ToString(dataReader["VehicleId"]),
                         };
@@ -115,7 +124,7 @@ namespace Models.DAL
                     {
                         Ride.Id = Convert.ToInt32(dataReader["Id"]);
                         Ride.NoOfOfferedSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]);
-                        Ride.StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]);
+                        Ride.StartDate = Convert.ToDateTime(dataReader["StartDate"]);
                         Ride.UnitDistanceCost = float.Parse(Convert.ToString(dataReader["UnitDistanceCost"]));
                         Ride.VehicleId = Convert.ToString(dataReader["VehicleId"]);
                     }
@@ -143,9 +152,10 @@ namespace Models.DAL
                         {
                             Id = Convert.ToInt32(dataReader["Id"]),
                             NoOfOfferedSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]),
-                            StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]),
+                            StartDate = Convert.ToDateTime(dataReader["StartDate"]),
                             UnitDistanceCost = float.Parse(Convert.ToString(dataReader["UnitDistanceCost"])),
                             VehicleId = Convert.ToString(dataReader["VehicleId"]),
+                            Time=Convert.ToString(dataReader["Time"])
                         };
                         locations = Convert.ToString(dataReader["locations"]).Split(",").ToList();
                         Ride.VehicleType = VehicleDal.GetVehicleType(Ride.VehicleId);
@@ -167,7 +177,7 @@ namespace Models.DAL
             return rides;
         }
 
-        public bool IsSeatAvailable(Request request,int rideId)
+        public bool IsSeatAvailable(RideRequest request,int rideId)
         {
             List<string> locations=new List<string>();
             List<float> distances=new List<float>();
@@ -218,7 +228,7 @@ namespace Models.DAL
             return flag;
         }
 
-        public List<Ride> GetAvailableRides(Request request)
+        public List<Ride> GetAvailableRides(RideRequest request)
         {
             List<Ride> rides = new List<Ride>();
             string connectionString = Configuration.ConnectionString;
@@ -236,7 +246,7 @@ namespace Models.DAL
                             Id = Convert.ToInt32(dataReader["Id"]),
                             NoOfOfferedSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]),
                             ProviderId = Convert.ToString(dataReader["PRoviderId"]),
-                            StartDateTime = Convert.ToDateTime(dataReader["StartDateTime"]),
+                            StartDate = Convert.ToDateTime(dataReader["StartDate"]),
                             UnitDistanceCost = Convert.ToInt32(dataReader["UnitDistanceCost"]),
                             VehicleId = Convert.ToString(dataReader["VehicleId"])
                         };
@@ -245,7 +255,7 @@ namespace Models.DAL
                         List<string> locations = Convert.ToString(dataReader["Locations"]).Split(",").ToList();
                         List<TimeSpan> durations = Convert.ToString(dataReader["Durations"]).Split(",").ToList().ConvertAll(TimeSpan.Parse);
                         TimeSpan pickUpdur = durations[locations.FindIndex(x => x == request.PickUp)];
-                        if (ride.VehicleType == request.VehicleType && ride.StartDateTime.Date == request.StartDateTime.Date && IsSeatAvailable(request, ride.Id) && IsEnRoute(ride.Id, request.PickUp, request.Drop) && DateTime.Now < (ride.StartDateTime + pickUpdur))
+                        if (ride.VehicleType == request.VehicleType && ride.StartDate.Date == request.StartDate.Date && IsSeatAvailable(request, ride.Id) && IsEnRoute(ride.Id, request.PickUp, request.Drop) && DateTime.Now < (ride.StartDate + pickUpdur))
                         {
                             rides.Add(ride);
                         }

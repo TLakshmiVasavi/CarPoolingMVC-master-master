@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="~/css/MyRides.css">
 <div class="row">
     <div class="col-md-10 ">
-        <form id="SearchRide">
+        <form id="BookRide">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="col-md-4 rounded shadow" style="left: 4%">
                 <div class="row" style="margin-bottom:20px">
@@ -42,9 +42,9 @@
                     </div>
 
                     <div class="form-group">
-                        <input asp-for="StartDateTime" class="form-control" />
-                        <label asp-for="StartDateTime" class="control-label"></label>
-                        <span asp-validation-for="StartDateTime" class="text-danger"></span>
+                        <input asp-for="StartDate" class="form-control" />
+                        <label asp-for="StartDate" class="control-label"></label>
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <small>Time</small>

@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using CarPoolingMVC.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Models;
 using Models.Enums;
+using System.IO;
+using System.Linq;
 
 namespace CarPoolingMVC
 {
@@ -10,7 +14,8 @@ namespace CarPoolingMVC
         public AutoMapping()
         {
             CreateMap<User, UserVM>().ForMember(dest=>dest.Vehicle,opt=>opt.MapFrom(src=>src.Vehicles[0]));
-            CreateMap<UserVM, User>();
+            //CreateMap<UserVM, User>().ForMember(dest => dest.Photo, opt => opt.MapFrom<photoResolver>());
+            CreateMap<UserVM, User>().ForMember(dest=>dest.Vehicles,opt=>opt.Ignore());
             CreateMap<Ride, RideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
             CreateMap<RideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route)); 
             CreateMap<Vehicle, VehicleVM>();
@@ -30,18 +35,46 @@ namespace CarPoolingMVC
             CreateMap<VehicleType, VehicleTypeVM>();
             CreateMap<Gender, GenderVM>();
             CreateMap<GenderVM, Gender>();
-            CreateMap<Request, RequestDetailsVM>().ForMember(dest=>dest.Source,opt=>opt.MapFrom(src=>src.PickUp))
+            CreateMap<RideRequest, RequestDetailsVM>().ForMember(dest=>dest.Source,opt=>opt.MapFrom(src=>src.PickUp))
                 .ForMember(dest=>dest.Destination,opt=>opt.MapFrom(src=>src.Drop));
-            CreateMap<RequestDetailsVM,Request>().ForMember(dest=>dest.PickUp,opt=>opt.MapFrom(src=>src.Source))
+            CreateMap<RequestDetailsVM,RideRequest>().ForMember(dest=>dest.PickUp,opt=>opt.MapFrom(src=>src.Source))
                 .ForMember(dest=>dest.Drop,opt=>opt.MapFrom(src=>src.Destination));
-            CreateMap<Request, RequestVM>().ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.PickUp))
+            CreateMap<RideRequest, RequestVM>().ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.PickUp))
                 .ForMember(dest => dest.Destination, opt => opt.MapFrom(src => src.Drop));
-            CreateMap<RequestVM, Request>().ForMember(dest => dest.PickUp, opt => opt.MapFrom(src => src.Source))
+            CreateMap<RequestVM, RideRequest>().ForMember(dest => dest.PickUp, opt => opt.MapFrom(src => src.Source))
                 .ForMember(dest => dest.Drop, opt => opt.MapFrom(src => src.Destination));
             CreateMap<Ride, OfferedRideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
             CreateMap<OfferedRideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
             CreateMap<AvailableRideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
             CreateMap<Ride, AvailableRideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
+            CreateMap<IFormFile, byte[]>().ConvertUsing<FileToByteConverter>();
+            CreateMap<byte[],IFormFile>().ConvertUsing<ByteToFileConverter>();
+        }
+    }
+   
+    public class FileToByteConverter : ITypeConverter<IFormFile, byte[]>
+    {
+        public byte[] Convert(IFormFile source, byte[] destination, ResolutionContext context)
+        {
+            byte[] result;
+            using (var stream = new MemoryStream())
+            {
+                source.CopyToAsync(stream);
+                result = stream.ToArray();
+            }
+            return result;
+        }
+    }
+    public class ByteToFileConverter : ITypeConverter<byte[],IFormFile>
+    {
+        public IFormFile Convert(byte[] source, IFormFile destination, ResolutionContext context)
+        {
+            IFormFile result;
+            using (var stream = new MemoryStream(source))
+            {
+                result= new FormFile(stream, 0, source.Length, "name", "fileName");
+            }
+            return result;
         }
     }
 }

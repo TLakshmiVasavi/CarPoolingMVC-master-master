@@ -1,27 +1,19 @@
 ﻿$(document).ready(function () {
-    
 
-    $("#SignUpForm").submit(function () {
-        var formData = new FormData(document.querySelector("form"));
-        var user = {};
-        for (var [key, value] of formData.entries()) {
-            user[key] = value;
-        }
-        var fileUpload = $("#photo").get(0);
-        var files = fileUpload.files;
-        user["Gender"] = true;
-        user["HasVehicle"] = false;
-        //user["photo"] = $('#photo')[0].files[0];
+        $("#SignUpForm").submit(function () {
+        event.preventDefault();
+        alert("starting...")
+        var url = $(this).attr("action");
         $.ajax({
-            type: "POST",
-            data: JSON.stringify(user),
-            processData: false,
             url: "https://localhost:5001/api/UserApi/SignUp",
-            contentType: "application/json",
+            type: "POST",
+            //dataType: "JSON",
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
             success: function (s) {
                 console.log(s)
                 alert("success");
-                window.location.href = "/Home/Index";
             },
             error: function (e) {
                 console.log(e)
@@ -30,7 +22,9 @@
         });
     });
 
-    $("#LoginForm").submit(function () {
+    $("#LoginForm").on('submit', function (e) {
+        e.preventDefault();
+        alert("Login");
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
@@ -42,22 +36,24 @@
             processData: false,
             url: "https://localhost:5001/api/UserApi/Login",
             contentType: "application/json",
+            dataType:"json",
             success: function (s) {
-                console.log(s)
+                //console.log(s)
                 alert("success");
-                window.location.href = "/Home/Index";
+                //window.location.href = "/Home/Index";
             },
             error: function (e) {
-                $.each(e, function (x) {
-                    console.log(x + " " + e[x])
-                });
-                console.log(e)
+                //$.each(e, function (x) {
+                //    console.log(x + " " + e[x])
+                //});
+                //console.log(e)
                 alert("error");
             }
         });
     });
 
-    $("#Balance").ready(function () {
+    $("#Balance").on('load',function () {
+        alert("Balance");
         $.ajax({
             type: 'GET',
             url: "https://localhost:5001/api/UserApi/GetBalance?userId=tlakshmivasavi005@gmail.com",
@@ -78,7 +74,8 @@
         });
     });
 
-    $("#UserProfile").ready(function () {
+    $("#UserProfile").on('load',function () {
+        alert("User Profile");
             $.ajax({
                 type: 'GET',
                 url: "https://localhost:5001/api/UserApi/GetUser?userId=tlakshmivasavi005@gmail.com",
@@ -99,7 +96,8 @@
             });
     });
 
-    $("#UserProfile").submit(function () {
+    $("#UserProfile").on('submit', function () {
+        alert("userProfile");
         $.ajax({
             type: 'POST',
             url: "https://localhost:5001/api/UserApi/GetUser?userId=tlakshmivasavi005@gmail.com",
@@ -120,62 +118,58 @@
         });
     });
 
-    $("#AddVehicle").ready(function () {
-
-        $("#submit").click(function () {
-            var formData = new FormData(document.querySelector("form"));
-            var Vehicle = {};
-            for (var [key, value] of formData.entries()) {
-                Vehicle[key] = value;
+    $("#AddVehicle").on('submit', function () {
+        alert("AddVehicle");
+        var formData = new FormData(document.querySelector("form"));
+        var Vehicle = {};
+        for (var [key, value] of formData.entries()) {
+            Vehicle[key] = value;
+        }
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(Vehicle),
+            processData: false,
+            url: "https://localhost:5001/api/UserApi/AddVehicle",
+            contentType: "application/json",
+            success: function (s) {
+                console.log(s)
+                alert("success");
+                window.location.href = "/Home/Index";
+            },
+            error: function (e) {
+                console.log(e)
             }
-            $.ajax({
-                type: "POST",
-                data: JSON.stringify(Vehicle),
-                processData: false,
-                url: "https://localhost:5001/api/UserApi/AddVehicle",
-                contentType: "application/json",
-                success: function (s) {
-                    console.log(s)
-                    alert("success");
-                    window.location.href = "/Home/Index";
-                },
-                error: function (e) {
-                    console.log(e)
-                }
-            });
         });
     });
 
-    $("#UpdateBalance").ready(function () {
+    $("#UpdateBalance").on('submit',function () {
+        alert("balance");
+        var formData = new FormData(document.querySelector("form"));
+        var user = {};
 
-        $("#submit").click(function () {
-
-            var formData = new FormData(document.querySelector("form"));
-            var user = {};
-
-            for (var [key, value] of formData.entries()) {
-                user[key] = value;
+        for (var [key, value] of formData.entries()) {
+            user[key] = value;
+        }
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(user),
+            processData: false,
+            url: "https://localhost:5001/api/UserApi/AddAmount",
+            contentType: "application/json",
+            success: function (s) {
+                console.log(s)
+                alert("Added Successfully");
+                window.location.href = "/User/GetProfile";
+            },
+            error: function (e) {
+                console.log(e)
             }
-            $.ajax({
-                type: "POST",
-                data: JSON.stringify(user),
-                processData: false,
-                url: "https://localhost:5001/api/UserApi/AddAmount",
-                contentType: "application/json",
-                success: function (s) {
-                    console.log(s)
-                    alert("Added Successfully");
-                    window.location.href = "/User/GetProfile";
-                },
-                error: function (e) {
-                    console.log(e)
-                }
 
-            });
         });
-    });
+    });    
 
-    $("#RideRequests").ready(function () {
+    $("#RideRequests").on('load', function () {
+        alert("ride request");
         $.ajax({
             type: "GET",
             data: JSON.stringify(user),
@@ -242,7 +236,7 @@
     });
     });
 
-    $("#OfferedRides").ready(function () {
+    $("#OfferedRides").on('load',function () {
         $.ajax({
             type: "GET",
             url: "https://localhost:5001/api/RideApi/GetOfferedRides?userId=" + document.cookie,
@@ -277,7 +271,7 @@
                         '<div class="row">' +
                         '<div class="col-md-4">' +
                         '<small>Date</small>' +
-                        '<p>' + getDate(item.startDateTime) + '</p>' +
+                        '<p>' + getDate(item.StartDate) + '</p>' +
                         '</div>' +
                         '<div class="col-md-4 col-md-offset-4">' +
                         '<small>Ride Status</small>' +
@@ -304,7 +298,7 @@
         });
     });
 
-    $("#SearchRide").submit(function () {
+    $("#BookRide").on('submit',function () {
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
@@ -314,7 +308,7 @@
             type: "POST",
             data: JSON.stringify(user),
             processData: false,
-            url: "https://localhost:5001/api/RideApi/SearchRide?userId=" + document.cookie,
+            url: "https://localhost:5001/api/RideApi/BookRide?userId=" + document.cookie,
             contentType: "application/json",
             success: function (data) {
                 console.log(data);
@@ -328,7 +322,7 @@
         });
     });
 
-    $("#OfferRide").submit(function () {
+    $("#OfferRide").on('submit',function () {
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
@@ -352,7 +346,7 @@
         });
     });
 
-    $("#MyBookings").ready(function () {
+    $("#MyBookings").on('load',function () {
         $.ajax({
             type: "GET",
             url: "https://localhost:5001/api/RideApi/GetBookings?userId=" + document.cookie,
@@ -390,7 +384,7 @@
                         '<div class="row">' +
                         '<div class="col-md-4">' +
                         '<small>Date</small>' +
-                        '<p>' + getDate(item.startDateTime) + '</p>' +
+                        '<p>' + getDate(item.StartDate) + '</p>' +
                         '</div>' +
                         '<div class="col-md-4 col-md-offset-4">' +
                         '<small>Ride Status</small>' +
@@ -427,12 +421,12 @@
         });
     });
 
-    $("#AvailableRides").ready(function () {
+    $("#AvailableRides").on('load',function () {
         var data = '@Html.Raw(Model)';
         $.ajax({
             type: "POST",
             data: data,
-            url: "https://localhost:5001/api/RideApi/SearchRide?userId=" + document.cookie,
+            url: "https://localhost:5001/api/RideApi/BookRide?userId=" + document.cookie,
             contentType: "application/json",
             success: function (data) {
                 $.each(data, function (index, item) {
@@ -459,7 +453,7 @@
                         '<div class="row">' +
                         '<div class="col-md-4">' +
                         '<small>Date</small>' +
-                        '<p>' + getDate(item.startDateTime) + '</p>' +
+                        '<p>' + getDate(item.StartDate) + '</p>' +
                         '</div>' +
                         '<div class="col-md-4 col-md-offset-4">' +
                         '<small>Ride Status</small>' +

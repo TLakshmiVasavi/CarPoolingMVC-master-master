@@ -16,7 +16,7 @@ namespace CarPoolingMVC.Models
 
         public bool IsRideCompleted { get; set; }
 
-        public DateTime StartDateTime { get; set; }
+        public DateTime StartDate { get; set; }
 
     }
 }

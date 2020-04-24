@@ -1,18 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarPoolingMVC.Models;
+using Microsoft.AspNetCore.Mvc;
 using Models.Interfaces;
 using System.Net.Http;
 
 namespace CarPoolingMVC.Controllers
 {
-    public class UserController : BaseController
+    public class UserController : Controller
     {
-        private readonly IUserService _userService;
-
-        public UserController(IUserService userService, IHttpClientFactory httpClientFactory) : base(httpClientFactory)
-        {
-            _userService = userService;
-        }        
-
         public IActionResult AddVehicle()
         {
             return View();
@@ -26,7 +20,7 @@ namespace CarPoolingMVC.Controllers
 
         public IActionResult SignUp()
         {
-            return View();
+            return View(new UserVM());
         }
 
         public ActionResult ViewBalance()
@@ -34,7 +28,7 @@ namespace CarPoolingMVC.Controllers
             return View();
         }
 
-        public ActionResult AddAmount()
+        public ActionResult UpdateBalance()
         {
             return View();
         }

@@ -28,7 +28,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         [HttpPost]
         [Route("SignUp")]
         [AllowAnonymous]
-        public void SignUp([FromBody]UserVM user)
+        public void SignUp([FromForm]UserVM user)
         {
             User User = _mapper.Map<User>(user);
             User.Vehicles = new List<Vehicle>();
@@ -123,6 +123,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 if (user!=null)
                 {
                     response.User = _mapper.Map<UserVM>(user);
+                    response.User.Photo = null;
                     CookieOptions options = new CookieOptions()
                     {
                         Path = "/",
@@ -131,7 +132,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                         IsEssential = true,
                         SameSite = SameSiteMode.None
                     };
-                    Response.Cookies.Append("UserId",user.Id, options);
+                    Response.Cookies.Append("UserId",user.Mail, options);
                     //CookieOptions options = new CookieOptions()
                     //{
                     //    Path = "/",

@@ -1,31 +1,6 @@
 ﻿@model CarPoolingMVC.Models.RequestVM
-<style>
-    .dot {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: grey;
-        margin: 3px;
-    }
-
-    .shadow {
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
-
-    .heading {
-        margin: 10px;
-        left: 20px;
-        color: darkviolet;
-        font: bold;
-    }
-
-    p {
-        font-size: larger;
-    }
-</style>
 <form id="AvailableRides">
-    @Html.HiddenFor(x => x.StartDateTime)
+    @Html.HiddenFor(x => x.StartDate)
     @Html.HiddenFor(x => x.Destination)
     @Html.HiddenFor(x => x.Source)
     @Html.HiddenFor(x => x.NoOfSeats)

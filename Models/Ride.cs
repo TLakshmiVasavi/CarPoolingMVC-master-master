@@ -16,9 +16,12 @@ namespace Models
 
         public string ProviderName;
 
-        public DateTime StartDateTime;
+        //public DateTime StartDateTime;
 
-        public DateTime EndDateTime;
+        //public DateTime EndDateTime;
+        public DateTime StartDate;
+
+        public string Time;
 
         public int NoOfOfferedSeats;
 
@@ -26,13 +29,13 @@ namespace Models
 
         public float UnitDistanceCost;
 
-        public List<Request> Requests;
+        public List<RideRequest> Requests;
 
         public List<Booking> Bookings;
 
         public Route Route;
 
-        public bool IsRideCompleted => EndDateTime < DateTime.Now;
+        //public bool IsRideCompleted => StartDate < DateTime.Now.Date;
 
         public Ride()
         {
