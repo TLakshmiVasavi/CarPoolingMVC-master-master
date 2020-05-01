@@ -1,32 +1,6 @@
 ﻿@model CarPoolingMVC.Models.RideVM
 <link rel="stylesheet" href="~/css/MyRides.css">
 <link rel="stylesheet" href="~/css/FormStyles.css">
-<script>
-    
-        $.ajax({
-            type: "GET",
-            url: "https://localhost:5001/api/UserApi/GetVehicles?userId=" + document.cookie,
-            contentType: "application/json",
-            success: function (data) {
-                let dropdown = $("#Vehicles");
-                if (data.length == 0) {
-                    window.location.href = "/User/AddVehicle";
-                }
-                else {
-                    $.each(data, function (item) {
-                        let option = $('<option></option>');
-                        option.val(item.number);
-                        option.html(item.number);
-                        dropdown.append(option);
-                    });
-                }
-            },
-            error: function (e) {
-                alert("error");
-            }
-        })
-    
-</script>
 <div class="row">
     <div class="col-md-10 ">
         <form id="OfferRide">
@@ -111,11 +85,8 @@
                     </div>
                     <div class="row">
                         <small>Available Seats</small>
-                        <div class="btn-group" role="group">
-                            @for (int i = 0; i < 6; i++)
-                            {
-                                <button type="button" class="btn round-button">i</button>
-                            }
+                        <div class="btn-group" role="group" id="NoOfSeats">
+                            
                         </div>
                     </div>
                     <div class="form-group">

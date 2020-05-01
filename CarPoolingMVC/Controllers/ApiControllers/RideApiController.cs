@@ -32,8 +32,8 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }        
 
         [HttpPost]
-        //[Route("CreateRide")]
-        public void CreateRide([FromBody]RideVM ride, [FromQuery]string userId)
+        //[Route("OfferRide")]
+        public void OfferRide([FromBody]RideVM ride, [FromQuery]string userId)
         {
             int[] res = new int[2];
             Ride newRide;

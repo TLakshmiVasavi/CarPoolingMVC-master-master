@@ -118,7 +118,7 @@ namespace Models.DAL
                             Capacity = Convert.ToInt32(dataReader["Capacity"]),
                             Model = Convert.ToString(dataReader["Model"]),
                             Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"])),
-                            Number = userId
+                            Number = Convert.ToString(dataReader["Number"])
                         };
                         vehicles.Add(vehicle);
                     }

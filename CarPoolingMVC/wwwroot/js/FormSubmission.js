@@ -73,7 +73,6 @@
         $.ajax({
             type: "POST",
             data: JSON.stringify(user),
-            processData: false,
             url: "https://localhost:5001/api/UserApi/Login",
             contentType: "application/json",
             dataType: "json",

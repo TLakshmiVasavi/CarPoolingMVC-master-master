@@ -39,3 +39,16 @@ small {
     margin-top: 100px;
     margin-left: 50px;
 }
+
+.round-button {
+    border-radius:50% !important;
+    border:solid darkviolet;
+    margin:5px;
+}
+
+    .round-button.active {
+        color:white!important;
+    }
+    .round-button:focus{
+        outline:unset !important;
+    }

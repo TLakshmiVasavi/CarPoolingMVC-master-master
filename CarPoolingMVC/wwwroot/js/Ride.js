@@ -36,9 +36,11 @@ $(document).on('click', ".next", function () {
     $("#second").show();
 });
 
-$(document).on('click', "#add_stop", function () {
+function AddStop()
+{
     var x = $("#count").val();
-    alert("hi");
+    x++;
+    alert(x);
     var div = document.createElement("div");
     var label = document.createElement("label");
     var input = document.createElement("input");
@@ -46,10 +48,11 @@ $(document).on('click', "#add_stop", function () {
     var a = document.createElement("a");
     var i = document.createElement("i");
     var span = document.createElement("span");
+    div.id = "stop" + x;
     a.classList.add("add_input");
     div.classList.add("form-group");
     label.classList.add("control-label");
-    label.innerHTML = "Stop"+(x+1);
+    label.innerHTML = "Stop " + x;
     label.setAttribute("for", "Route_ViaPoints_" + x + "__Location");
     input.classList.add("form-control");
     input.type = "text";
@@ -60,7 +63,7 @@ $(document).on('click', "#add_stop", function () {
     input.value = "";
     inputgroup.classList.add("input-group");
     i.classList.add("glyphicon");
-    i.classList.add("glyphicon-minus");
+    i.classList.add("glyphicon-plus");
     span.classList.add("text-danger");
     span.classList.add("field-validation-valid");
     span.setAttribute("data-valmsg-for", "Route.ViaPoints[" + x + "].Location");
@@ -75,14 +78,22 @@ $(document).on('click', "#add_stop", function () {
     div.appendChild(inputgroup);
     div.appendChild(span);
     $("#stops").append(div);   // Append new elements
-    x = x + 1;
-    doReady();
     $("#count").val(x);
-});
+    if (x == 1) {
+        $("#add_stop").hide();
+    } else {
+        $("#stop" + (x - 1)).children("div").children("div").remove()
+    }
+}
+
+$(document).on('click', ".input-group-addon", AddStop);
+
+$(document).on('click', "#add_stop", AddStop);
+
 //
 function addDots() {
     var count = Math.floor(($("#stops").outerHeight() - $(".dot").outerHeight() - $(".glyphicon-map-marker").outerHeight()) / ($(".dot").outerHeight()));
-    $(".dots").outerHeight($("#stops").outerHeight());
+//    $(".dots").outerHeight($("#stops").outerHeight());
     for (var i = 0; i < count; i++) {
         $(".dots").insertBefore(".glyphicon", '<div class="dot"></div>')
     }
