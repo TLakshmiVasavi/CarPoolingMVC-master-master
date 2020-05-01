@@ -100,14 +100,14 @@ namespace Models.DAL
             return vehicles;
         }
 
-        public List<Vehicle> GetVehiclesByUserId(string id)
+        public List<Vehicle> GetVehicles(string userId)
         {
             List<Vehicle> vehicles = new List<Vehicle>();
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"Select * From Vehicle where OwnerId='{id}'";
+                string sql = $"Select * From Vehicle where OwnerId='{userId}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
@@ -118,7 +118,7 @@ namespace Models.DAL
                             Capacity = Convert.ToInt32(dataReader["Capacity"]),
                             Model = Convert.ToString(dataReader["Model"]),
                             Type = Enum.Parse<VehicleType>(Convert.ToString(dataReader["Type"])),
-                            Number = id
+                            Number = userId
                         };
                         vehicles.Add(vehicle);
                     }

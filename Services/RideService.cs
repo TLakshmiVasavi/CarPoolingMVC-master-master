@@ -11,8 +11,6 @@ namespace Services
 {
     public class RideService : IRideService
     {
-        List<Ride> Rides = new List<Ride>();
-        //double Time = 120000;
         RideDal RideDal = new RideDal(new AppConfiguration());
         BookingDal BookingDal = new BookingDal(new AppConfiguration());
         
@@ -33,7 +31,7 @@ namespace Services
 
         public List<Ride> FindRides(RideRequest request)
         {
-            return RideDal.GetAvailableRides(request);
+            return RideDal.BookRide(request);
         }
 
         public float CalculateCostForRide(int rideId,string pickUp,string drop)
@@ -56,7 +54,7 @@ namespace Services
             return RideDal.IsBooked(rideId, userId);
         }
         
-        public bool ApproveRequest(int rideId, string requestId, bool isApproved)
+        public bool ApproveRequest(int rideId, int requestId, bool isApproved)
         {
             if (isApproved)
             {
@@ -86,6 +84,11 @@ namespace Services
         public List<RideRequest> GetRequests(int rideId)
         {
             return BookingDal.GetRequests(rideId);
+        }
+
+        public RideRequest GetRequest(int requestId)
+        {
+            return BookingDal.GetRequest(requestId);
         }
 
     }

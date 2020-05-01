@@ -7,13 +7,14 @@ using Models.Interfaces;
 using RestSharp;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
    // [Authorize]
-    public class UserApiController : Controller
+    public class UserApiController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
@@ -26,43 +27,32 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 
 
         [HttpPost]
-        [Route("SignUp")]
+        //[Route("SignUp")]
         [AllowAnonymous]
-        public void SignUp([FromForm]UserVM user)
+        public AuthResponseVM SignUp([FromForm]UserVM userVM)
         {
-            User User = _mapper.Map<User>(user);
-            User.Vehicles = new List<Vehicle>();
-            if (user.HasVehicle)
+            AuthResponseVM authResponse = new AuthResponseVM();
+            UserResponse response = _userService.SignUp(_mapper.Map<User>(userVM));
+            if (response.ErrorMessage.Length>0)
             {
-                Vehicle Vehicle;
-                switch (user.VehicleType)
-                {
-                    case VehicleTypeVM.Car:
-                        Vehicle = new Car();
-                        break;
-                    case VehicleTypeVM.Bike:
-                        Vehicle = new Bike();
-                        user.Vehicle.Capacity = 2;
-                        break;
-                    default:
-                        Vehicle = new Vehicle();
-                        break;
-                }
-                Vehicle = _mapper.Map<Vehicle>(user.Vehicle);
-                User.Vehicles.Add(Vehicle);
+                authResponse.ErrorMessage = response.ErrorMessage;
+                authResponse.IsSuccess = false;
             }
-            _userService.SignUp(User);
-            //CookieOptions options = new CookieOptions()
-            //{
-            //    Path = "/",
-            //    Secure = true,
-            //    HttpOnly = true,
-            //    IsEssential = true,
-            //    SameSite = SameSiteMode.None,
-            //    Expires=DateTime.Now.AddDays(1)
-            //};
-            //string res = GenerateToken();
-            //Response.Cookies.Append("Bearer", res,options);
+            else
+            {
+                authResponse.IsSuccess = true;
+                CookieOptions options = new CookieOptions()
+                {
+                    Path = "/",
+                    Secure = true,
+                    HttpOnly = true,
+                    IsEssential = true,
+                    SameSite = SameSiteMode.None
+                };
+                Response.Cookies.Append("userId", userVM.Mail, options);
+                Response.Cookies.Append("userName", userVM.Name, options);
+            }
+            return authResponse;
         }
 
         private static string GenerateToken()
@@ -75,7 +65,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        [Route("AddVehicle")]
+        //[Route("AddVehicle")]
         public void AddVehicle([FromBody]VehicleVM vehicle, [FromQuery]string userId)
         {
             Vehicle NewVehicle;
@@ -97,91 +87,83 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpGet]
-        [Route("GetVehicles")]
-        public IEnumerable<string> GetVehicles([FromQuery]string userId)
+        //[Route("GetVehicles")]
+        public List<VehicleVM> GetVehicles([FromQuery]string userId)
         {
-            return _userService.GetVehiclesId(userId);
+            return _mapper.Map<List<VehicleVM>>(_userService.GetVehicles(userId));
         }
 
         [HttpGet]
-        [Route("GetBalance")]
+        //[Route("GetBalance")]
         public float GetBalance([FromQuery]string userId)
         {
             return _userService.GetBalance(userId);
         }
 
         [HttpPost]
-        [Route("Login")]
+        //[Route("Login")]
         [AllowAnonymous]
         //public LoginResponse Login([FromQuery]string userId, [FromBody]string password)
-        public LoginResponse Login([FromBody]UserLoginVM userDto)
+        public AuthResponseVM Login([FromBody]UserLoginVM userDto)
         {
-            LoginResponse response = new LoginResponse();
-            if (_userService.IsUserExist(userDto.Id))
+            AuthResponseVM response = new AuthResponseVM();
+            UserResponse userResponse = new UserResponse();
+            userResponse = _userService.Login(userDto.Password, userDto.Id);
+            if (userResponse.ErrorMessage.Length == 0)
             {
-                User user = _userService.Login(userDto.Password, userDto.Id);
-                if (user!=null)
+                CookieOptions options = new CookieOptions()
                 {
-                    response.User = _mapper.Map<UserVM>(user);
-                    response.User.Photo = null;
-                    CookieOptions options = new CookieOptions()
-                    {
-                        Path = "/",
-                        Secure = true,
-                        HttpOnly = true,
-                        IsEssential = true,
-                        SameSite = SameSiteMode.None
-                    };
-                    Response.Cookies.Append("UserId",user.Mail, options);
-                    //CookieOptions options = new CookieOptions()
-                    //{
-                    //    Path = "/",
-                    //    Secure = true,
-                    //    HttpOnly = true,
-                    //    IsEssential = true,
-                    //    SameSite = SameSiteMode.None
-                    //};
-                    //string res = GenerateToken();
-                    //Response.Cookies.Append("Bearer", res, options);
-                }
-                else
-                {                    
-                    response.ErrorMessage = "Invalid Password";
-                }
+                    Path = "/",
+                    Secure = true,
+                    HttpOnly = true,
+                    IsEssential = true,
+                    SameSite = SameSiteMode.None
+                };
+                Response.Cookies.Append("userId", userResponse.User.Mail, options);
+                Response.Cookies.Append("userName", userResponse.User.Name, options);
+                //string res = GenerateToken();
+                //Response.Cookies.Append("Bearer", res, options);
             }
             else
             {
-                response.ErrorMessage = "Invalid UserName";
+                response.ErrorMessage = userResponse.ErrorMessage;
             }
             return response;
         }
 
         [HttpPost]
-        [Route("AddAmountToWallet")]
+        //[Route("AddAmountToWallet")]
         public void AddAmount([FromBody]float amount, [FromQuery]string userId)
         {
             _userService.AddAmount(amount, userId);
         }
 
         [Authorize]
-        [Route("Logout")]
+        //[Route("Logout")]
         public void Logout()
         {
             Response.Cookies.Delete("Bearer");
         }
 
-        [Route("GetUser")]
+        //[Route("GetUser")]
         public User GetUser([FromQuery]string userId)
         {
             return _userService.FindUser(userId);
         }
 
         [HttpPost]
-        [Route("UpdateUser")]
         public UserVM UpdateUser([FromBody] UserVM userDto)
         {
             User user = _mapper.Map<User>(userDto);
             return _mapper.Map<UserVM>(_userService.UpdateUserDetails(user));
+        }
+
+        
+
+        [HttpGet]
+        public byte[] GetImage([FromQuery]string userId)
+        {
+            return _userService.GetImage(userId);
         }
     }
 }

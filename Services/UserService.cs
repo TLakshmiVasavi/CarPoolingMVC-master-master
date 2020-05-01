@@ -9,7 +9,6 @@ namespace Services
 {
     public class UserService : IUserService
     {
-        readonly List<User> Users = new List<User>();
         readonly UserDal userDal = new UserDal(new AppConfiguration());
         readonly VehicleDal vehicleDal = new VehicleDal(new AppConfiguration());
 
@@ -33,7 +32,7 @@ namespace Services
             return userDal.IsUserExist(mail);
         }
 
-        public User SignUp(User user)
+        public UserResponse SignUp(User user)
         {
            return userDal.Create(user);
         }
@@ -59,7 +58,7 @@ namespace Services
             userDal.AddBalance(-cost, riderId);
         }
 
-        public User Login(string password, string userId)
+        public UserResponse Login(string password, string userId)
         {
             return userDal.Login(userId, password);
         }
@@ -69,14 +68,19 @@ namespace Services
             return vehicleDal.GetById(vehicleId);
         }
 
-        public List<string> GetVehiclesId(string userId)
+        public List<Vehicle> GetVehicles(string userId)
         {
-            return vehicleDal.GetVehiclesId(userId);
+            return vehicleDal.GetVehicles(userId);
         }
 
         public User UpdateUserDetails(User user)
         {
             return userDal.Update(user);
+        }
+
+        public byte[] GetImage(string userId)
+        {
+            return userDal.GetImage(userId);
         }
 
     }

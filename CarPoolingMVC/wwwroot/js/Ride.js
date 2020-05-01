@@ -32,14 +32,13 @@ $(document).ready(function () {
 });
 
 $(document).on('click', ".next", function () {
-    alert("hii");
     $("#first").hide();
-    alert("hii");
     $("#second").show();
-    alert("hii");
 });
 
-$(document).on('click', ".add_stop", function () {
+$(document).on('click', "#add_stop", function () {
+    var x = $("#count").val();
+    alert("hi");
     var div = document.createElement("div");
     var label = document.createElement("label");
     var input = document.createElement("input");
@@ -50,7 +49,7 @@ $(document).on('click', ".add_stop", function () {
     a.classList.add("add_input");
     div.classList.add("form-group");
     label.classList.add("control-label");
-    label.innerHTML = "Location";
+    label.innerHTML = "Stop"+(x+1);
     label.setAttribute("for", "Route_ViaPoints_" + x + "__Location");
     input.classList.add("form-control");
     input.type = "text";
@@ -78,6 +77,7 @@ $(document).on('click', ".add_stop", function () {
     $("#stops").append(div);   // Append new elements
     x = x + 1;
     doReady();
+    $("#count").val(x);
 });
 //
 function addDots() {

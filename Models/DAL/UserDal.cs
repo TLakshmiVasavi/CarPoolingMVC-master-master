@@ -16,27 +16,44 @@ namespace Models.DAL
             Configuration = configuration;
         }
 
-        public User Create(User user)
+        public UserResponse Create(User user)
         {
+            UserResponse userResponse = new UserResponse();
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
-            {                
-                string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, MobileNumber,Photo) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Mail}', '{user.Mail}', '{user.Password}', '{user.Number}',@Photo)";
-
+            {
+               //string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, MobileNumber,Photo) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Mail}', '{user.Mail}', '{user.Password}', '{user.Number}',@Photo)";
+                string sql = $"Insert Into [User] (Name, Age, Gender, Id, Mail, Password, MobileNumber{(user.Photo == null ? "" : ",Photo")}) Values ('{user.Name}', '{user.Age}', '{user.Gender}', '{user.Mail}', '{user.Mail}', '{user.Password}', '{user.Number}'{(user.Photo == null ? "" : ",@Photo")})";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
+                    try
+                    {
+                        command.CommandType = CommandType.Text;
+                        if (user.Photo != null)
+                        {
+                            command.Parameters.AddWithValue("@Photo", user.Photo);
+                        }
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                    catch (SqlException ex)
+                    {
+                        if (ex.Message.Contains("Violation of PRIMARY KEY constraint"))
+                        {
+                            userResponse.ErrorMessage = "User Already Exists";
+                        }
+                        else
+                        {
+                            userResponse.ErrorMessage = ex.Message;
+                        }
+                    }
                     
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.AddWithValue("@Photo", user.Photo);
-                    connection.Open();
-                    //command.Parameters.AddWithValue("Photo",user.Photo);
-                    //command.Parameters.Add("Photo",user.Photo);
-                    command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
             user.Wallet.Balance = 0;
-            return user;
+            userResponse.User = user;
+            return userResponse;
         }
 
         public User Update(User user)
@@ -115,31 +132,50 @@ namespace Models.DAL
             return users;
         }
 
-        public User Login(string id, string password)
+        public UserResponse Login(string id, string password)
         {
-            User user=new User();
+            UserResponse response = new UserResponse();
+            User user=null;
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"Select * From [User] where Id='{id}' and Password='{password}'";
+                string sql = $"Select * From [User] where Id='{id}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
-                    while (dataReader.Read())
+                    if (dataReader.HasRows)
                     {
-                        user.Name = Convert.ToString(dataReader["Name"]);
-                        user.Mail = Convert.ToString(dataReader["Mail"]);
-                        user.Age = Convert.ToInt32(dataReader["Age"]);
-                        user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
-                        user.Number = Convert.ToString(dataReader["MobileNumber"]);
-                        user.Photo = (byte[])dataReader["Photo"];
-                        user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
+                        while (dataReader.Read())
+                        {
+                            user = new User
+                            {
+                                Name = Convert.ToString(dataReader["Name"]),
+                                Mail = Convert.ToString(dataReader["Mail"]),
+                                Age = Convert.ToInt32(dataReader["Age"]),
+                                Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"])),
+                                Number = Convert.ToString(dataReader["MobileNumber"]),
+                                Photo = dataReader["Photo"] == null ? null : (byte[])dataReader["Photo"]
+                            };
+                            user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
+                        }
+                        if (user.Password != password)
+                        {
+                            response.ErrorMessage = "Invalid Password";
+                        }
+                        else
+                        {
+                            response.User = user;
+                        }
+                    }
+                    else
+                    {
+                        response.ErrorMessage = "Invalid Id";
                     }
                 }
                 connection.Close();
             }
-            return user;
+            return response;
         }
 
         public void AddBalance(float amount,string id)
@@ -210,6 +246,31 @@ namespace Models.DAL
                 connection.Close();
             }
             return name;
+        }
+
+        public byte[] GetImage(string userId)
+        {
+            string connectionString = Configuration.ConnectionString;
+            object Photo;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Select Photo from [User] Where Id='{userId}'";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    Photo = command.ExecuteScalar();
+                    connection.Close();
+                }
+                connection.Close();
+            }
+            try
+            {
+                return (byte[])Photo;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
     }

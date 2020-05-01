@@ -11,14 +11,17 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.0.3/bootstrap-show-password.min.js"></script>
-        <link rel="stylesheet" href="~/css/basic.css">
-        
+        <link rel="stylesheet" href="~/css/basic.css" />
+        <link rel="stylesheet" href="~/css/Colors.css" />
+        <link rel="stylesheet" href="~/css/FormStyles.css" />
+
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="~/js/Ride.js"></script>
         <script src="~/js/Layout.js"></script>
-        <script src="~/js/ModelValidation.js"></script>
+        
         <script src="~/js/FormSubmission.js"></script>
+        
         <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 
@@ -33,8 +36,9 @@
 <body>
     <div class="container-fluid logo">
         <div class="dropdown user">
-            <img src="" id="userPic" class="img-circle dropdown-toggle" type="button" data-toggle="dropdown" />
+            <img src="" id="userPic" class="userImage dropdown-toggle" type="button" data-toggle="dropdown" />
             <ul class="dropdown-menu">
+                <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                 <li><a asp-action="GetProfile" asp-controller="User">Profile</a></li>
                 <li><a asp-action="MyRides" asp-controller="Ride">My Rides</a></li>
                 @*<li><a asp-action="ChangePassword" asp-controller="User">Change Password</a></li>*@

@@ -1,6 +1,5 @@
 ﻿using Models.Enums;
 using System;
-using System.Collections.Generic;
 
 namespace Models
 {
@@ -16,22 +15,17 @@ namespace Models
 
         public string ProviderName;
 
-        //public DateTime StartDateTime;
-
-        //public DateTime EndDateTime;
         public DateTime StartDate;
 
         public string Time;
 
         public int NoOfOfferedSeats;
 
+        public int AvailableSeats;
+
         public float Distance;
 
         public float UnitDistanceCost;
-
-        public List<RideRequest> Requests;
-
-        public List<Booking> Bookings;
 
         public Route Route;
 

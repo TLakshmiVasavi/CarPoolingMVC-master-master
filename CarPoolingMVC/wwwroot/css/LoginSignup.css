@@ -55,33 +55,6 @@ a:hover {
     color: white;
 }
 
-.white {
-    color:white;
-}
-
-.login-form {
-    background-color:darkviolet;
-}
-
-.signup-form {
-    background-color: rgb(255, 172, 25);
-}
-
-.btn {
-    color: white;
-    font-weight: bold;
-    border-radius: 1.5em;
-}
-
-.login {
-    border-color: rgb(255, 172, 25);
-    background-color: rgb(255, 172, 25);
-}
-
-.signup {
-    border-color:darkviolet;
-    background-color:darkviolet;
-}
 
 .form-group {
     display: flex;

@@ -25,18 +25,18 @@ namespace Models.DAL
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string locations= ride.Route.Source+","+string.Join(",",ride.Route.ViaPoints.Select(_ => _.Location).ToList())+ ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Route.Destination;
-                string distances = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + ((ride.Route.ViaPoints.Count>0)?",":"") + ride.Distance;
-//                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.EndDateTime - ride.StartDate);
+                string locations = ride.Route.Source + "," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Location).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Route.Destination;
+                string distances = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Distance;
+                //                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.EndDateTime - ride.StartDate);
                 string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.StartDate);
                 string sql = $"Insert Into Ride (VehicleId, ProviderId, NoOfOfferedSeats, UnitDistanceCost, StartDate,Time, Locations," +
                     $" Distances, Durations,Duration,Distance) Values ('{ride.VehicleId}','{ride.ProviderId}'," +
                     $"'{ride.NoOfOfferedSeats}','{ride.UnitDistanceCost}','{ride.StartDate}','{locations}'," +
                     $"'{distances}','{durations}','{ride.StartDate}','{ride.Distance}')";
-                    //string sql = $"Insert Into Ride (VehicleId, ProviderId, NoOfOfferedSeats, UnitDistanceCost, StartDate,Time, Locations," +
-                    //$" Distances, Durations,Duration,Distance) Values ('{ride.VehicleId}','{ride.ProviderId}'," +
-                    //$"'{ride.NoOfOfferedSeats}','{ride.UnitDistanceCost}','{ride.StartDate}','{locations}'," +
-                    //$"'{distances}','{durations}','{ride.EndDateTime - ride.StartDate}','{ride.Distance}')";
+                //string sql = $"Insert Into Ride (VehicleId, ProviderId, NoOfOfferedSeats, UnitDistanceCost, StartDate,Time, Locations," +
+                //$" Distances, Durations,Duration,Distance) Values ('{ride.VehicleId}','{ride.ProviderId}'," +
+                //$"'{ride.NoOfOfferedSeats}','{ride.UnitDistanceCost}','{ride.StartDate}','{locations}'," +
+                //$"'{distances}','{durations}','{ride.EndDateTime - ride.StartDate}','{ride.Distance}')";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -54,7 +54,7 @@ namespace Models.DAL
             {
                 string locations = ride.Route.Source + "," + string.Join(",", ride.Route.ViaPoints.Select(_ => _.Location).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Route.Destination;
                 string distances = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Distance).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + ride.Distance;
-//                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.EndDateTime - ride.StartDate);
+                //                string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.EndDateTime - ride.StartDate);
                 string durations = string.Join(",", ride.Route.ViaPoints.Select(_ => _.Duration).ToList()) + ((ride.Route.ViaPoints.Count > 0) ? "," : "") + (ride.StartDate);
                 string sql = $"Update Ride set VehicleId='{ride.VehicleId}', ProviderId='{ride.ProviderId}', NoOfOfferedSeats='{ride.NoOfOfferedSeats}', UnitDistanceCost='{ride.UnitDistanceCost}', StartDate='{ride.StartDate}', Locations='{locations}', Distances='{distances}' where id='{ride.Id}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -155,7 +155,7 @@ namespace Models.DAL
                             StartDate = Convert.ToDateTime(dataReader["StartDate"]),
                             UnitDistanceCost = float.Parse(Convert.ToString(dataReader["UnitDistanceCost"])),
                             VehicleId = Convert.ToString(dataReader["VehicleId"]),
-                            Time=Convert.ToString(dataReader["Time"])
+                            Time = Convert.ToString(dataReader["Time"])
                         };
                         locations = Convert.ToString(dataReader["locations"]).Split(",").ToList();
                         Ride.VehicleType = VehicleDal.GetVehicleType(Ride.VehicleId);
@@ -177,13 +177,69 @@ namespace Models.DAL
             return rides;
         }
 
-        public bool IsSeatAvailable(RideRequest request,int rideId)
+        public int GetNoOfAvailableSeats(RideRequest request, int rideId)
         {
-            List<string> locations=new List<string>();
-            List<float> distances=new List<float>();
+            int AvaliableSeats = 1;
+            List<string> locations = new List<string>();
+            List<float> distances = new List<float>();
             List<PlaceDetails> placesDetails = new List<PlaceDetails>();
             string connectionString = Configuration.ConnectionString;
-            int NoOfOfferedSeats=0;
+            int NoOfOfferedSeats = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+
+                connection.Open();
+                string sql = $"select locations,distances,NoOfOfferedSeats from Ride where Id='{rideId}'";
+                SqlCommand command = new SqlCommand(sql, connection);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        NoOfOfferedSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]);
+                        locations = Convert.ToString(dataReader["Locations"]).Split(",").ToList();
+                        distances = Convert.ToString(dataReader["Distances"]).Split(",").ToList().ConvertAll(float.Parse);
+                        distances.ForEach(x => placesDetails.Add(new PlaceDetails() { distance = x, count = 0 }));
+                    }
+                }
+                sql = $"select * from Booking where RideId='{rideId}' and status='Approved'";
+                command = new SqlCommand(sql, connection);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        int noOfSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]);
+                        float pickUpdist = distances[locations.FindIndex(x => x == request.PickUp)];
+                        float dropdist = distances[locations.FindIndex(x => x == request.Drop)];
+
+                        do
+                        {
+                            foreach (var item in placesDetails)
+                            {
+                                if (pickUpdist <= item.distance && item.distance < dropdist)
+                                {
+                                    item.count += request.NoOfSeats;
+                                    if (item.count + noOfSeats > NoOfOfferedSeats)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            AvaliableSeats++;
+                        } while (true);
+                    }
+                }
+                connection.Close();
+            }
+            return AvaliableSeats - 1;
+        }
+
+        public bool IsSeatAvailable(RideRequest request, int rideId)
+        {
+            List<string> locations = new List<string>();
+            List<float> distances = new List<float>();
+            List<PlaceDetails> placesDetails = new List<PlaceDetails>();
+            string connectionString = Configuration.ConnectionString;
+            int NoOfOfferedSeats = 0;
             bool flag = true;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -203,12 +259,12 @@ namespace Models.DAL
                 sql = $"select * from Booking where RideId='{rideId}' and status='Approved'";
                 command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
-                { 
+                {
                     while (dataReader.Read())
                     {
                         int noOfSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]);
-                        float pickUpdist=distances[locations.FindIndex(x => x == request.PickUp)];
-                        float dropdist=distances[locations.FindIndex(x => x == request.Drop)];
+                        float pickUpdist = distances[locations.FindIndex(x => x == request.PickUp)];
+                        float dropdist = distances[locations.FindIndex(x => x == request.Drop)];
                         foreach (var item in placesDetails)
                         {
                             if (pickUpdist <= item.distance && item.distance < dropdist)
@@ -216,11 +272,11 @@ namespace Models.DAL
                                 item.count += request.NoOfSeats;
                                 if (item.count + noOfSeats > NoOfOfferedSeats)
                                 {
-                                    flag=false;
+                                    flag = false;
                                     break;
                                 }
                             }
-                        }   
+                        }
                     }
                 }
                 connection.Close();
@@ -228,7 +284,7 @@ namespace Models.DAL
             return flag;
         }
 
-        public List<Ride> GetAvailableRides(RideRequest request)
+        public List<Ride> BookRide(RideRequest request)
         {
             List<Ride> rides = new List<Ride>();
             string connectionString = Configuration.ConnectionString;
@@ -255,7 +311,8 @@ namespace Models.DAL
                         List<string> locations = Convert.ToString(dataReader["Locations"]).Split(",").ToList();
                         List<TimeSpan> durations = Convert.ToString(dataReader["Durations"]).Split(",").ToList().ConvertAll(TimeSpan.Parse);
                         TimeSpan pickUpdur = durations[locations.FindIndex(x => x == request.PickUp)];
-                        if (ride.VehicleType == request.VehicleType && ride.StartDate.Date == request.StartDate.Date && IsSeatAvailable(request, ride.Id) && IsEnRoute(ride.Id, request.PickUp, request.Drop) && DateTime.Now < (ride.StartDate + pickUpdur))
+                        ride.AvailableSeats = GetNoOfAvailableSeats(request, ride.Id);
+                        if (ride.VehicleType == request.VehicleType && ride.AvailableSeats != 0 && ride.StartDate.Date == request.StartDate.Date && IsEnRoute(ride.Id, request.PickUp, request.Drop))
                         {
                             rides.Add(ride);
                         }
@@ -266,12 +323,12 @@ namespace Models.DAL
             return rides;
         }
 
-        public float GetCost(int rideId,string source,string destination)
+        public float GetCost(int rideId, string source, string destination)
         {
             string connectionString = Configuration.ConnectionString;
             List<string> locations;
             List<float> distances;
-            float res=0;
+            float res = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();

@@ -14,6 +14,8 @@ namespace CarPoolingMVC.Models
 
         public string ProviderName { get; set; }
 
+        public byte[] ProviderPic { get; set; }
+
         public string ProviderId { get; set; }
 
         public RouteVM Route { get; set; }

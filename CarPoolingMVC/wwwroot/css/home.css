@@ -22,10 +22,5 @@
 #one {
     display: flex;
     align-items: center;
-    
     justify-content: center;
-}
-.userImage {
-    float: right;
-    margin: 0px 15px 15px 0px;
 }

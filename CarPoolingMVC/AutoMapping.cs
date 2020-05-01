@@ -56,6 +56,10 @@ namespace CarPoolingMVC
     {
         public byte[] Convert(IFormFile source, byte[] destination, ResolutionContext context)
         {
+            if(source==null)
+            {
+                return null;
+            }
             byte[] result;
             using (var stream = new MemoryStream())
             {
@@ -69,6 +73,10 @@ namespace CarPoolingMVC
     {
         public IFormFile Convert(byte[] source, IFormFile destination, ResolutionContext context)
         {
+            if (source == null)
+            {
+                return null;
+            }
             IFormFile result;
             using (var stream = new MemoryStream(source))
             {

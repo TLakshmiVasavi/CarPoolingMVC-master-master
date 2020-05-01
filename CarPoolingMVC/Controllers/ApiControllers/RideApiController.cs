@@ -15,10 +15,10 @@ using Models;
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     //[Authorize]
-    public class RideApiController : Controller
+    public class RideApiController : ControllerBase
     {
         private readonly IRideService _rideService;
         private readonly IUserService _userService;
@@ -32,7 +32,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }        
 
         [HttpPost]
-        [Route("CreateRide")]
+        //[Route("CreateRide")]
         public void CreateRide([FromBody]RideVM ride, [FromQuery]string userId)
         {
             int[] res = new int[2];
@@ -94,20 +94,19 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        [Route("BookRide")]
+        //[Route("BookRide")]
         public IEnumerable<AvailableRideVM> BookRide([FromBody]RequestVM request, [FromQuery]string userId)//
-        {
-            
+        {   
             RideRequest request1 = _mapper.Map<RideRequest>(request);
             request1.RiderId = userId;
             List<Ride> rides = _rideService.FindRides(request1);
             List<AvailableRideVM> availableRides = _mapper.Map<List<AvailableRideVM>>(rides);
-            availableRides.ForEach(_ => _.Cost = _rideService.CalculateCostForRide(_.Id, request.Source, request.Destination));
+            availableRides.ForEach(ride => ride.Cost = _rideService.CalculateCostForRide(ride.Id, request.Source, request.Destination));
             return availableRides;
         }
 
         [HttpPost]
-        [Route("RequestRide")]
+        //[Route("RequestRide")]
         public void RequestRide([FromBody]RequestVM request1, [FromQuery] int rideId, [FromQuery] string userId)
         {
             RideRequest request = _mapper.Map<RideRequest>(request1);
@@ -117,8 +116,8 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpGet]
-        [Route("GetBookings")]
-        public List<BookingDetailsVM> GetBooking([FromQuery]string userId)
+        //[Route("GetBookings")]
+        public List<BookingDetailsVM> GetBookings([FromQuery]string userId)
         {   
             List<Booking> bookings = _rideService.FindBookings(userId);
             List<BookingDetailsVM> Bookings = _mapper.Map<List<BookingDetailsVM>>(bookings);
@@ -126,7 +125,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpGet]
-        [Route("GetOfferedRides")]
+        //[Route("GetOfferedRides")]
         public List<OfferedRideVM> GetOfferedRides([FromQuery]string userId)
         {
             List<Ride> Rides = _rideService.FindOfferedRides(userId);
@@ -135,7 +134,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpGet]
-        [Route("GetRequests")]
+        //[Route("GetRequests")]
         public List<RequestDetailsVM> GetRequests([FromQuery]int rideId)
         {
             List<RideRequest> Requests = _rideService.GetRequests(rideId);
@@ -145,8 +144,8 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        [Route("ApproveRequest")]
-        public ResponseVM ApproveRequest([FromQuery]int rideId,[FromQuery]string requestId,[FromQuery]bool isApprove,[FromQuery]string providerId)
+        //[Route("ApproveRequest")]
+        public ResponseVM ApproveRequest([FromQuery]int rideId,[FromQuery]int requestId,[FromQuery]bool isApprove,[FromQuery]string providerId)
         {
             ResponseVM response = new ResponseVM
             {
@@ -154,7 +153,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             };
             if (isApprove)
             {
-                RideRequest request = _rideService.FindRide(rideId).Requests.Find(_=>_.Id==requestId);
+                RideRequest request = _rideService.GetRequest(requestId);
                 float amount = _rideService.CalculateCostForRide(rideId, request.PickUp,request.Drop);
                 if (_userService.IsBalanceAvailable(amount,request.RiderId))
                 {
@@ -179,6 +178,5 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             }
             return response;
         }
-
     }
 }

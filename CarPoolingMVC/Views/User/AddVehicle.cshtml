@@ -1,32 +1,29 @@
 ﻿@model CarPoolingMVC.Models.VehicleVM;
-<h4>Vehilce</h4>
-<hr />
-<h2>@ViewBag.Message</h2>
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="User" asp-action="AddVehicle" id="AddVehicle">
+        <form asp-controller="User" asp-action="AddVehicle" id="AddVehicle" class="shadow ride">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label">Please select the Vehicle</label>
                 <select asp-for="Type" asp-items="Html.GetEnumSelectList<VehicleTypeVM>()" onchange="setCapacity()"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Number" class="control-label"></label>
                 <input asp-for="Number" class="form-control" />
+                <label asp-for="Number" class="control-label"></label>
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Model" class="control-label"></label>
                 <input asp-for="Model" class="form-control" />
+                <label asp-for="Model" class="control-label"></label>
                 <span asp-validation-for="Model" class="text-danger"></span>
             </div>
             <div class="form-group" id="capacity">
-                <label asp-for="Capacity" class="control-label"></label>
                 <input asp-for="Capacity" class="form-control" />
+                <label asp-for="Capacity" class="control-label"></label>
                 <span asp-validation-for="Capacity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-default" />
+                <input type="submit" value="submit" class="btn submit bg-darkviolet" />
             </div>
         </form>
     </div>

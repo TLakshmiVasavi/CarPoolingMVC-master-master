@@ -13,3 +13,29 @@ small {
 .darkviolet {
     color:darkviolet;
 }
+
+.userImage {
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    float: right;
+    margin: 0px 15px 15px 0px;
+}
+
+.submit {
+    border: none;
+    outline: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 1.5em;
+}
+
+.shadow {
+    padding-left: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.ride {
+    margin-top: 100px;
+    margin-left: 50px;
+}

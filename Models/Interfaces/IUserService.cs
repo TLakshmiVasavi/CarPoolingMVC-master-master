@@ -8,7 +8,7 @@ namespace Models.Interfaces
 
         float GetBalance(string userId);
 
-        User SignUp(User user);
+        UserResponse SignUp(User user);
 
         void AddAmount(float amount, string userId);
 
@@ -20,15 +20,17 @@ namespace Models.Interfaces
 
         void PayBill(string providerId, string riderId, float cost);
 
-        User Login(string password, string userId);
+        UserResponse Login(string password, string userId);
 
         Vehicle FindVehicle(string Id);
 
         bool IsUserExist(string mail);
 
-        List<string> GetVehiclesId(string id);
+        List<Vehicle> GetVehicles(string userId);
 
         User UpdateUserDetails(User user);
+
+        byte[] GetImage(string userId);
 
     }
 }

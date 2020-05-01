@@ -121,7 +121,7 @@ namespace Models.DAL
             }
         }
 
-        public void UpdateStatus(string requestId,string status)
+        public void UpdateStatus(int requestId,string status)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -137,7 +137,7 @@ namespace Models.DAL
             }
         }
 
-        public Booking GetBookingDetails(string id)
+        public Booking GetBookingDetails(int id)
         {
             string connectionString = Configuration.ConnectionString;
             Booking booking = new Booking
@@ -209,7 +209,7 @@ namespace Models.DAL
             return bookings;
         }
 
-        public Status GetStatus(string id)
+        public Status GetStatus(int id)
         {
             string connectionString = Configuration.ConnectionString;
             string type;
@@ -256,6 +256,34 @@ namespace Models.DAL
                 connection.Close();
             }
             return requests;
+        }
+
+        public RideRequest GetRequest(int bookingId)
+        {
+            string connectionString = Configuration.ConnectionString;
+            RideRequest request=new RideRequest();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Select * from Booking where Id='{bookingId}'";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    using (SqlDataReader dataReader = command.ExecuteReader())
+                    {
+                        while (dataReader.Read())
+                        {
+                            request.PickUp = Convert.ToString(dataReader["Source"]);
+                            request.Drop = Convert.ToString(dataReader["Destination"]);
+                            request.NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
+                            request.Id = Convert.ToString(dataReader["Id"]);
+                            request.RiderId = Convert.ToString(dataReader["RiderId"]);
+                            request.StartDate = Convert.ToDateTime(dataReader["StartDate"]);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return request;
         }
 
     }

@@ -14,13 +14,15 @@ namespace Models.Interfaces
 
         List<Ride> FindOfferedRides(string providerId);
 
-        bool ApproveRequest(int rideId, string requestId, bool isApproved);
+        bool ApproveRequest(int rideId, int requestId, bool isApproved);
 
         void CreateRide(Ride ride);
 
         void RequestRide(RideRequest request);
 
         List<RideRequest> GetRequests(int rideId);
+
+        RideRequest GetRequest(int requestId);
 
         float CalculateCostForRide(int rideId, string pickUp, string drop);
     }

@@ -1,6 +1,25 @@
 ﻿.next {
+    font-weight:bold;
+    color:darkviolet;
     float:right;
 }
+
+.time {
+    outline:none;
+    margin: 5px;
+    border: solid;
+    border-color: darkviolet;
+    border-radius: 1.5em !important;
+    background-color: white;
+}
+
+    .time:focus:active {
+        outline:none;
+        margin: 5px;
+        color: white;
+        border-radius: 1.5em;
+        background-color: darkviolet;
+    }
 
 .image {
     background: url(../images/img4.png) no-repeat bottom;
@@ -27,11 +46,6 @@
     margin: 3px;
 }
 
-.shadow {
-    padding-left:20px;
-    width:inherit;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
 
 .heading {
     margin: 10px;
@@ -68,6 +82,7 @@ input.form-control {
 }
 
 .switch {
+    margin-top:20%;
     float: right;
     position: relative;
     display: inline-block;
@@ -84,7 +99,7 @@ input.form-control {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: rgb(255, 172, 25);
     -webkit-transition: .4s;
     transition: .4s;
 }
@@ -102,7 +117,7 @@ input.form-control {
     }
 
 input:checked + .slider {
-    background-color: #2196F3;
+    background-color: darkviolet;
 }
 
     input:checked + .slider:before {
