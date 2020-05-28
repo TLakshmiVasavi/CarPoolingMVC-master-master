@@ -3,13 +3,17 @@ namespace CarPoolingMVC.Models
 {
     public class BookingDetailsVM
     {
-        public bool IsRideCompleted { get; set; }
+        public string Time { get; set; }
 
-        public string Status { get; set; }
+        public string RideStatus { get; set; }
 
-        public string PickUp { get; set; }
+        public byte[] ProviderPic { get; set; }
 
-        public string Drop { get; set; }
+        public string RequestStatus { get; set; }
+
+        public string From { get; set; }
+
+        public string To { get; set; }
 
         public string ProviderName { get; set; }
 

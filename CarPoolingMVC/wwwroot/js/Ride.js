@@ -18,25 +18,12 @@ $(document).on('click', ".btn-group>.btn", function () {
     $(this).addClass("active");
 });
 
-$(document).ready(function () {
-
-    $(".form-group .form-control").blur(function () {
-        if ($(this).val() != "") {
-            $(this).addClass('active');
-            $(this).sibilings().find("label").addClass('active');
-
-        } else {
-            $(this).sibilings("label").removeClass('active');
-        }
-    });
-});
-
 $(document).on('click', ".next", function () {
     $("#first").hide();
     $("#second").show();
 });
 
-function AddStop()
+function AddStop()//need to chnage
 {
     var x = $("#count").val();
     x++;
@@ -53,13 +40,13 @@ function AddStop()
     div.classList.add("form-group");
     label.classList.add("control-label");
     label.innerHTML = "Stop " + x;
-    label.setAttribute("for", "Route_ViaPoints_" + x + "__Location");
+    label.setAttribute("for", "Route_Stops_" + x + "__Location");
     input.classList.add("form-control");
     input.type = "text";
     input.setAttribute("data-val", "true");
     input.setAttribute("data-val-required", "The Location field is required.");
-    input.id = "Route_ViaPoints_" + x + "__Location";
-    input.name = "Route.ViaPoints[" + x + "].Location";
+    input.id = "Route_Stops_" + x + "__Location";
+    input.name = "Route.Stops[" + x + "]";
     input.value = "";
     inputgroup.classList.add("input-group");
     i.classList.add("glyphicon");
@@ -84,6 +71,7 @@ function AddStop()
     } else {
         $("#stop" + (x - 1)).children("div").children("div").remove()
     }
+    addDots();
 }
 
 $(document).on('click', ".input-group-addon", AddStop);
@@ -92,11 +80,18 @@ $(document).on('click', "#add_stop", AddStop);
 
 //
 function addDots() {
-    var count = Math.floor(($("#stops").outerHeight() - $(".dot").outerHeight() - $(".glyphicon-map-marker").outerHeight()) / ($(".dot").outerHeight()));
-//    $(".dots").outerHeight($("#stops").outerHeight());
-    for (var i = 0; i < count; i++) {
-        $(".dots").insertBefore(".glyphicon", '<div class="dot"></div>')
-    }
+    var x = $("#count").val();
+    
+    if (x != 1) {
+        $("#dots").empty();
+            $("#dots").append('<div class="dot bg-darkviolet"></div>')
+            $("#dots").append('<div class="dot"></div>')
+            $("#dots").append('<div class="dot"></div>')
+            for (var i = 0; i < (x-2)*4; i++) {
+                $("#dots").append('<div class="dot"></div>')
+            }
+            $("#dots").append('<div><i><span class="glyphicon glyphicon-map-marker darkviolet" ></span ></i></div>')
+        }
 }
 
 $(document).on('change', "#HasVehicle", function () {

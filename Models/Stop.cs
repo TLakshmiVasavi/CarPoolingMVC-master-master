@@ -2,7 +2,7 @@
 
 namespace Models
 {
-    public class ViaPoint
+    public class Stop
     {
         public string Location;
 

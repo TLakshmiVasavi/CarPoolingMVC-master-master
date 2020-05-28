@@ -49,6 +49,11 @@ small {
     .round-button.active {
         color:white!important;
     }
-    .round-button:focus{
-        outline:unset !important;
-    }
+    
+.btn:focus {
+    outline: unset !important;
+}
+
+#dots {
+    margin-top:20px;
+}

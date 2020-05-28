@@ -16,37 +16,56 @@ namespace CarPoolingMVC
             CreateMap<User, UserVM>().ForMember(dest=>dest.Vehicle,opt=>opt.MapFrom(src=>src.Vehicles[0]));
             //CreateMap<UserVM, User>().ForMember(dest => dest.Photo, opt => opt.MapFrom<photoResolver>());
             CreateMap<UserVM, User>().ForMember(dest=>dest.Vehicles,opt=>opt.Ignore());
-            CreateMap<Ride, RideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
-            CreateMap<RideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route)); 
+            CreateMap<Ride, OfferRideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
+            CreateMap<OfferRideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route)); 
             CreateMap<Vehicle, VehicleVM>();
             CreateMap<VehicleVM, Vehicle>();
-            CreateMap<Booking, BookingDetailsVM>().ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Response.Status.ToString()))
+            CreateMap<Booking, BookingDetailsVM>()
+                .ForMember(dest => dest.RequestStatus, opt => opt.MapFrom(src => src.Response.Status.ToString()))
                 .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Response.Cost))
-                .ForMember(dest => dest.Drop, opt => opt.MapFrom(src => src.Request.Drop))
-                .ForMember(dest => dest.PickUp, opt => opt.MapFrom(src => src.Request.PickUp))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Request.To))
+                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Request.From))
                 .ForMember(dest => dest.VehicleType, opt => opt.MapFrom(src => src.Request.VehicleType))
-                .ForMember(dest => dest.NoOfSeats, opt => opt.MapFrom(src => src.Request.NoOfSeats));
+                .ForMember(dest => dest.NoOfSeats, opt => opt.MapFrom(src => src.Request.NoOfSeats))
+                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Request.Time))
+                .ForMember(dest => dest.RideStatus, opt => opt.MapFrom(src => src.Response.Status))
+                .ForMember(dest => dest.VehicleNumber, opt => opt.MapFrom(src => src.Response.VehicleNumber));
             CreateMap<BookingDetailsVM, Booking>();
-            CreateMap<Route, RouteVM>().ForMember(dest => dest.ViaPoints, opt => opt.MapFrom(src => src.ViaPoints));
-            CreateMap<ViaPoint, ViaPointVM>();
-            CreateMap<ViaPointVM, ViaPoint>();
-            CreateMap<RouteVM, Route>().ForMember(dest => dest.ViaPoints, opt => opt.MapFrom(src => src.ViaPoints));
             CreateMap<VehicleTypeVM, VehicleType>();
             CreateMap<VehicleType, VehicleTypeVM>();
             CreateMap<Gender, GenderVM>();
             CreateMap<GenderVM, Gender>();
-            CreateMap<RideRequest, RequestDetailsVM>().ForMember(dest=>dest.Source,opt=>opt.MapFrom(src=>src.PickUp))
-                .ForMember(dest=>dest.Destination,opt=>opt.MapFrom(src=>src.Drop));
-            CreateMap<RequestDetailsVM,RideRequest>().ForMember(dest=>dest.PickUp,opt=>opt.MapFrom(src=>src.Source))
-                .ForMember(dest=>dest.Drop,opt=>opt.MapFrom(src=>src.Destination));
-            CreateMap<RideRequest, RequestVM>().ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.PickUp))
-                .ForMember(dest => dest.Destination, opt => opt.MapFrom(src => src.Drop));
-            CreateMap<RequestVM, RideRequest>().ForMember(dest => dest.PickUp, opt => opt.MapFrom(src => src.Source))
-                .ForMember(dest => dest.Drop, opt => opt.MapFrom(src => src.Destination));
-            CreateMap<Ride, OfferedRideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
-            CreateMap<OfferedRideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
-            CreateMap<AvailableRideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
-            CreateMap<Ride, AvailableRideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
+            CreateMap<RideRequest, RequestDetailsVM>()
+                .ForMember(dest=>dest.From,opt=>opt.MapFrom(src=>src.From))
+                .ForMember(dest=>dest.To,opt=>opt.MapFrom(src=>src.To));
+            CreateMap<RequestDetailsVM,RideRequest>()
+                .ForMember(dest=>dest.From,opt=>opt.MapFrom(src=>src.From))
+                .ForMember(dest=>dest.To,opt=>opt.MapFrom(src=>src.To));
+            CreateMap<RideRequest, RequestVM>()
+                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.From))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.To));
+            CreateMap<RequestVM, RideRequest>()
+                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.From))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.To));
+            CreateMap<OfferedRideVM, Ride>()
+                .ForMember(x => x.Route, opt => opt.MapFrom(model => model));
+            CreateMap<Ride, OfferedRideVM>()
+                .ForMember(x => x.From, opt => opt.MapFrom(model => model.Route.From))
+                .ForMember(x => x.To, opt => opt.MapFrom(model => model.Route.To));
+            CreateMap<AvailableRideVM, RideDetails>();
+                //.ForMember(x => x.Route, opt => opt.MapFrom(model => model));
+            CreateMap<RideDetails, AvailableRideVM>();
+                //.ForMember(x => x.From, opt => opt.MapFrom(model => model.Route.From))
+                //.ForMember(x => x.To, opt => opt.MapFrom(model => model.Route.To));
+            CreateMap<Route, RouteVM>()
+                .ForMember(dest => dest.Stops, opt => opt.MapFrom(src => src.Stops));
+            CreateMap<string, Stop>()
+    .ConstructUsing(str => new Stop { Location = str });
+            CreateMap<Route,RouteVM>().ForMember(dest => dest.Stops, opt => opt.MapFrom(so => so.Stops.Select(t=>t.Location).ToList()));
+            //CreateMap<string, Stop>().ForMember(dest => dest.Location, m => m.MapFrom(src => src));
+            //CreateMap<Stop, string>().ForMember(dest => dest, m => m.MapFrom(src => src.Location));// <-- important line!
+            CreateMap<RouteVM, Route>()
+                .ForMember(dest => dest.Stops,m => m.MapFrom(src => src.Stops));
             CreateMap<IFormFile, byte[]>().ConvertUsing<FileToByteConverter>();
             CreateMap<byte[],IFormFile>().ConvertUsing<ByteToFileConverter>();
         }
@@ -85,4 +104,5 @@ namespace CarPoolingMVC
             return result;
         }
     }
+
 }

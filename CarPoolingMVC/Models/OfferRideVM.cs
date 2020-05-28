@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace CarPoolingMVC.Models
 {
-    public class RideVM
+    public class OfferRideVM
     {
         public int Id { get; set; }
 
@@ -16,6 +16,9 @@ namespace CarPoolingMVC.Models
         [CustomDate]
         public DateTime StartDate { get; set; }
 
+        [CustomTime]
+        public string Time { get; set; }
+
         [DisplayName("Number of Seats to Offer")]
         [Remote(action: "IsSeatsAvailable", controller: "User", AdditionalFields = nameof(VehicleId), ErrorMessage = "Please enter a Valid Number")]
         public int NoOfOfferedSeats { get; set; }
@@ -24,7 +27,7 @@ namespace CarPoolingMVC.Models
         public float Distance { get; set; }
 
         [DisplayName("Cost for Unit Distance")]
-        public float UnitDistanceCost { get; set; }
+        public float Cost { get; set; }
 
         [DefaultValue(false)]
         public bool HasViaPoints { get; set; }

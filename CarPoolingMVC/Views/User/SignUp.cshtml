@@ -52,7 +52,7 @@
                 </div>
                 <div id="VehicleDetails" style="'visibility:'+ @Model.HasVehicle?('visible'):('hidden')">
                     <div class="form-group">
-                        @Html.DropDownListFor(m => m.VehicleType,
+                        @Html.DropDownListFor(m => m.Vehicle.Type,
                     new SelectList(Enum.GetValues(typeof(VehicleTypeVM))),
                     "Select Vehicle")
                     </div>
@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="submit" id="submit" class="btn submit bg-darkorange" onclick="Validate()" />
+                    <input type="submit" value="submit" id="submit" class="btn submit bg-darkorange" />
                 </div>
                 <div class="form-group white">Already a member? <a asp-action="Login" class="bottom-line"> LOG IN </a></div>
                 <output name="result"></output>

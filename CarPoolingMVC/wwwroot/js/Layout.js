@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿$.noConflict();
+$(document).ready(function () {
     if (location.pathname == "/" || location.pathname == "/user/login" || location.pathname.toLowerCase() == "/user/signup") {
         $(".user").hide();
     }
@@ -6,9 +7,12 @@
         if (location.pathname == "/Ride/OfferRide/" || location.pathname == "/Ride/OfferRide") {
             GetVehicleDetails();
         }
+        if (location.pathname == "/User/GetProfile/" || location.pathname == "/User/GetProfile")
+        {
+            GetProfile();
+        }
         $(".user").show();
     }
-
 
     function GetVehicleDetails() {
         alert("getting");
@@ -48,23 +52,23 @@
         }
     })
 
-    $(document).ready(function () {
-
+    
         $(".form-group .form-control").blur(function () {
             if ($(this).val() != "") {
+                $(this).addClass('active').siblings().find("label").addClass('active');
                 $(this).addClass('active');
-                $(this).sibilings("label").addClass('active');
+                //$(this).sibilings().find("label").addClass('active');
 
             } else {
                 $(this).sibilings("label").removeClass('active');
             }
         });
-    });
+    
 
     function GetBalance() {
         $.ajax({
             type: 'GET',
-            url: "https://localhost:5001/api/UserApi/GetBalance?userId=" + $.cookie("userId"),
+            url: "https://localhost:5001/api/UserApi/GetBalance?userId=" + document.cookie("userId"),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (e) {
@@ -84,15 +88,16 @@
     function GetProfile() {
         $.ajax({
             type: 'GET',
-            url: "https://localhost:5001/api/UserApi/GetUser?userId=" + $.cookie("userId"),
+            url: "https://localhost:5001/api/UserApi/GetUser?userId=" + document.cookie,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (e) {
-                $.each(e, function (ele) {
-                    if (document.getElementById(ele) != null) {
-                        $('label[for="' + ele + '"]')[0].textContent = e[ele];
-                    }
+                console.log(e);
+                $.each(e, function (name,value) {
+                    $("#" + name.charAt(0).toUpperCase() + name.substr(1)).val(value);
                 });
+                $("#UserProfile :input").prop("disabled", true);
+                $("#edit").prop("disabled", false);
             },
             error: function (e) {
                 console.log(e);
@@ -125,7 +130,7 @@
                         '< div class="row" > ' +
                         '< div class="col-md-4" > ' +
                         '< small > From</small > ' +
-                        '< p >' + item.Source + '</p > ' +
+                        '< p >' + item.from + '</p > ' +
                         '</div > ' +
                         '< div class="col-md-4" > ' +
                         '< div class="dot darkviolet" ></div > ' +
@@ -136,7 +141,7 @@
                         '</div > ' +
                         '< div class="col-md-4" > ' +
                         '< small > To</small > ' +
-                        '< p >' + item.Destination + '</p > ' +
+                        '< p >' + item.To + '</p > ' +
                         '</div > ' +
                         '</div > ' +
                         '< div class="row" > ' +
@@ -188,7 +193,7 @@
                         '<div class="row">' +
                         '<div class="col-md-4">' +
                         '<small>From</small>' +
-                        '<p>' + item.route.source + '</p>' +
+                        '<p>' + item.route.from + '</p>' +
                         '</div>' +
                         '<div class="col-md-4">' +
                         '<div class="dot darkviolet"></div>' +
@@ -198,7 +203,7 @@
                         '</div>' +
                         '<div class="col-md-4">' +
                         '<small>To</small>' +
-                        '<p>' + item.route.destination + '</p>' +
+                        '<p>' + item.route.To + '</p>' +
                         '</div>' +
                         '</div>' +
                         '<div class="row">' +

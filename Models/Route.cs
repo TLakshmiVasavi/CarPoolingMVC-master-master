@@ -4,11 +4,11 @@ namespace Models
 {
     public class Route
     {
-        public string Source;
+        public string From;
 
-        public string Destination;
+        public string To;
 
-        public List<ViaPoint> ViaPoints = new List<ViaPoint>();
+        public List<Stop> Stops = new List<Stop>();
 
         public float TotalDistance;
 
@@ -16,21 +16,21 @@ namespace Models
         {
             get
             {
-                if (location == Source)
+                if (location == From)
                 {
                     return 0;
                 }
-                if (location == Destination)
+                if (location == To)
                 {
                     return TotalDistance;
                 }
-                return ViaPoints.Find(_ => _.Location == location).Distance;
+                return Stops.Find(_ => _.Location == location).Distance;
             }
         }
 
         public Route()
         {
-            ViaPoints = new List<ViaPoint>();
+            Stops = new List<Stop>();
         }
     }
 }

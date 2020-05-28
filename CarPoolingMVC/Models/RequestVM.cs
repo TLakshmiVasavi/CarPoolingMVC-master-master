@@ -7,12 +7,14 @@ namespace CarPoolingMVC.Models
     {
         public DateTime StartDate { get; set; }
 
-        public string Source { get; set; }
+        public string Time { get; set; }
 
-        public string Destination { get; set; }
+        public string From { get; set; }
 
-        [DisplayName("Number Of Seats")]
-        public int NoOfSeats { get; set; }
+        public string To { get; set; }
+
+        //[DisplayName("Number Of Seats")]
+        //public int NoOfSeats { get; set; }
 
         public VehicleTypeVM VehicleType { get; set; }
     }

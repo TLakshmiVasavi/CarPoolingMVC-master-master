@@ -29,7 +29,7 @@ namespace Services
             return RideDal.GetById(rideId);
         }
 
-        public List<Ride> FindRides(RideRequest request)
+        public List<RideDetails> FindRides(RideRequest request)
         {
             return RideDal.BookRide(request);
         }
@@ -81,7 +81,7 @@ namespace Services
 
         }
 
-        public List<RideRequest> GetRequests(int rideId)
+        public List<RequestDetails> GetRequests(int rideId)
         {
             return BookingDal.GetRequests(rideId);
         }

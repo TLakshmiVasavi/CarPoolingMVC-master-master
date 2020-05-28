@@ -4,6 +4,8 @@ namespace Models.Interfaces
 {
     public interface IUserService
     {
+        byte[] UpdateImage(byte[] photo, string userId);
+
         void AddVehicle(string userId, Vehicle vehicle);
 
         float GetBalance(string userId);

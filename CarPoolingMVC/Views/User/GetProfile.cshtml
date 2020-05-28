@@ -3,56 +3,51 @@
 <script src="~/js/toogleEdit.js"></script>
 
 <form id="UserProfile">
-<div class="container profile">
-    <div class="row">
-        <div class="col-md-6 detail">
-            @Html.DisplayNameFor(model => model.Name)
+    <div class="container profile">
+        <div class="row">
+            <div class="col-md-6 detail">
+                @Html.DisplayNameFor(model => model.Name)
+            </div>
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Name)
+            </div>
         </div>
-        <div class="col-md-6">
-            <label for="name"/>
-            @Html.EditorFor(model => model.Name)
+        <div class="row">
+            <div class="col-md-6 detail">
+                @Html.DisplayNameFor(model => model.Age)
+            </div>
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Age)
+            </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 detail">
+                @Html.DisplayNameFor(model => model.Mail)
+            </div>
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Mail)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 detail">
+                @Html.DisplayNameFor(model => model.Number)
+            </div>
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Number)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 detail">
+                @Html.DisplayNameFor(model => model.Gender)
+            </div>
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.Gender,
+                        new SelectList(Enum.GetValues(typeof(GenderVM))),
+                        "Select Gender")
+            </div>
+        </div>
+        <button id="edit" value="edit">edit</button>
+        <input type="submit" id="save" value="save" class="btn submit bg-darkorange">
+        <button id="cancel" value="cancel" class="btn submit bg-darkviolet">cancel</button>
     </div>
-    <div class="row">
-        <div class="col-md-6 detail">
-            @Html.DisplayNameFor(model => model.Age)
-        </div>
-        <div class="col-md-6">
-            <label for="age"/>
-            @Html.EditorFor(model => model.Age)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 detail">
-            @Html.DisplayNameFor(model => model.Mail)
-        </div>
-        <div class="col-md-6">
-            <label for="mail"/>
-            @Html.EditorFor(model => model.Mail)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 detail">
-            @Html.DisplayNameFor(model => model.Number)
-        </div>
-        <div class="col-md-6">
-            <label for="number"/>
-            @Html.EditorFor(model => model.Number)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 detail">
-            @Html.DisplayNameFor(model => model.Gender)
-        </div>
-        <div class="col-md-6">
-            <label for="gender"/>
-            @Html.DropDownListFor(m => m.Gender,
-                    new SelectList(Enum.GetValues(typeof(GenderVM))),
-                    "Select Gender")
-        </div>
-    </div>
-    <button id="edit" value="edit">edit</button>
-    <button type="submit" id="save" value="save">save</button>
-    <button id="cancel" value="cancel">cancel</button>
-</div>
 </form>

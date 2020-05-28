@@ -6,12 +6,12 @@ namespace CarPoolingMVC.Models
     public class RouteVM
     {
         [Required]
-        public string Source { get; set; }
+        public string From { get; set; }
 
         [Required]
-        public string Destination { get; set; }
+        public string To { get; set; }
 
-        public List<ViaPointVM> ViaPoints { get; set; }
+        public List<string> Stops { get; set; }
 
         [Required]
         public float TotalDistance { get; set; }

@@ -6,15 +6,15 @@ namespace Models
 {
     public class RideRequest
     {
-        public string Id;
+        public int Id;
 
         public int RideId;
 
         public string RiderId;
 
-        public string PickUp;
+        public string From;
 
-        public string Drop;
+        public string To;
 
         public int NoOfSeats;
 

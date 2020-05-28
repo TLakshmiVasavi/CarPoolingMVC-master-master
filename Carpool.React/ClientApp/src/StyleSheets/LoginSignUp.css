@@ -1,0 +1,74 @@
+.rightHalf {
+  background: url(../Images/imgg2.png) no-repeat bottom darkviolet;
+  width: 30%;
+  position: absolute;
+  right: 0px;
+  min-height: 100vh;
+}
+
+select {
+  margin: 10px;
+}
+
+.rightHalf > form {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.rightHalf > form > div,
+input {
+  width: 48%;
+  background-color: white;
+}
+
+.rightHalf > form > .link {
+  width: unset;
+  background-color: unset;
+}
+
+.form-heading {
+  color: white;
+}
+
+a,
+a:hover {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.heading {
+  display: inline-block;
+  position: absolute;
+  top: 15%;
+  left: 4%;
+  color: rgb(51, 64, 83);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 500%;
+}
+
+.miles {
+  display: inline;
+  color: rgb(255, 172, 25);
+}
+
+.money {
+  display: inline;
+  color: rgb(147, 25, 255);
+}
+
+.leftHalf {
+  background: url(../Images/img1.png) no-repeat left bottom;
+  width: 70%;
+  position: absolute;
+  background-size: 100% 50%;
+  height: 100%;
+  position: fixed;
+}
+
+.normal {
+  letter-spacing: 3px;
+  font-style: normal;
+  font-size: medium;
+}

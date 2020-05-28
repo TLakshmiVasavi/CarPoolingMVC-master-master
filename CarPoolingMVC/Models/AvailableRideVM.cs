@@ -8,7 +8,9 @@ namespace CarPoolingMVC.Models
 
         public VehicleVM Vehicle { get; set; }
 
-        public DateTime StartTime { get; set; }
+        public DateTime StartDate { get; set; }
+
+        public string Time { get; set; }
 
         public float Cost { get; set; }
 
@@ -18,6 +20,10 @@ namespace CarPoolingMVC.Models
 
         public string ProviderId { get; set; }
 
-        public RouteVM Route { get; set; }
+        public  string From { get; set; }
+
+        public string To { get; set; }
+
+        public int AvailableSeats { get; set; }
     }
 }

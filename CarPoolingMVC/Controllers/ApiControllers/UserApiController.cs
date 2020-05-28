@@ -33,7 +33,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         {
             AuthResponseVM authResponse = new AuthResponseVM();
             UserResponse response = _userService.SignUp(_mapper.Map<User>(userVM));
-            if (response.ErrorMessage.Length>0)
+            if (response.ErrorMessage!=null)
             {
                 authResponse.ErrorMessage = response.ErrorMessage;
                 authResponse.IsSuccess = false;
@@ -41,18 +41,26 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             else
             {
                 authResponse.IsSuccess = true;
-                CookieOptions options = new CookieOptions()
-                {
-                    Path = "/",
-                    Secure = true,
-                    HttpOnly = true,
-                    IsEssential = true,
-                    SameSite = SameSiteMode.None
-                };
-                Response.Cookies.Append("userId", userVM.Mail, options);
-                Response.Cookies.Append("userName", userVM.Name, options);
+                authResponse.User = _mapper.Map<User, UserVM>(response.User);
+                //CookieOptions options = new CookieOptions()
+                //{
+                //    Path = "/",
+                //    Secure = true,
+                //    HttpOnly = true,
+                //    IsEssential = true,
+                //    SameSite = SameSiteMode.None
+                //};
+                //Response.Cookies.Append("userId", userVM.Mail, options);
+                //Response.Cookies.Append("userName", userVM.Name, options);
             }
             return authResponse;
+        }
+
+        [HttpPost]
+        public byte[] UpdateImage([FromForm]IFormFile Photo,[FromQuery]string userId)
+        {
+            
+            return _userService.UpdateImage(_mapper.Map<byte[]>(Photo), userId);
         }
 
         private static string GenerateToken()
@@ -107,40 +115,43 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         public AuthResponseVM Login([FromBody]UserLoginVM userDto)
         {
             AuthResponseVM response = new AuthResponseVM();
-            UserResponse userResponse = new UserResponse();
+            UserResponse userResponse;
             userResponse = _userService.Login(userDto.Password, userDto.Id);
-            if (userResponse.ErrorMessage.Length == 0)
+            if (userResponse.ErrorMessage == null)
             {
-                CookieOptions options = new CookieOptions()
-                {
-                    Path = "/",
-                    Secure = true,
-                    HttpOnly = true,
-                    IsEssential = true,
-                    SameSite = SameSiteMode.None
-                };
-                Response.Cookies.Append("userId", userResponse.User.Mail, options);
-                Response.Cookies.Append("userName", userResponse.User.Name, options);
+                response.IsSuccess = true;
+                response.User = _mapper.Map<User, UserVM>(userResponse.User);
+                //CookieOptions options = new CookieOptions()
+                //{
+                //    Path = "/",
+                //    Secure = true,
+                //    HttpOnly = true,
+                //    IsEssential = true,
+                //    SameSite = SameSiteMode.None
+                //};
+                //Response.Cookies.Append("userId", userResponse.User.Mail, options);
+                //Response.Cookies.Append("userName", userResponse.User.Name, options);
                 //string res = GenerateToken();
                 //Response.Cookies.Append("Bearer", res, options);
             }
             else
             {
                 response.ErrorMessage = userResponse.ErrorMessage;
+                response.IsSuccess = false;
             }
             return response;
         }
 
         [HttpPost]
         //[Route("AddAmountToWallet")]
-        public void AddAmount([FromBody]float amount, [FromQuery]string userId)
+        public void UpdateBalance([FromBody]Wallet wallet, [FromQuery]string userId)
         {
-            _userService.AddAmount(amount, userId);
+            _userService.AddAmount(wallet.Balance, userId);
         }
 
-        [Authorize]
+       [HttpPost]
         //[Route("Logout")]
-        public void Logout()
+        public void Logout([FromQuery]string userId)
         {
             Response.Cookies.Delete("Bearer");
         }
@@ -152,7 +163,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        public UserVM UpdateUser([FromBody] UserVM userDto)
+        public UserVM UpdateUser([FromForm] UserVM userDto)
         {
             User user = _mapper.Map<User>(userDto);
             return _mapper.Map<UserVM>(_userService.UpdateUserDetails(user));

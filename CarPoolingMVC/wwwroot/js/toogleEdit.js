@@ -1,24 +1,21 @@
-﻿$(document).on('click', '#edit', function () {
-    $('label').hide();
-    $('input').show();
-    $(this).hide();
-    $("#save").show();
-    $("#cancel").show();
-    $('select').show();
-});
+﻿$(document).ready(
+    function () {
+        $("#save").hide();
+        $("#cancel").hide();
 
-$(document).on('click', "#cancel", function () {
-    $('label').show();
-    $('input').hide();
-    $("#edit").show();
-    $("#save").hide();
-    $("#cancel").hide();
-    $('select').hide();
-});
+        $(document).on('click',"#edit", function (e) {
+            $("#UserProfile :input").prop("disabled", false);
+            $(this).hide();
+            $("#save").show();
+            $("#cancel").show();
+        });
 
-$(document).ready(function () {
-    $('select').hide();
-    $("#save").hide();
-    $("#cancel").hide();
-    $('input').hide();
-});
+        $(document).on('click', "#cancel", function (e) {
+            $("#UserProfile :input").prop("disabled", true);
+            $("#edit").prop("disabled", false);
+            $("#edit").show();
+            $("#save").hide();
+            $("#cancel").hide();
+        });
+    }
+);

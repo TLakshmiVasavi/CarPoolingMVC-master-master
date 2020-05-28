@@ -2,11 +2,15 @@
 {
     public class RequestDetailsVM
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string Source { get; set; }
+        public string RiderName { get; set; }
 
-        public string Destination { get; set; }
+        public byte[] RiderPic { get; set; }
+
+        public string From { get; set; }
+
+        public string To { get; set; }
 
         public int NoOfSeats { get; set; }
 

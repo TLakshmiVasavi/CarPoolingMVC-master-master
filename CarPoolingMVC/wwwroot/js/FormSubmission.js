@@ -33,6 +33,8 @@
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (e) {
+                console.log(e)
+                alert("hi");
                 $("#userPic").attr("src", "data:image/jpeg;base64," + e)
             },
             error: function (e) {
@@ -42,7 +44,8 @@
         });
     }
 
-    $("#SignUpForm").submit(function () {
+    $("#SignUpForm").on('submit', function (e) {
+        e.preventDefault();
         if (Validate()) {
             event.preventDefault();
             $.ajax({
@@ -65,6 +68,8 @@
 
     $("#LoginForm").on('submit', function (e) {
         e.preventDefault();
+        //$.post('https://localhost:5001/api/UserApi/Login', $('#LoginForm').serialize())
+        
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
@@ -87,10 +92,11 @@
         });
     });//
 
-    $("#UserProfile").on('submit', function () {
+    $("#UserProfile").on('submit', function (e) {
+        e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: "https://localhost:5001/api/UserApi/GetUser?userId="+$.cookie("userId"),
+            url: "https://localhost:5001/api/UserApi/GetUser?userId="+document.cookie,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (e) {
@@ -107,7 +113,8 @@
         });
     });
 
-    $("#AddVehicle").on('submit', function () {
+    $("#AddVehicle").on('submit', function (e) {
+        e.preventDefault();
         var formData = new FormData(document.querySelector("form"));
         var Vehicle = {};
         for (var [key, value] of formData.entries()) {
@@ -117,7 +124,7 @@
             type: "POST",
             data: JSON.stringify(Vehicle),
             processData: false,
-            url: "https://localhost:5001/api/UserApi/AddVehicle?userId="+$.cookie("userId"),
+            url: "https://localhost:5001/api/UserApi/AddVehicle?userId="+document.cookie,
             contentType: "application/json",
             success: function (s) {
                 console.log(s)
@@ -131,7 +138,8 @@
         });
     });
 
-    $("#UpdateBalance").on('submit', function () {
+    $("#UpdateBalance").on('submit', function (e) {
+        e.preventDefault();
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
@@ -155,7 +163,8 @@
         });
     });
 
-    $("#BookRide").on('submit', function () {
+    $("#BookRide").on('submit', function (e) {
+        e.preventDefault();
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
@@ -179,12 +188,18 @@
         });
     });
 
-    $("#OfferRide").on('submit', function () {
+    $("#OfferRide").on('submit', function (e) {
+        e.preventDefault();
+        var time = '';
+        $('#Time .active').each(function () {
+            time = $(this).val();
+        }); 
         var formData = new FormData(document.querySelector("form"));
         var user = {};
         for (var [key, value] of formData.entries()) {
             user[key] = value;
         }
+        user["Time"] = time;
         $.ajax({
             type: "POST",
             data: JSON.stringify(user),
@@ -294,7 +309,7 @@
                         '<div class="row">' +
                         '<div class="col-md-4">' +
                         '<small>From</small>' +
-                        '<p>' + item.route.source + '</p>' +
+                        '<p>' + item.route.from + '</p>' +
                         '</div>' +
                         '<div class="col-md-4">' +
                         '<div class="dot darkviolet"></div>' +
@@ -304,7 +319,7 @@
                         '</div>' +
                         '<div class="col-md-4">' +
                         '<small>To</small>' +
-                        '<p>' + item.route.destination + '</p>' +
+                        '<p>' + item.route.to + '</p>' +
                         '</div>' +
                         '</div>' +
                         '<div class="row">' +

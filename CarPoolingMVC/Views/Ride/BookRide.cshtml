@@ -21,14 +21,14 @@
                     <div class="row">
                         <div class="col-md-10">
                             <div class="form-group">
-                                <input asp-for="Source" class="form-control" />
-                                <label asp-for="Source" class="control-label"></label>
-                                <span asp-validation-for="Source" class="text-danger"></span>
+                                <input asp-for="From" class="form-control" />
+                                <label asp-for="From" class="control-label"></label>
+                                <span asp-validation-for="From" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input asp-for="Destination" class="form-control" />
-                                <label asp-for="Destination" class="control-label"></label>
-                                <span asp-validation-for="Destination" class="text-danger"></span>
+                                <input asp-for="To" class="form-control" />
+                                <label asp-for="To" class="control-label"></label>
+                                <span asp-validation-for="To" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -63,13 +63,6 @@
                 <div class="form-group">
                     <label asp-for="VehicleType" class="control-label">Please Select the Vehicle</label><br />
                     <select asp-for="VehicleType" asp-items="Html.GetEnumSelectList<VehicleTypeVM>()" onchange="setNoOfSeats()"></select>
-                </div>
-                <div id="noOfSeats">
-                    <div class="form-group">
-                        <label asp-for="NoOfSeats" class="control-label"></label>
-                        <input asp-for="NoOfSeats" class="form-control" />
-                        <span asp-validation-for="NoOfSeats" class="text-danger"></span>
-                    </div>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="submit" class="btn btn-default submit bg-darkorange" />

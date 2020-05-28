@@ -61,17 +61,18 @@ namespace Models.DAL
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Update [User] set Name='{user.Name}', Age='{user.Age}', Gender='{user.Gender}', Mail='{user.Mail}', Password='{user.Password}', MobileNumber='{user.Number}' where id='{user.Id}'";
+                string sql = $"Update [User] set Name='{user.Name}', Age='{user.Age}', Gender='{user.Gender}', Mail='{user.Mail}', Password='{user.Password}', MobileNumber='{user.Number}',Photo=@Photo where id='{user.Mail}'";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@Photo", user.Photo);
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
             }
-            return GetById(user.Id);
+            return GetById(user.Mail);
         }
 
         public User GetById(string id)
@@ -93,7 +94,7 @@ namespace Models.DAL
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
                         user.Number = Convert.ToString(dataReader["MobileNumber"]);
-                        user.Photo = (byte[])dataReader["Photo"];
+                        //user.Photo = (byte[])dataReader["Photo"];
                         
                     }
                 }
@@ -152,10 +153,12 @@ namespace Models.DAL
                             {
                                 Name = Convert.ToString(dataReader["Name"]),
                                 Mail = Convert.ToString(dataReader["Mail"]),
+                                Password = Convert.ToString(dataReader["Password"]),
                                 Age = Convert.ToInt32(dataReader["Age"]),
                                 Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"])),
                                 Number = Convert.ToString(dataReader["MobileNumber"]),
-                                Photo = dataReader["Photo"] == null ? null : (byte[])dataReader["Photo"]
+                                //Photo = Convert.IsDBNull(dataReader["Photo"]) ? null: (byte[])dataReader["Photo"]
+                                Photo=null
                             };
                             user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         }
@@ -251,6 +254,45 @@ namespace Models.DAL
         public byte[] GetImage(string userId)
         {
             string connectionString = Configuration.ConnectionString;
+            object Photo;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Select Photo from [User] Where Id='{userId}'";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    Photo = command.ExecuteScalar();
+                    connection.Close();
+                }
+                connection.Close();
+            }
+            try
+            {
+                return (byte[])Photo;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public byte[] UpdateImage(byte[] photo,string userId)
+        {
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Update [User] set Photo=@Photo where id='{userId}'";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@Photo", photo);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            
             object Photo;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

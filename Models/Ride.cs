@@ -29,6 +29,9 @@ namespace Models
 
         public Route Route;
 
+        public float Cost;
+
+        public string Status;
         //public bool IsRideCompleted => StartDate < DateTime.Now.Date;
 
         public Ride()

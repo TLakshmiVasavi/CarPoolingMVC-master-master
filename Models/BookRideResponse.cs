@@ -9,5 +9,7 @@ namespace Models
         public Status Status;
 
         public float Cost;
+
+        public string VehicleNumber;
     }
 }

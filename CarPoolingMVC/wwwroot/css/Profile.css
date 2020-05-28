@@ -12,3 +12,22 @@
     text-align: right;
     font-weight: bold;
 }
+
+input:disabled {
+    background-color: rgb(226, 226, 226);
+    border: rgb(226, 226, 226);
+    font-size: medium;
+    color: black;
+}
+
+select:disabled {
+    background-color: rgb(226, 226, 226);
+    -webkit-appearance: none;
+    border: unset;
+    font-size: medium;
+    color: black;
+}
+
+.profile>.input {
+    margin:2px;
+}

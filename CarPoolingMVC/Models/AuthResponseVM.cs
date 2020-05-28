@@ -6,7 +6,7 @@
 
         public bool IsSuccess { get; set; }
 
-        //public UserVM User { get; set; }
+        public UserVM User { get; set; }
     }
 }
 

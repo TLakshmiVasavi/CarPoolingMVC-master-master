@@ -33,44 +33,44 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 
         [HttpPost]
         //[Route("OfferRide")]
-        public void OfferRide([FromBody]RideVM ride, [FromQuery]string userId)
+        public void OfferRide([FromBody]OfferRideVM ride, [FromQuery]string userId)
         {
             int[] res = new int[2];
             Ride newRide;
             newRide = _mapper.Map<Ride>(ride);
             
             string From, To;
-            if (ride.Route.ViaPoints != null)
+            if (ride.Route.Stops != null&&ride.Route.Stops.Count!=0)
             {
-                for (int i = 0; i < ride.Route.ViaPoints.Count; i++)
+                for (int i = 0; i < ride.Route.Stops.Count; i++)
                 {
-                    ViaPoint viaPoint = new ViaPoint();
+                    Stop viaPoint = new Stop();
                     if (i == 0)
                     {
-                        From = ride.Route.Source;
+                        From = ride.Route.From;
                     }
                     else
                     {
-                        From = ride.Route.ViaPoints[i - 1].Location;
-                        viaPoint.Distance = newRide.Route.ViaPoints[i - 1].Distance;
-                        viaPoint.Duration = newRide.Route.ViaPoints[i - 1].Duration;
+                        From = ride.Route.Stops[i - 1];
+                        viaPoint.Distance = newRide.Route.Stops[i - 1].Distance;
+                        viaPoint.Duration = newRide.Route.Stops[i - 1].Duration;
                     }
-                    To = ride.Route.ViaPoints[i].Location;
+                    To = ride.Route.Stops[i];
                     res = GetDetails(From, To);
                     viaPoint.Distance += res[0]/1000;
                     viaPoint.Duration += TimeSpan.FromSeconds(res[1]);
-                    viaPoint.Location = ride.Route.ViaPoints[i].Location;
-                    newRide.Route.ViaPoints.Add(viaPoint);
+                    viaPoint.Location = ride.Route.Stops[i];
+                    newRide.Route.Stops.Add(viaPoint);
                 }
-                From = ride.Route.ViaPoints.Last().Location;
-                newRide.Distance = newRide.Route.ViaPoints.Last().Distance;
+                From = ride.Route.Stops.Last();
+                newRide.Distance = newRide.Route.Stops.Last().Distance;
 //                newRide.EndDateTime +=  newRide.Route.ViaPoints.Last().Duration;
             }
             else
             {
-                From = ride.Route.Source;
+                From = ride.Route.From;
             }
-            res = GetDetails(From, ride.Route.Destination);
+            res = GetDetails(From, ride.Route.To);
             newRide.Distance += res[0]/1000;
 //            newRide.EndDateTime += TimeSpan.FromSeconds(res[1]);
             newRide.ProviderId = userId;
@@ -99,17 +99,19 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         {   
             RideRequest request1 = _mapper.Map<RideRequest>(request);
             request1.RiderId = userId;
-            List<Ride> rides = _rideService.FindRides(request1);
+            List<RideDetails> rides = _rideService.FindRides(request1);
             List<AvailableRideVM> availableRides = _mapper.Map<List<AvailableRideVM>>(rides);
-            availableRides.ForEach(ride => ride.Cost = _rideService.CalculateCostForRide(ride.Id, request.Source, request.Destination));
+            availableRides.ForEach(ride => ride.Cost = _rideService.CalculateCostForRide(ride.Id, request.From, request.To));
             return availableRides;
         }
 
         [HttpPost]
         //[Route("RequestRide")]
-        public void RequestRide([FromBody]RequestVM request1, [FromQuery] int rideId, [FromQuery] string userId)
+        public void RequestRide([FromBody]RequestVM request1,[FromQuery]int noOfSeats, [FromQuery] int rideId, [FromQuery] string userId)
         {
+            
             RideRequest request = _mapper.Map<RideRequest>(request1);
+            request.NoOfSeats = noOfSeats;
             request.RideId = rideId;
             request.RiderId = userId;
             _rideService.RequestRide(request);
@@ -137,9 +139,9 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         //[Route("GetRequests")]
         public List<RequestDetailsVM> GetRequests([FromQuery]int rideId)
         {
-            List<RideRequest> Requests = _rideService.GetRequests(rideId);
+            List<RequestDetails> Requests = _rideService.GetRequests(rideId);
             List<RequestDetailsVM> RideRequests = _mapper.Map<List<RequestDetailsVM>>(Requests);
-            RideRequests.ForEach(_ => _.Cost=_rideService.CalculateCostForRide(rideId, _.Source, _.Destination));
+            RideRequests.ForEach(_ => _.Cost=_rideService.CalculateCostForRide(rideId, _.From, _.To));
             return RideRequests;
         }
 
@@ -154,7 +156,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             if (isApprove)
             {
                 RideRequest request = _rideService.GetRequest(requestId);
-                float amount = _rideService.CalculateCostForRide(rideId, request.PickUp,request.Drop);
+                float amount = _rideService.CalculateCostForRide(rideId, request.From,request.To);
                 if (_userService.IsBalanceAvailable(amount,request.RiderId))
                 {
                     if (_rideService.ApproveRequest(rideId, requestId, isApprove))

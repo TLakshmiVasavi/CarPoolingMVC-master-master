@@ -16,6 +16,11 @@ namespace Services
         {
             vehicleDal.Create(vehicle, userId);
         }
+
+        public byte[] UpdateImage(byte[] photo,string userId)
+        {
+            return userDal.UpdateImage(photo,userId);
+        }
         
         public void AddAmount(float amount, string userId)
         {

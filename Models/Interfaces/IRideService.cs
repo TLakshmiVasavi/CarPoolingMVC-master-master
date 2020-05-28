@@ -6,7 +6,7 @@ namespace Models.Interfaces
 {
     public interface IRideService
     {
-        List<Ride> FindRides(RideRequest request);
+        List<RideDetails> FindRides(RideRequest request);
 
         Ride FindRide(int rideId);
 
@@ -20,7 +20,7 @@ namespace Models.Interfaces
 
         void RequestRide(RideRequest request);
 
-        List<RideRequest> GetRequests(int rideId);
+        List<RequestDetails> GetRequests(int rideId);
 
         RideRequest GetRequest(int requestId);
 

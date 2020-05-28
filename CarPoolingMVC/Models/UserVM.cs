@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,12 +39,9 @@ namespace CarPoolingMVC.Models
 
         public GenderVM Gender { get; set; }
 
-        public VehicleTypeVM VehicleType { get; set; }
-
         public VehicleVM Vehicle { get; set; }
 
         public IFormFile Photo { get; set; }
 
-        //public IFormFile Photo { get; set; }
     }
 }

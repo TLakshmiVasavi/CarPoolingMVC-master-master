@@ -2,7 +2,7 @@
 
 namespace CarPoolingMVC.Models
 {
-    public class ViaPointVM
+    public class StopVM
     {
         [Required]
         public string Location { get; set; }
