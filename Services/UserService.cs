@@ -11,10 +11,11 @@ namespace Services
     {
         readonly UserDal userDal = new UserDal(new AppConfiguration());
         readonly VehicleDal vehicleDal = new VehicleDal(new AppConfiguration());
+        readonly TransactionDal transactionDal = new TransactionDal(new AppConfiguration());
 
-        public void AddVehicle(string userId, Vehicle vehicle)
+        public List<Vehicle> AddVehicle(string userId, Vehicle vehicle)
         {
-            vehicleDal.Create(vehicle, userId);
+            return vehicleDal.Create(vehicle, userId);
         }
 
         public byte[] UpdateImage(byte[] photo,string userId)
@@ -57,11 +58,21 @@ namespace Services
             return GetBalance(userId) >= cost;
         }
 
-        public void PayBill(string providerId, string riderId, float cost)
+        public void PayBill(string providerId, string riderId, float cost,int bookingId)
         {
+            Transaction transaction = new Transaction
+            {
+                Amount = cost,
+                From = riderId,
+                To = providerId,
+                BookingId=bookingId,
+            };
+            transactionDal.Create(transaction);
             userDal.AddBalance(cost, providerId);
             userDal.AddBalance(-cost, riderId);
         }
+
+        
 
         public UserResponse Login(string password, string userId)
         {
@@ -78,6 +89,11 @@ namespace Services
             return vehicleDal.GetVehicles(userId);
         }
 
+        public List<Vehicle> GetAllVehicles()
+        {
+            return vehicleDal.GetAllVehicles();
+        }
+
         public User UpdateUserDetails(User user)
         {
             return userDal.Update(user);
@@ -88,5 +104,22 @@ namespace Services
             return userDal.GetImage(userId);
         }
 
+        public List<User> GetAllUsers()
+        {
+            return userDal.GetAllUsers();
+        }
+        public bool ChangePassword(UpdatePassword updatePassword,string userId)
+        {
+            return userDal.UpdatePassword(updatePassword,userId);
+        }
+        public void UpdateVehicle(Vehicle vehicle, string userId,string vehicleId)
+        {
+            vehicleDal.Update(vehicle, userId,vehicleId);
+        }
+
+        public List<Transaction> GetTransactions(string userId)
+        {
+            return transactionDal.GetTransactionsByUserId(userId);
+        }
     }
 }

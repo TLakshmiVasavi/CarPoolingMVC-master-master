@@ -52,6 +52,8 @@ namespace Models.DAL
                 }
             }
             user.Wallet.Balance = 0;
+            user.Photo = null;
+            user.Role = "User";
             userResponse.User = user;
             return userResponse;
         }
@@ -61,18 +63,41 @@ namespace Models.DAL
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Update [User] set Name='{user.Name}', Age='{user.Age}', Gender='{user.Gender}', Mail='{user.Mail}', Password='{user.Password}', MobileNumber='{user.Number}',Photo=@Photo where id='{user.Mail}'";
+                string sql = $"Update [User] set Name='{user.Name}', Age='{user.Age}', Gender='{user.Gender}', Mail='{user.Mail}', Password='{user.Password}', MobileNumber='{user.Number}'{(user.Photo == null ? "" : ",Photo=@Photo")} where id='{user.Mail}'";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
-                    command.Parameters.AddWithValue("@Photo", user.Photo);
+                    if (user.Photo != null)
+                    {
+                        command.Parameters.AddWithValue("@Photo", user.Photo);
+                    }
+                    //command.Parameters.AddWithValue("@Photo", user.Photo);
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
             }
             return GetById(user.Mail);
+        }        
+
+        public bool UpdatePassword(UpdatePassword updatePassword,string userId)
+        {
+            int noOfEffectedRows;
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Update [User] set Password='{updatePassword.NewPassword}' where id='{userId}' and password='{updatePassword.Password}'";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    noOfEffectedRows=command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return noOfEffectedRows == 1;
         }
 
         public User GetById(string id)
@@ -94,6 +119,7 @@ namespace Models.DAL
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         user.Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]));
                         user.Number = Convert.ToString(dataReader["MobileNumber"]);
+                        user.Role = Convert.ToString(dataReader["Role"]);
                         //user.Photo = (byte[])dataReader["Photo"];
                         
                     }
@@ -121,8 +147,9 @@ namespace Models.DAL
                             Name = Convert.ToString(dataReader["Name"]),
                             Mail = Convert.ToString(dataReader["Mail"]),
                             Age = Convert.ToInt32(dataReader["Age"]),
-                            Number = Convert.ToString(dataReader["Number"]),
-                            Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"]))
+                            Number = Convert.ToString(dataReader["MobileNumber"]),
+                            Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"])),
+                            Photo=(byte[])dataReader["Photo"],
                     };
                         user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         users.Add(user);
@@ -157,8 +184,9 @@ namespace Models.DAL
                                 Age = Convert.ToInt32(dataReader["Age"]),
                                 Gender = Enum.Parse<Gender>(Convert.ToString(dataReader["Gender"])),
                                 Number = Convert.ToString(dataReader["MobileNumber"]),
-                                //Photo = Convert.IsDBNull(dataReader["Photo"]) ? null: (byte[])dataReader["Photo"]
-                                Photo=null
+                                Photo = Convert.IsDBNull(dataReader["Photo"]) ? null: (byte[])dataReader["Photo"],
+                                //Photo=null,
+                                Role=Convert.ToString(dataReader["Role"]),
                             };
                             user.Wallet.Balance = Convert.ToInt32(dataReader["Balance"]);
                         }
@@ -186,7 +214,7 @@ namespace Models.DAL
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Update [User] set Balance=Balance+'{amount}' Where Id='{id}'";
+                string sql = $"Update [User] set Balance=Balance+'{amount}' where id='{id}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();

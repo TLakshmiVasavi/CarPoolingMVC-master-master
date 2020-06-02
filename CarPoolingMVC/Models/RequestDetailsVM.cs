@@ -15,5 +15,7 @@
         public int NoOfSeats { get; set; }
 
         public float Cost { get; set; }
+
+        public string Status { get; set; }
     }
 }

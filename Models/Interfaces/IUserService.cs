@@ -6,7 +6,7 @@ namespace Models.Interfaces
     {
         byte[] UpdateImage(byte[] photo, string userId);
 
-        void AddVehicle(string userId, Vehicle vehicle);
+        List<Vehicle> AddVehicle(string userId, Vehicle vehicle);
 
         float GetBalance(string userId);
 
@@ -20,7 +20,7 @@ namespace Models.Interfaces
 
         User FindUser(string userId);
 
-        void PayBill(string providerId, string riderId, float cost);
+        void PayBill(string providerId, string riderId, float cost, int requestId);
 
         UserResponse Login(string password, string userId);
 
@@ -33,6 +33,11 @@ namespace Models.Interfaces
         User UpdateUserDetails(User user);
 
         byte[] GetImage(string userId);
+        List<User> GetAllUsers();
 
+        List<Vehicle> GetAllVehicles();
+        bool ChangePassword(UpdatePassword updatePassword,string userId);
+        void UpdateVehicle(Vehicle vehicle, string userId,string vehicleId);
+        List<Transaction> GetTransactions(string userId);
     }
 }

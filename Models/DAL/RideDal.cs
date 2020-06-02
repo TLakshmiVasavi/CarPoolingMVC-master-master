@@ -112,6 +112,70 @@ namespace Models.DAL
             return rides;
         }
 
+        public List<Ride> GetAllOffers()
+        {
+            List<Ride> rides = new List<Ride>();
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = $"Select * From Ride";
+                SqlCommand command = new SqlCommand(sql, connection);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        List<string> locations;
+                        Ride Ride = new Ride
+                        {
+                            Id = Convert.ToInt32(dataReader["Id"]),
+                            NoOfOfferedSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]),
+                            StartDate = Convert.ToDateTime(dataReader["StartDate"]),
+                            UnitDistanceCost = float.Parse(Convert.ToString(dataReader["UnitDistanceCost"])),
+                            VehicleId = Convert.ToString(dataReader["VehicleId"]),
+                            Time = Convert.ToString(dataReader["Time"]),
+                            Distance = Convert.ToInt32(dataReader["Distance"]),
+                            ProviderId=Convert.ToString(dataReader["ProviderId"])
+                        };
+                        locations = Convert.ToString(dataReader["locations"]).Split(",").ToList();
+                        Ride.VehicleType = VehicleDal.GetVehicleType(Ride.VehicleId);
+                        Ride.ProviderName = UserDal.GetUserName(Ride.ProviderId);
+                        Ride.Route = new Route()
+                        {
+                            From = locations.First(),
+                            To = locations.Last(),
+                            Stops = new List<Stop>()
+                        };
+                        Ride.Cost = Ride.UnitDistanceCost * Ride.Distance;
+                        Ride.Status = "UpComing";
+                        if (Ride.StartDate.Date == DateTime.Now.Date)
+                        {
+                            int time = Ride.Time[1] == 'a' ? Convert.ToInt32(Ride.Time[0] - '0') : Convert.ToInt32(Ride.Time[0] - '0') + 12;
+                            if (DateTime.Now.Hour > time)
+                            {
+                                Ride.Status = "Completed";
+                            }
+                            else
+                            {
+                                Ride.Status = "UpComping";
+                            }
+                        }
+                        else
+                        if (Ride.StartDate < DateTime.Now.Date)
+                        {
+                            Ride.Status = "Completed";
+                        }
+                        locations.RemoveAt(0);
+                        locations.RemoveAt(locations.Count - 1);
+                        locations.ForEach(_ => Ride.Route.Stops.Add(new Stop() { Location = _ }));
+                        rides.Add(Ride);
+                    }
+                }
+                connection.Close();
+            }
+            return rides;
+        }
+
         public Ride GetById(int rideId)
         {
             Ride Ride = new Ride();
@@ -135,6 +199,23 @@ namespace Models.DAL
                 connection.Close();
             }
             return Ride;
+        }
+
+        public string GetProviderId(int rideId)
+        {
+            string Id;
+            string connectionString = Configuration.ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"Select ProviderId From Ride where Id='{rideId}' ";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    Id = Convert.ToString(command.ExecuteScalar());
+                    connection.Close();
+                }
+            }
+            return Id;
         }
 
         public List<Ride> FindOfferedRides(string providerId)
@@ -231,7 +312,7 @@ namespace Models.DAL
                     {
                         while (dataReader.Read())
                         {
-                            int noOfSeats = Convert.ToInt32(dataReader["NoOfOfferedSeats"]);
+                            int noOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]);
                             float pickUpdist = distances[locations.FindIndex(x => x == request.From)];
                             float dropdist = distances[locations.FindIndex(x => x == request.To)];
 
@@ -285,6 +366,10 @@ namespace Models.DAL
                         distances.ForEach(x => placesDetails.Add(new PlaceDetails() { distance = x, count = 0 }));
                     }
                 }
+                if(NoOfOfferedSeats<request.NoOfSeats)
+                {
+                    return false;
+                }
                 sql = $"select * from Booking where RideId='{rideId}' and status='Approved'";
                 command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
@@ -320,7 +405,7 @@ namespace Models.DAL
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"select * from Ride where ProviderId!='{request.RiderId}' and NoOfOfferedSeats>='{request.NoOfSeats}'";
+                string sql = $"select * from Ride where ProviderId!='{request.RiderId}'";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
@@ -331,6 +416,8 @@ namespace Models.DAL
                             Id = Convert.ToInt32(dataReader["Id"]),
                             ProviderId = Convert.ToString(dataReader["ProviderId"]),
                             StartDate = Convert.ToDateTime(dataReader["StartDate"]),
+                            //Convert.ToDateTime(DateTime.ParseExact(Convert.ToString(dataReader["StartDate"]), "dd-MM-yyyy", CultureInfo.InvariantCulture)), 
+
                             Time = Convert.ToString(dataReader["Time"]),
                             Vehicle=new Vehicle
                             {
@@ -374,7 +461,14 @@ namespace Models.DAL
                         locations = Convert.ToString(dataReader["locations"]).Split(",").ToList();
                         distances = Convert.ToString(dataReader["distances"]).Split(",").ToList().ConvertAll(float.Parse);
                         float cost = float.Parse(Convert.ToString(dataReader["UnitDistanceCost"]));
-                        res = distances[locations.FindIndex(x => x == to)] - distances[locations.FindIndex(x => x == from)] * cost;
+                        if (locations.FindIndex(x => x == from) == 0)
+                        {
+                            res = distances[locations.FindIndex(x => x == to) - 1] * cost;
+                        }
+                        else
+                        {
+                            res = distances[locations.FindIndex(x => x == to) - 1] - distances[locations.FindIndex(x => x == from)-1] * cost;
+                        }
                     }
                 }
                 connection.Close();
@@ -396,7 +490,9 @@ namespace Models.DAL
                     connection.Close();
                 }
             }
-            return locations.IndexOf(pickUp) < locations.IndexOf(drop);
+            int fromIndex = locations.IndexOf(pickUp);
+            int toIndex = locations.IndexOf(drop);
+            return (fromIndex!=-1)&&(toIndex!=-1)&&(fromIndex < toIndex) ;
         }
 
         public bool IsBooked(int rideId, string userId)
@@ -423,7 +519,7 @@ namespace Models.DAL
             object vehicleNumber;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Select VehicleNumber From Ride where RideId='{rideId}' ";
+                string sql = $"Select VehicleId From Ride where Id='{rideId}' ";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();

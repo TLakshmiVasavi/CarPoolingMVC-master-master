@@ -8,6 +8,8 @@ namespace CarPoolingMVC.Models
 {
     public class UserVM
     {
+        public string Role { get; set; }
+
         public string Id { get; set; }
 
         [DataType(DataType.Text)]
@@ -41,7 +43,9 @@ namespace CarPoolingMVC.Models
 
         public VehicleVM Vehicle { get; set; }
 
-        public IFormFile Photo { get; set; }
+        public IFormFile Image { get; set; }
+
+        public byte[] Photo { get; set; }
 
     }
 }

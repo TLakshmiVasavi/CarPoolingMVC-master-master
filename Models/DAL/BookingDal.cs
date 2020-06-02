@@ -167,7 +167,7 @@ namespace Models.DAL
                             booking.Request.StartDate = Convert.ToDateTime(dataReader["StartDate"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
                             booking.Response.Cost = float.Parse(Convert.ToString(dataReader["Cost"]));
-                            booking.Response.VehicleNumber = Convert.ToString(dataReader["VehicleNumber"]);
+                            //booking.Response.VehicleNumber = Convert.ToString(dataReader["VehicleNumber"]);
                             
                         }
                     }
@@ -205,6 +205,11 @@ namespace Models.DAL
                             booking.Request.StartDate = Convert.ToDateTime(dataReader["StartDate"]);
                             booking.Response.Status = Enum.Parse<Status>(Convert.ToString(dataReader["Status"]));
                             booking.Response.Cost = float.Parse(Convert.ToString(dataReader["Cost"]));
+                            booking.Request.Time = Convert.ToString(dataReader["Time"]);
+                            string id = RideDal.GetProviderId(Convert.ToInt32(dataReader["RideId"]));
+                            booking.Response.VehicleNumber = RideDal.GetRideVehicle(Convert.ToInt32(dataReader["RideId"]));
+                            booking.Response.ProviderName = UserDal.GetUserName(id);
+                            booking.Response.ProviderPic = UserDal.GetImage(id);
                             bookings.Add(booking);
                         }
                     }
@@ -251,7 +256,8 @@ namespace Models.DAL
                                 To = Convert.ToString(dataReader["Destination"]),
                                 NoOfSeats = Convert.ToInt32(dataReader["NoOfSeats"]),
                                 Id = Convert.ToInt32(dataReader["Id"]),
-                                StartDate = Convert.ToDateTime(dataReader["StartDate"])
+                                StartDate = Convert.ToDateTime(dataReader["StartDate"]),
+                                Status=Convert.ToString(dataReader["Status"])
                             };
                             string RiderId = Convert.ToString(dataReader["RiderId"]);
                             Request.RiderName = UserDal.GetUserName(RiderId);

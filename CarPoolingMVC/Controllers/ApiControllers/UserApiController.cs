@@ -8,73 +8,66 @@ using RestSharp;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using CarPoolingMVC.Helpers;
+using System.Net.Http.Headers;
 
 namespace CarPoolingMVC.Controllers.ApiControllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-   // [Authorize]
+     [Authorize]
     public class UserApiController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly AppSettings _appSettings;
 
-        public UserApiController(IUserService userService, IMapper mapper)
+        public UserApiController(IUserService userService, IMapper mapper, IOptions<AppSettings> appSettings)
         {
             this._userService = userService;
             this._mapper = mapper;
+            this._appSettings = appSettings.Value;
         }
 
 
         [HttpPost]
-        //[Route("SignUp")]
         [AllowAnonymous]
-        public AuthResponseVM SignUp([FromForm]UserVM userVM)
+        public AuthResponseVM SignUp([FromForm] UserVM userVM)
         {
-            AuthResponseVM authResponse = new AuthResponseVM();
-            UserResponse response = _userService.SignUp(_mapper.Map<User>(userVM));
-            if (response.ErrorMessage!=null)
+            AuthResponseVM response = new AuthResponseVM();
+            UserResponse userResponse;
+            userResponse = _userService.SignUp(_mapper.Map<User>(userVM));
+            if (userResponse.ErrorMessage == null)
             {
-                authResponse.ErrorMessage = response.ErrorMessage;
-                authResponse.IsSuccess = false;
+                response = _mapper.Map<User, AuthResponseVM>(userResponse.User);
+                response.IsSuccess = true;
+                var x = GenerateToken(response.Mail, response.Role);
+                response.Token = x;
             }
             else
             {
-                authResponse.IsSuccess = true;
-                authResponse.User = _mapper.Map<User, UserVM>(response.User);
-                //CookieOptions options = new CookieOptions()
-                //{
-                //    Path = "/",
-                //    Secure = true,
-                //    HttpOnly = true,
-                //    IsEssential = true,
-                //    SameSite = SameSiteMode.None
-                //};
-                //Response.Cookies.Append("userId", userVM.Mail, options);
-                //Response.Cookies.Append("userName", userVM.Name, options);
+                response.ErrorMessage = userResponse.ErrorMessage;
+                response.IsSuccess = false;
             }
-            return authResponse;
+            return response;
         }
 
         [HttpPost]
-        public byte[] UpdateImage([FromForm]IFormFile Photo,[FromQuery]string userId)
+        public byte[] UpdateImage([FromForm] IFormFile Photo, [FromQuery] string userId)
         {
-            
+
             return _userService.UpdateImage(_mapper.Map<byte[]>(Photo), userId);
         }
 
-        private static string GenerateToken()
-        {
-            var client = new RestClient("https://lakshmivasavi.auth0.com/oauth/token");
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("content-type", "application/json");
-            request.AddParameter("application/json", "{\"client_id\":\"xqngInHfNmrDL2wuMY2LTdRZjG8WOAKU\",\"client_secret\":\"nVWut_9QqOcaiBK9imKQIgkdsK75psbdZoY_Cy31n_Dwzhr_awgh6d67DIghG9bJ\",\"audience\":\"https://lakshmivasavi.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
-            return client.Execute(request).Content.Split(",")[0].Split(":")[1].Trim('"');
-        }
-
         [HttpPost]
-        //[Route("AddVehicle")]
-        public void AddVehicle([FromBody]VehicleVM vehicle, [FromQuery]string userId)
+        public List<VehicleVM> AddVehicle([FromBody] VehicleVM vehicle, [FromQuery] string userId)
         {
             Vehicle NewVehicle;
             switch (vehicle.Type)
@@ -90,49 +83,35 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                     NewVehicle = new Vehicle();
                     break;
             }
-            NewVehicle =_mapper.Map<Vehicle>( vehicle);
-            _userService.AddVehicle(userId, NewVehicle);
+            NewVehicle = _mapper.Map<Vehicle>(vehicle);
+            return _mapper.Map<List<VehicleVM>>(_userService.AddVehicle(userId, NewVehicle));
         }
 
         [HttpGet]
-        //[Route("GetVehicles")]
-        public List<VehicleVM> GetVehicles([FromQuery]string userId)
+        public List<VehicleVM> GetVehicles([FromQuery] string userId)
         {
             return _mapper.Map<List<VehicleVM>>(_userService.GetVehicles(userId));
         }
 
         [HttpGet]
-        //[Route("GetBalance")]
-        public float GetBalance([FromQuery]string userId)
+        public float GetBalance([FromQuery] string userId)
         {
             return _userService.GetBalance(userId);
         }
 
         [HttpPost]
-        //[Route("Login")]
         [AllowAnonymous]
-        //public LoginResponse Login([FromQuery]string userId, [FromBody]string password)
-        public AuthResponseVM Login([FromBody]UserLoginVM userDto)
+        public AuthResponseVM Login([FromBody] UserLoginVM userDto)
         {
             AuthResponseVM response = new AuthResponseVM();
             UserResponse userResponse;
             userResponse = _userService.Login(userDto.Password, userDto.Id);
             if (userResponse.ErrorMessage == null)
             {
+                response = _mapper.Map<User, AuthResponseVM>(userResponse.User);
                 response.IsSuccess = true;
-                response.User = _mapper.Map<User, UserVM>(userResponse.User);
-                //CookieOptions options = new CookieOptions()
-                //{
-                //    Path = "/",
-                //    Secure = true,
-                //    HttpOnly = true,
-                //    IsEssential = true,
-                //    SameSite = SameSiteMode.None
-                //};
-                //Response.Cookies.Append("userId", userResponse.User.Mail, options);
-                //Response.Cookies.Append("userName", userResponse.User.Name, options);
-                //string res = GenerateToken();
-                //Response.Cookies.Append("Bearer", res, options);
+                var x = GenerateToken(response.Mail,response.Role);
+                response.Token = x;
             }
             else
             {
@@ -142,22 +121,42 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             return response;
         }
 
+        public static string GenerateToken(string username,string role,int expireMinutes = 20)
+        {
+            DateTime issuedAt = DateTime.UtcNow;
+            DateTime expires = DateTime.UtcNow.AddDays(7);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[]
+            {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role,"User")
+        });
+            const string sec = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
+            var now = DateTime.UtcNow;
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(sec));
+            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            var token =
+                (JwtSecurityToken)
+                    tokenHandler.CreateJwtSecurityToken(issuer: "http://localhost:5001", audience: "http://localhost:3000",
+                        subject: claimsIdentity, notBefore: issuedAt, expires: expires, signingCredentials: signingCredentials);
+            var tokenString = tokenHandler.WriteToken(token);
+            return tokenString;
+        }
+
         [HttpPost]
-        //[Route("AddAmountToWallet")]
-        public void UpdateBalance([FromBody]Wallet wallet, [FromQuery]string userId)
+        public void UpdateBalance([FromBody] WalletVM wallet, [FromQuery] string userId)
         {
             _userService.AddAmount(wallet.Balance, userId);
         }
 
-       [HttpPost]
-        //[Route("Logout")]
+        [HttpPost]
         public void Logout([FromQuery]string userId)
         {
             Response.Cookies.Delete("Bearer");
         }
 
-        //[Route("GetUser")]
-        public User GetUser([FromQuery]string userId)
+        [HttpGet]
+        public User GetUser([FromQuery] string userId)
         {
             return _userService.FindUser(userId);
         }
@@ -169,12 +168,60 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             return _mapper.Map<UserVM>(_userService.UpdateUserDetails(user));
         }
 
-        
-
         [HttpGet]
-        public byte[] GetImage([FromQuery]string userId)
+        [Authorize(Roles = Role.User)]
+        public byte[] GetImage([FromQuery] string userId)
         {
             return _userService.GetImage(userId);
+        }
+
+        [HttpGet]
+        public List<UserVM> GetAllUsers()
+        {
+            //Response.Headers.Add("Content-Type", new MediaTypeHeaderValue("image/png"));
+            //Response.ContentType = ;
+            var x=_mapper.Map<List<UserVM>>(_userService.GetAllUsers());
+            return x;
+           // content - type: application / json; charset = utf - 8
+        }
+
+        [HttpGet]
+        public List<VehicleVM> GetAllVehicles()
+        {
+            return _mapper.Map<List<VehicleVM>>(_userService.GetAllVehicles());
+        }
+
+        [HttpPost]
+        public string ChangePassword([FromBody]UpdatePasswordVM updatePassword,[FromQuery]string userId)
+        {
+            return _userService.ChangePassword(_mapper.Map<UpdatePassword>(updatePassword),userId) ? "Password Changed Successfully" : "Invalid Password";
+        }
+
+        [HttpPost]
+        public void UpdateVehicle([FromBody]VehicleVM vehicle,[FromQuery]string userId,string vehicleId)
+        {
+            _userService.UpdateVehicle(_mapper.Map<Vehicle>(vehicle), userId,vehicleId);
+        }
+
+        [HttpGet]
+        public List<TransactionVM> GetTransactions([FromQuery]string userId)
+        {
+            List<Transaction> transactions = _userService.GetTransactions(userId);
+
+            var result=_mapper.Map<List<TransactionVM>>(transactions);
+            for(int i=0;i<transactions.Count;i++)
+            {
+                if (transactions[i].From == userId)
+                {
+                    result[i].PaymentMessage =  " paid to " + transactions[i].To;
+                        }
+                else
+                {
+                    result[i].PaymentMessage = " received from " + transactions[i].From;
+                }
+
+            }
+            return result;
         }
     }
 }

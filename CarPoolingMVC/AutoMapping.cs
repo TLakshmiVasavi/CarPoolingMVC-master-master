@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CarPoolingMVC.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Models;
 using Models.Enums;
 using System.IO;
@@ -13,9 +12,28 @@ namespace CarPoolingMVC
     {
         public AutoMapping()
         {
-            CreateMap<User, UserVM>().ForMember(dest=>dest.Vehicle,opt=>opt.MapFrom(src=>src.Vehicles[0]));
+            //.ForMember(dest => dest.ItemName, act => act.MapFrom(src =>
+            //            (src.Name.StartsWith("A") ? src.Name : src.OptionalName)))
+            CreateMap<Transaction, TransactionVM>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
+                //.ForMember(dest=>dest.PaymentMessage,opt=>opt.MapFrom(src=>src.From));
+            CreateMap<TransactionVM, Transaction>();
+            CreateMap<RequestDetails, RequestDetailsVM>();
+            CreateMap<RequestDetailsVM, RequestDetails>();
+            CreateMap<UpdatePassword, UpdatePasswordVM>();
+            CreateMap<UpdatePasswordVM, UpdatePassword>();
+            CreateMap<User, UserVM>()
+                .ForMember(dest => dest.Vehicle, opt => opt.MapFrom(src => src.Vehicles[0]));
+                //.ForMember(dest=>dest.Image,opt=>opt.MapFrom(src=>src.Photo));
             //CreateMap<UserVM, User>().ForMember(dest => dest.Photo, opt => opt.MapFrom<photoResolver>());
-            CreateMap<UserVM, User>().ForMember(dest=>dest.Vehicles,opt=>opt.Ignore());
+            CreateMap<UserVM, User>().ForMember(dest => dest.Vehicles, opt => opt.Ignore())
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Image));
+            
+                //.ForMember(x => x.Id, opt => opt.MapFrom(o => o.Ignore()))
+                //.AfterMap((s, d) => s.Image=null);
+            CreateMap<User, AuthResponseVM>().ForMember(dest => dest.Vehicle, opt => opt.MapFrom(src => src.Vehicles[0]));
+            //CreateMap<UserVM, User>().ForMember(dest => dest.Photo, opt => opt.MapFrom<photoResolver>());
+            CreateMap<AuthResponseVM, User>().ForMember(dest => dest.Vehicles, opt => opt.Ignore());
             CreateMap<Ride, OfferRideVM>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route));
             CreateMap<OfferRideVM, Ride>().ForMember(dest => dest.Route, opt => opt.MapFrom(src => src.Route)); 
             CreateMap<Vehicle, VehicleVM>();
@@ -29,7 +47,11 @@ namespace CarPoolingMVC
                 .ForMember(dest => dest.NoOfSeats, opt => opt.MapFrom(src => src.Request.NoOfSeats))
                 .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Request.Time))
                 .ForMember(dest => dest.RideStatus, opt => opt.MapFrom(src => src.Response.Status))
-                .ForMember(dest => dest.VehicleNumber, opt => opt.MapFrom(src => src.Response.VehicleNumber));
+                .ForMember(dest => dest.VehicleNumber, opt => opt.MapFrom(src => src.Response.VehicleNumber))
+                .ForMember(dest => dest.ProviderName, opt => opt.MapFrom(src => src.Response.ProviderName))
+                .ForMember(dest => dest.ProviderPic, opt => opt.MapFrom(src => src.Response.ProviderPic))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Request.StartDate));
+                
             CreateMap<BookingDetailsVM, Booking>();
             CreateMap<VehicleTypeVM, VehicleType>();
             CreateMap<VehicleType, VehicleTypeVM>();
@@ -70,7 +92,17 @@ namespace CarPoolingMVC
             CreateMap<byte[],IFormFile>().ConvertUsing<ByteToFileConverter>();
         }
     }
-   
+
+    //public class ConditionalSourceValueResolver : IValueResolver<Source, Destination, Value[]>
+    //{
+    //    public Value[] Resolve(Source source, Destination destination, Value[] destMember, ResolutionContext context)
+    //    {
+    //        if (source.Fields == null)
+    //            return context.Mapper.Map<Value[]>(source.Results);
+    //        else
+    //            return context.Mapper.Map<Value[]>(source.Fields);
+    //    }
+    //}
     public class FileToByteConverter : ITypeConverter<IFormFile, byte[]>
     {
         public byte[] Convert(IFormFile source, byte[] destination, ResolutionContext context)

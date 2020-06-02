@@ -11,5 +11,10 @@ namespace Models
         public float Cost;
 
         public string VehicleNumber;
+
+        public byte[] ProviderPic;
+
+        public string ProviderName;
+
     }
 }

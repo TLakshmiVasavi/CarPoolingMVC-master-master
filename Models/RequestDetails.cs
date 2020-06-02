@@ -21,5 +21,7 @@ namespace Models
         public int NoOfSeats;
 
         public float Cost;
+
+        public string Status;
     }
 }

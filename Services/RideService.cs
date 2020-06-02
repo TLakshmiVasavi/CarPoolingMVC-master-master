@@ -11,8 +11,8 @@ namespace Services
 {
     public class RideService : IRideService
     {
-        RideDal RideDal = new RideDal(new AppConfiguration());
-        BookingDal BookingDal = new BookingDal(new AppConfiguration());
+        readonly RideDal RideDal = new RideDal(new AppConfiguration());
+        readonly BookingDal BookingDal = new BookingDal(new AppConfiguration());
         
         public void CreateRide(Ride ride)
         {
@@ -39,9 +39,18 @@ namespace Services
             return RideDal.GetCost(rideId, pickUp, drop);
         }
 
-        public void RequestRide(RideRequest request)
+        public string RequestRide(RideRequest request)
         {
-            BookingDal.Create(request);
+            string result = "Requested Successfully";
+            if(RideDal.IsSeatAvailable(request, request.RideId))
+            {
+                BookingDal.Create(request);
+            }
+            else
+            {
+                result = "Seats not Available";
+            }
+            return result;
         }
 
         public List<Booking> FindBookings(string userId)
@@ -89,6 +98,16 @@ namespace Services
         public RideRequest GetRequest(int requestId)
         {
             return BookingDal.GetRequest(requestId);
+        }
+
+        public List<Ride> GetAllOffers()
+        {
+            return RideDal.GetAllOffers();
+        }
+
+        public List<Booking> GetAllBookings()
+        {
+            return BookingDal.GetAllBookings();
         }
 
     }

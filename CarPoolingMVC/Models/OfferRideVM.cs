@@ -13,7 +13,7 @@ namespace CarPoolingMVC.Models
         public RouteVM Route { get; set; }
 
         [DisplayName("Start Time ")]
-        [CustomDate]
+        //[CustomDate]
         public DateTime StartDate { get; set; }
 
         [CustomTime]

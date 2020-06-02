@@ -16,7 +16,7 @@ namespace Models.DAL
             Configuration = configuration;
         }
 
-        public void Create(Vehicle vehicle,string userId)
+        public List<Vehicle> Create(Vehicle vehicle,string userId)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -30,14 +30,17 @@ namespace Models.DAL
                     connection.Close();
                 }
             }
+            return GetAllVehicles();
         }
 
-        public void Update(Vehicle vehicle,string userId)
+        public void Update(Vehicle vehicle,string userId,string vehicleId)
         {
             string connectionString = Configuration.ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"Update Vehicle set Model='{vehicle.Model}', Capacity='{vehicle.Capacity}', Type='{vehicle.Type}' , OwnerId='{userId}' where Number='{vehicle.Number}' ";
+                //string sql = $"Update Vehicle set Model='{vehicle.Model}', Capacity='{vehicle.Capacity}', Type='{vehicle.Type}' where Number='{vehicleId}'";
+                //string sql = $"Update Vehicle set Model='test', Capacity='7', Type='car' where Number='{vehicleId}'";
+                string sql = $"Update Vehicle set Model='{vehicle.Model}', Capacity='{vehicle.Capacity}', Type='{vehicle.Type}' where Number='{vehicleId}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -47,6 +50,8 @@ namespace Models.DAL
                 }
             }
         }
+
+
 
         public Vehicle GetById(string id)
         {

@@ -18,12 +18,16 @@ namespace Models.Interfaces
 
         void CreateRide(Ride ride);
 
-        void RequestRide(RideRequest request);
+        string RequestRide(RideRequest request);
 
         List<RequestDetails> GetRequests(int rideId);
 
         RideRequest GetRequest(int requestId);
 
         float CalculateCostForRide(int rideId, string pickUp, string drop);
+
+        List<Ride> GetAllOffers();
+
+        List<Booking> GetAllBookings();
     }
 }

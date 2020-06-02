@@ -6,6 +6,8 @@ namespace Models
 {
     public class User
     {
+        public string Role;
+
         public string Name;
 
         public string Mail;

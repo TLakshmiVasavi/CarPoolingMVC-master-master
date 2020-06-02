@@ -17,7 +17,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
 
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class RideApiController : ControllerBase
     {
         private readonly IRideService _rideService;
@@ -32,7 +32,6 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }        
 
         [HttpPost]
-        //[Route("OfferRide")]
         public void OfferRide([FromBody]OfferRideVM ride, [FromQuery]string userId)
         {
             int[] res = new int[2];
@@ -94,7 +93,6 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        //[Route("BookRide")]
         public IEnumerable<AvailableRideVM> BookRide([FromBody]RequestVM request, [FromQuery]string userId)//
         {   
             RideRequest request1 = _mapper.Map<RideRequest>(request);
@@ -106,37 +104,29 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        //[Route("RequestRide")]
-        public void RequestRide([FromBody]RequestVM request1,[FromQuery]int noOfSeats, [FromQuery] int rideId, [FromQuery] string userId)
+        public string RequestRide([FromBody]RequestVM request1,[FromQuery]int noOfSeats, [FromQuery] int rideId, [FromQuery] string userId)
         {
             
             RideRequest request = _mapper.Map<RideRequest>(request1);
             request.NoOfSeats = noOfSeats;
             request.RideId = rideId;
             request.RiderId = userId;
-            _rideService.RequestRide(request);
+            return _rideService.RequestRide(request);
         }
 
         [HttpGet]
-        //[Route("GetBookings")]
         public List<BookingDetailsVM> GetBookings([FromQuery]string userId)
         {   
-            List<Booking> bookings = _rideService.FindBookings(userId);
-            List<BookingDetailsVM> Bookings = _mapper.Map<List<BookingDetailsVM>>(bookings);
-            return Bookings;
+            return _mapper.Map<List<BookingDetailsVM>>(_rideService.FindBookings(userId));
         }
 
         [HttpGet]
-        //[Route("GetOfferedRides")]
         public List<OfferedRideVM> GetOfferedRides([FromQuery]string userId)
         {
-            List<Ride> Rides = _rideService.FindOfferedRides(userId);
-            List<OfferedRideVM> OfferedRides = _mapper.Map<List<OfferedRideVM>>(Rides);
-            return OfferedRides;
+            return _mapper.Map<List<OfferedRideVM>>(_rideService.FindOfferedRides(userId));
         }
 
         [HttpGet]
-        //[Route("GetRequests")]
         public List<RequestDetailsVM> GetRequests([FromQuery]int rideId)
         {
             List<RequestDetails> Requests = _rideService.GetRequests(rideId);
@@ -146,12 +136,11 @@ namespace CarPoolingMVC.Controllers.ApiControllers
         }
 
         [HttpPost]
-        //[Route("ApproveRequest")]
         public ResponseVM ApproveRequest([FromQuery]int rideId,[FromQuery]int requestId,[FromQuery]bool isApprove,[FromQuery]string providerId)
         {
             ResponseVM response = new ResponseVM
             {
-                Result = true
+                Result = false
             };
             if (isApprove)
             {
@@ -161,7 +150,7 @@ namespace CarPoolingMVC.Controllers.ApiControllers
                 {
                     if (_rideService.ApproveRequest(rideId, requestId, isApprove))
                     {
-                        _userService.PayBill(providerId, request.RiderId, amount);
+                        _userService.PayBill(providerId, request.RiderId, amount,requestId);
                         response.Result = true;
                     }
                     else
@@ -180,5 +169,18 @@ namespace CarPoolingMVC.Controllers.ApiControllers
             }
             return response;
         }
+        
+        [HttpGet]
+        public List<OfferedRideVM> GetAllOffers()
+        {
+            return _mapper.Map<List<OfferedRideVM>>(_rideService.GetAllOffers());
+        }
+
+        [HttpGet]
+        public List<BookingDetailsVM> GetAllBookings()
+        {
+            return _mapper.Map<List<BookingDetailsVM>>(_rideService.GetAllBookings());
+        }
+
     }
 }
